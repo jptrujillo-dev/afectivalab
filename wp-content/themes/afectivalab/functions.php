@@ -13,3 +13,5 @@ require get_theme_file_path( 'inc/setup.php' );
 require get_theme_file_path( 'inc/enqueue.php' );
 require get_theme_file_path( 'inc/icons.php' );
 require get_theme_file_path( 'inc/nav.php' );
+require get_theme_file_path( 'inc/routes.php' );
+require get_theme_file_path( 'inc/auth.php' );

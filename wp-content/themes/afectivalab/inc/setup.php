@@ -20,6 +20,17 @@ function afectivalab_setup() {
 			'footer'  => __( 'Menú de pie de página', 'afectivalab' ),
 		)
 	);
+
+	/**
+	 * Rol propio para las cuentas de padres/madres que se registran en la
+	 * plataforma, en vez de dejarlos como "Suscriptor" genérico. add_role()
+	 * no hace nada si el rol ya existe, así que es seguro llamarlo siempre.
+	 */
+	add_role(
+		'afectivalab_padre',
+		__( 'Padre/Madre', 'afectivalab' ),
+		array( 'read' => true )
+	);
 }
 add_action( 'after_setup_theme', 'afectivalab_setup' );
 

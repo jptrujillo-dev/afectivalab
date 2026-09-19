@@ -48,3 +48,23 @@ function afectivalab_get_icon( $name, $class = '' ) {
 function afectivalab_icon( $name, $class = '' ) {
 	echo afectivalab_get_icon( $name, $class ); // phpcs:ignore WordPress.Security.EscapeOutput -- SVG confiable del propio theme.
 }
+
+/**
+ * Botón de mostrar/ocultar contraseña para un campo de un formulario.
+ * Los dos íconos van ambos en el HTML; el CSS/JS solo alterna cuál se ve
+ * (ver .form-input__toggle en auth.css y data-password-toggle en main.js),
+ * así el botón funciona igual si JS no llega a cargar (el input se queda
+ * como password, que es lo seguro).
+ *
+ * @param string $for El id del <input> que controla.
+ */
+function afectivalab_password_toggle( $for ) {
+	printf(
+		'<button type="button" class="form-input__toggle" data-password-toggle="%1$s" data-label-show="%2$s" data-label-hide="%3$s" aria-label="%2$s"><span class="icon-show">%4$s</span><span class="icon-hide">%5$s</span></button>',
+		esc_attr( $for ),
+		esc_attr__( 'Mostrar contraseña', 'afectivalab' ),
+		esc_attr__( 'Ocultar contraseña', 'afectivalab' ),
+		afectivalab_get_icon( 'eye' ), // phpcs:ignore WordPress.Security.EscapeOutput -- SVG confiable del propio theme.
+		afectivalab_get_icon( 'eye-off' ) // phpcs:ignore WordPress.Security.EscapeOutput -- SVG confiable del propio theme.
+	);
+}
