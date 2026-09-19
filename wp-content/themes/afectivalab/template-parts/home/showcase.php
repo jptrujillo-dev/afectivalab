@@ -67,8 +67,18 @@ $afectivalab_route = array(
 			</div>
 
 			<div class="case-demo" data-case-demo>
-				<div class="case-demo__prompt">
-					<strong><?php esc_html_e( 'Tu hijo de 8 años dice: "No quiero volver al colegio mañana." ¿Qué harías primero?', 'afectivalab' ); ?></strong>
+				<div class="case-demo__intro">
+					<img
+						class="case-demo__portrait"
+						src="<?php echo esc_url( get_theme_file_uri( 'assets/images/caso-practico-nino.webp' ) ); ?>"
+						alt=""
+						width="160"
+						height="160"
+						loading="lazy"
+					>
+					<div class="case-demo__prompt">
+						<strong><?php esc_html_e( 'Tu hijo de 8 años dice: "No quiero volver al colegio mañana." ¿Qué harías primero?', 'afectivalab' ); ?></strong>
+					</div>
 				</div>
 
 				<div class="case-demo__options">

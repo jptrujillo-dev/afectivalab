@@ -9,19 +9,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $afectivalab_testimonials = array(
 	array(
-		'quote'   => __( 'Ahora sé cómo hablar con mi hijo en momentos difíciles. Me siento más segura y tranquila.', 'afectivalab' ),
-		'name'    => 'María G.',
-		'initial' => 'M',
+		'quote'  => __( 'Ahora sé cómo hablar con mi hijo en momentos difíciles. Me siento más segura y tranquila.', 'afectivalab' ),
+		'name'   => 'María G.',
+		'avatar' => 'avatar-maria.webp',
 	),
 	array(
-		'quote'   => __( 'La ruta por edades me ayuda mucho. Los videos son claros y muy prácticos. Totalmente recomendado.', 'afectivalab' ),
-		'name'    => 'Carlos R.',
-		'initial' => 'C',
+		'quote'  => __( 'La ruta por edades me ayuda mucho. Los videos son claros y muy prácticos. Totalmente recomendado.', 'afectivalab' ),
+		'name'   => 'Carlos R.',
+		'avatar' => 'avatar-carlos.webp',
 	),
 	array(
-		'quote'   => __( 'No estamos solos en este camino. Aquí encuentro herramientas reales para mi día a día.', 'afectivalab' ),
-		'name'    => 'Ana L.',
-		'initial' => 'A',
+		'quote'  => __( 'No estamos solos en este camino. Aquí encuentro herramientas reales para mi día a día.', 'afectivalab' ),
+		'name'   => 'Ana L.',
+		'avatar' => 'avatar-ana.webp',
 	),
 );
 ?>
@@ -42,7 +42,14 @@ $afectivalab_testimonials = array(
 					</div>
 					<p>&ldquo;<?php echo esc_html( $testimonial['quote'] ); ?>&rdquo;</p>
 					<div class="testimonial-card__author">
-						<span class="testimonial-card__avatar" aria-hidden="true"><?php echo esc_html( $testimonial['initial'] ); ?></span>
+						<img
+							class="testimonial-card__avatar"
+							src="<?php echo esc_url( get_theme_file_uri( 'assets/images/' . $testimonial['avatar'] ) ); ?>"
+							alt=""
+							width="72"
+							height="72"
+							loading="lazy"
+						>
 						<strong><?php echo esc_html( $testimonial['name'] ); ?></strong>
 					</div>
 				</div>

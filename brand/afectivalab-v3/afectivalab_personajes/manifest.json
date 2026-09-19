@@ -1,0 +1,132 @@
+[
+  {
+    "archivo": "hero-familia.png",
+    "dimensiones": [
+      1600,
+      1600
+    ],
+    "resolucion_nativa": [
+      1254,
+      1254
+    ],
+    "alpha": true,
+    "reescalada": true
+  },
+  {
+    "archivo": "etapa-3-5.png",
+    "dimensiones": [
+      1254,
+      1254
+    ],
+    "resolucion_nativa": [
+      1254,
+      1254
+    ],
+    "alpha": true,
+    "reescalada": false
+  },
+  {
+    "archivo": "etapa-6-8.png",
+    "dimensiones": [
+      1254,
+      1254
+    ],
+    "resolucion_nativa": [
+      1254,
+      1254
+    ],
+    "alpha": true,
+    "reescalada": false
+  },
+  {
+    "archivo": "etapa-9-11.png",
+    "dimensiones": [
+      1254,
+      1254
+    ],
+    "resolucion_nativa": [
+      1254,
+      1254
+    ],
+    "alpha": true,
+    "reescalada": false
+  },
+  {
+    "archivo": "etapa-12-14.png",
+    "dimensiones": [
+      1254,
+      1254
+    ],
+    "resolucion_nativa": [
+      1254,
+      1254
+    ],
+    "alpha": true,
+    "reescalada": false
+  },
+  {
+    "archivo": "etapa-15-17.png",
+    "dimensiones": [
+      1254,
+      1254
+    ],
+    "resolucion_nativa": [
+      1254,
+      1254
+    ],
+    "alpha": true,
+    "reescalada": false
+  },
+  {
+    "archivo": "caso-practico-nino.png",
+    "dimensiones": [
+      1254,
+      1254
+    ],
+    "resolucion_nativa": [
+      1254,
+      1254
+    ],
+    "alpha": true,
+    "reescalada": false
+  },
+  {
+    "archivo": "avatar-maria.png",
+    "dimensiones": [
+      1254,
+      1254
+    ],
+    "resolucion_nativa": [
+      1254,
+      1254
+    ],
+    "alpha": true,
+    "reescalada": false
+  },
+  {
+    "archivo": "avatar-carlos.png",
+    "dimensiones": [
+      1254,
+      1254
+    ],
+    "resolucion_nativa": [
+      1254,
+      1254
+    ],
+    "alpha": true,
+    "reescalada": false
+  },
+  {
+    "archivo": "avatar-ana.png",
+    "dimensiones": [
+      1254,
+      1254
+    ],
+    "resolucion_nativa": [
+      1254,
+      1254
+    ],
+    "alpha": true,
+    "reescalada": false
+  }
+]

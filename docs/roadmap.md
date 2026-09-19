@@ -26,6 +26,7 @@ Lo que se hará, en orden de prioridad. Sin fechas fijas todavía — se ajusta 
 
 - [x] Theme propio desde cero (`wp-content/themes/afectivalab`, sin depender de Twenty Twenty-Five), integrando la marca (logo, favicon, paleta, Fredoka) y un helper de íconos SVG (`afectivalab_icon()`) que garantiza que nunca se usen emojis/símbolos de texto en la UI.
 - [x] Página de inicio (home) construida a partir de la referencia visual del usuario: hero, franja de features, "cómo funciona" (3 pasos), etapas por edad (5), ruta recomendada + caso práctico interactivo (funcional en JS, sin backend todavía), testimonios y CTA final. Contenido en español con los datos reales del concepto (ejes, edades, ejemplo de Mateo/8 años).
+- [x] Ilustraciones de personajes (familia del hero, 5 niños de etapas, niño de casos prácticos, 3 avatares de testimonios) generadas por el usuario con IA a partir de los prompts de [prompts-iconos-ia.md](prompts-iconos-ia.md) e integradas al theme como WebP optimizado.
 - [ ] Registro de padre + alta de hijos (edad, preocupaciones).
 - [ ] Estructura real de curso/microclase como contenido de WordPress (por ahora la sección de home usa datos de ejemplo hardcodeados, no contenido dinámico).
 - [ ] Mecánica de casos de decisión ramificados con persistencia real (la demo de home es solo front-end, sin guardar progreso).

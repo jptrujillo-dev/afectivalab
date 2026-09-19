@@ -56,18 +56,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php afectivalab_icon( 'doodle-heart', 'hero__doodle hero__doodle--heart' ); ?>
 			<span class="hero__caption hero__caption--leaf"><?php esc_html_e( 'Pequeños pasos, grandes logros', 'afectivalab' ); ?></span>
 
-			<!--
-				Placeholder de la ilustración de familia: mientras no tengamos el arte
-				ilustrado (ver docs/prompts-iconos-ia.md, sección 5.1), se usa una
-				composición abstracta de 3 formas (sin caras) que ocupa el mismo
-				espacio. Cuando llegue la ilustración real, este bloque se reemplaza
-				por una sola <img>.
-			-->
-			<div class="hero__illustration" aria-hidden="true">
-				<span class="hero__illustration-shape hero__illustration-shape--a"></span>
-				<span class="hero__illustration-shape hero__illustration-shape--b"></span>
-				<span class="hero__illustration-shape hero__illustration-shape--c"></span>
-			</div>
+			<img
+				class="hero__illustration"
+				src="<?php echo esc_url( get_theme_file_uri( 'assets/images/hero-familia.webp' ) ); ?>"
+				alt="<?php esc_attr_e( 'Familia sonriendo', 'afectivalab' ); ?>"
+				width="900"
+				height="900"
+			>
 
 			<div class="hero__note hero__note--top"><?php esc_html_e( 'Familias que aprenden también avanzan', 'afectivalab' ); ?></div>
 
