@@ -112,64 +112,83 @@ Subject: [CONCEPTO], small flat outline-style icon, single color in dark ink (#2
 
 ## 5. Ilustraciones de personajes (hero, etapas, casos prácticos)
 
-Esto es distinto a los íconos de arriba: son **ilustraciones de personajes** (familia, niños), como las de la imagen de referencia que compartiste. Yo no puedo generar este tipo de arte ilustrado directamente (no tengo una herramienta de generación de imágenes; solo puedo dibujar formas geométricas simples a mano en SVG, que no da un resultado creíble para caras/personajes). Por eso van aquí como prompts para que los generes con una IA de imagen, igual que el resto del set.
+Esto es distinto a los íconos de arriba: son **ilustraciones de personajes** (familia, niños), como las de la imagen de referencia que compartiste. Yo no puedo generar este tipo de arte ilustrado directamente (no tengo una herramienta de generación de imágenes; solo puedo dibujar formas geométricas simples a mano en SVG, que no da un resultado creíble para caras/personajes). Por eso van aquí como prompts completos, listos para copiar y pegar tal cual — no hace falta armar nada a partir de piezas sueltas.
 
-**Estilo**: el mismo que tu imagen de referencia — ilustración infantil tipo "EdTech/parenting app", con **cabezas grandes y proporciones tipo chibi** (más infantil y juguetón que un ilustración de adulto realista), ojos simples, mejillas sonrosadas, sombreado suave. Esto es justo lo que hace que la referencia "se sienta para niños"; el bloque de abajo lo pide explícitamente. Tonos de piel y cabello variados/diversos (no se restringen a la paleta de marca); la ropa sí puede usar los colores de marca (morado #6C4FD6 / #4E36A8, verde #38B36B / #279250) para mantener consistencia visual con el resto del sitio.
+### Especificaciones técnicas (aplican a las 10 imágenes)
 
-**Bloque de estilo maestro para personajes (pegar al inicio de cada prompt):**
-```
-Flat vector character illustration, warm and playful children's/parenting-app style (like modern flat illustration packs used in EdTech and parenting apps — think Freepik-style flat character illustrations). Childlike, slightly oversized rounded heads relative to the body (chibi-like proportions), simple dot or oval eyes with a small white highlight, rosy round cheek blush, simple curved smiling mouth, soft cel-shaded coloring with gentle one-tone shadows (no harsh outlines, no photorealism, no 3D render). Diverse, warm skin tones and varied hair styles/colors. Clothing may use these brand accent colors: purple #6C4FD6, green #38B36B. Transparent or plain white background, no text, no logos, no watermarks in the image.
-```
+- **Formato de salida: PNG.** Nunca JPEG — JPEG no soporta transparencia y el fondo se vería como un rectángulo blanco o de color sólido detrás del personaje. Ninguna IA de imagen genera SVG real (vector); lo que entregan siempre es un raster (PNG/JPG), aunque el estilo se vea "plano". Si más adelante quieres una versión vectorizada de verdad, eso es un paso aparte de vectorización, no algo que se le pida al generador.
+- **Fondo: transparente.** Pide explícitamente "transparent background" / "PNG with alpha transparency" en la herramienta (algunos generadores tienen un toggle aparte para esto, no basta con que esté en el texto del prompt).
+- **Resolución mínima y proporción**: ver la tabla de abajo, columna por columna. Todas cuadradas (1:1) para simplificar — luego yo las recorto/ajusto con CSS según dónde vayan.
+- Si tu herramienta soporta relación de aspecto (`--ar 1:1` en Midjourney, selector de tamaño en DALL·E, etc.), configúrala en **1:1 cuadrada** en todos los casos.
 
-### 5.1 Ilustración del hero (familia)
+| # | Imagen | Nombre de archivo sugerido | Resolución mínima | Uso |
+|---|---|---|---|---|
+| 1 | Familia del hero | `hero-familia.png` | 1600×1600 px | Al lado del texto principal de la home |
+| 2 | Niño etapa 3–5 años | `etapa-3-5.png` | 1024×1024 px | Tarjeta "Primera infancia" |
+| 3 | Niño etapa 6–8 años | `etapa-6-8.png` | 1024×1024 px | Tarjeta "Niñez inicial" |
+| 4 | Niño etapa 9–11 años | `etapa-9-11.png` | 1024×1024 px | Tarjeta "Niñez media" |
+| 5 | Niño etapa 12–14 años | `etapa-12-14.png` | 1024×1024 px | Tarjeta "Adolescencia inicial" |
+| 6 | Niño etapa 15–17 años | `etapa-15-17.png` | 1024×1024 px | Tarjeta "Adolescencia media/tardía" |
+| 7 | Niño de "casos prácticos" | `caso-practico-nino.png` | 1024×1024 px | Junto al demo interactivo |
+| 8 *(opcional)* | Avatar de María | `avatar-maria.png` | 512×512 px | Testimonio |
+| 9 *(opcional)* | Avatar de Carlos | `avatar-carlos.png` | 512×512 px | Testimonio |
+| 10 *(opcional)* | Avatar de Ana | `avatar-ana.png` | 512×512 px | Testimonio |
 
-Va al lado derecho del texto principal de la home, como la ilustración de familia de tu referencia.
+Las **7 primeras son las que le dan al home la sensación "para niños" que pediste** — priorízalas. Las 3 últimas (avatares) son opcionales: hoy el sitio ya funciona bien con círculos de color e inicial.
 
-```
-[bloque de estilo maestro para personajes]
-Subject: a happy family portrait, front-facing, from the waist up — a father and mother close together with their child in the middle, all smiling warmly, in a gentle group-hug pose. One parent wears a piece of clothing in the purple accent color, the other in the green accent color, to tie into the brand. Warm, affectionate, reassuring mood. Square or portrait aspect ratio, plenty of even padding around the group so it can be placed next to text.
-```
-
-### 5.2 Ilustraciones de las 5 etapas (una por tarjeta de edad)
-
-Un niño/a por tarjeta, medio cuerpo o solo cabeza y hombros, mirando al frente, sonriendo. Varía género, edad aparente y color de ropa/accesorio entre las 5 para que se sientan diferentes personas, no la misma repetida.
-
-```
-[bloque de estilo maestro para personajes]
-Subject: a single [DESCRIPCIÓN], head-and-shoulders portrait, facing forward, smiling warmly at the viewer. Plain transparent background, generous padding, centered.
-```
-
-| Etapa | DESCRIPCIÓN |
-|---|---|
-| 3–5 años | happy toddler with a small tuft of hair, wearing a green t-shirt |
-| 6–8 años | cheerful young boy with short dark hair, wearing a purple t-shirt, small backpack strap visible |
-| 9–11 años | cheerful girl with hair in two braids, wearing a green jacket |
-| 12–14 años | preteen boy with curly hair, wearing a purple hoodie |
-| 15–17 años | teenage girl with long straight hair, wearing a green jacket, slightly more grown-up styling than the younger ones |
-
-### 5.3 Ilustración de "Casos prácticos"
-
-El niño pensativo con el globo de diálogo/casita, como en tu referencia.
+### 5.1 Familia del hero — `hero-familia.png`
 
 ```
-[bloque de estilo maestro para personajes]
-Subject: a young child sitting, resting their chin on both hands, looking thoughtful and slightly worried, wearing a backpack strap visible on one shoulder. Above/beside them, a small simple thought bubble containing a tiny flat school-house icon. Warm and gentle mood, not sad or distressing — this represents a child a parent is trying to understand, not a crisis. Transparent background, generous padding.
+Flat vector character illustration, warm and playful children's/parenting-app style (like modern flat illustration packs used in EdTech and parenting apps — think Freepik-style flat character illustrations). Childlike, slightly oversized rounded heads relative to the body (chibi-like proportions), simple dot or oval eyes with a small white highlight, rosy round cheek blush, simple curved smiling mouth, soft cel-shaded coloring with gentle one-tone shadows (no harsh outlines, no photorealism, no 3D render). Diverse, warm skin tones and varied hair styles/colors. Transparent background, no text, no logos, no watermarks. Subject: a happy family portrait, front-facing, from the waist up — a father and mother close together with their child in the middle, all smiling warmly, in a gentle group-hug pose. One parent wears a piece of clothing in purple (#6C4FD6), the other in green (#38B36B). Warm, affectionate, reassuring mood. Square composition, plenty of even padding around the group.
 ```
 
-### 5.4 (Opcional) Avatares de testimonios
-
-Hoy usamos círculos de color con la inicial del nombre (simple y funcional). Si prefieres avatares ilustrados como en tu referencia:
+### 5.2 — `etapa-3-5.png`
 
 ```
-[bloque de estilo maestro para personajes]
-Subject: a single adult parent, head-and-shoulders portrait, friendly warm smile, facing forward. Plain transparent background, centered, small even padding — will be displayed as a small circular avatar (crop-safe: keep the face centered with margin on all sides).
+Flat vector character illustration, warm and playful children's/parenting-app style (like modern flat illustration packs used in EdTech and parenting apps — think Freepik-style flat character illustrations). Childlike, slightly oversized rounded heads relative to the body (chibi-like proportions), simple dot or oval eyes with a small white highlight, rosy round cheek blush, simple curved smiling mouth, soft cel-shaded coloring with gentle one-tone shadows (no harsh outlines, no photorealism, no 3D render). Diverse, warm skin tones and varied hair styles/colors. Transparent background, no text, no logos, no watermarks. Subject: a single happy toddler with a small tuft of hair, wearing a green (#38B36B) t-shirt, head-and-shoulders portrait, facing forward, smiling warmly at the viewer. Square composition, generous padding, centered.
 ```
 
-Genera una versión distinta por cada testimonio (María, Carlos, Ana) variando género/edad/apariencia.
+### 5.3 — `etapa-6-8.png`
+
+```
+Flat vector character illustration, warm and playful children's/parenting-app style (like modern flat illustration packs used in EdTech and parenting apps — think Freepik-style flat character illustrations). Childlike, slightly oversized rounded heads relative to the body (chibi-like proportions), simple dot or oval eyes with a small white highlight, rosy round cheek blush, simple curved smiling mouth, soft cel-shaded coloring with gentle one-tone shadows (no harsh outlines, no photorealism, no 3D render). Diverse, warm skin tones and varied hair styles/colors. Transparent background, no text, no logos, no watermarks. Subject: a single cheerful young boy with short dark hair, wearing a purple (#6C4FD6) t-shirt with a small backpack strap visible on one shoulder, head-and-shoulders portrait, facing forward, smiling warmly at the viewer. Square composition, generous padding, centered.
+```
+
+### 5.4 — `etapa-9-11.png`
+
+```
+Flat vector character illustration, warm and playful children's/parenting-app style (like modern flat illustration packs used in EdTech and parenting apps — think Freepik-style flat character illustrations). Childlike, slightly oversized rounded heads relative to the body (chibi-like proportions), simple dot or oval eyes with a small white highlight, rosy round cheek blush, simple curved smiling mouth, soft cel-shaded coloring with gentle one-tone shadows (no harsh outlines, no photorealism, no 3D render). Diverse, warm skin tones and varied hair styles/colors. Transparent background, no text, no logos, no watermarks. Subject: a single cheerful girl with her hair in two braids, wearing a green (#38B36B) jacket, head-and-shoulders portrait, facing forward, smiling warmly at the viewer. Square composition, generous padding, centered.
+```
+
+### 5.5 — `etapa-12-14.png`
+
+```
+Flat vector character illustration, warm and playful children's/parenting-app style (like modern flat illustration packs used in EdTech and parenting apps — think Freepik-style flat character illustrations). Childlike, slightly oversized rounded heads relative to the body (chibi-like proportions), simple dot or oval eyes with a small white highlight, rosy round cheek blush, simple curved smiling mouth, soft cel-shaded coloring with gentle one-tone shadows (no harsh outlines, no photorealism, no 3D render). Diverse, warm skin tones and varied hair styles/colors. Transparent background, no text, no logos, no watermarks. Subject: a single preteen boy with curly hair, wearing a purple (#6C4FD6) hoodie, head-and-shoulders portrait, facing forward, smiling warmly at the viewer. Square composition, generous padding, centered.
+```
+
+### 5.6 — `etapa-15-17.png`
+
+```
+Flat vector character illustration, warm and playful children's/parenting-app style (like modern flat illustration packs used in EdTech and parenting apps — think Freepik-style flat character illustrations). Childlike, slightly oversized rounded heads relative to the body (chibi-like proportions), simple dot or oval eyes with a small white highlight, rosy round cheek blush, simple curved smiling mouth, soft cel-shaded coloring with gentle one-tone shadows (no harsh outlines, no photorealism, no 3D render). Diverse, warm skin tones and varied hair styles/colors. Transparent background, no text, no logos, no watermarks. Subject: a single teenage girl with long straight hair, wearing a green (#38B36B) jacket, slightly more grown-up styling than a young child, head-and-shoulders portrait, facing forward, smiling warmly at the viewer. Square composition, generous padding, centered.
+```
+
+### 5.7 Niño de "casos prácticos" — `caso-practico-nino.png`
+
+```
+Flat vector character illustration, warm and playful children's/parenting-app style (like modern flat illustration packs used in EdTech and parenting apps — think Freepik-style flat character illustrations). Childlike, slightly oversized rounded heads relative to the body (chibi-like proportions), simple dot or oval eyes with a small white highlight, rosy round cheek blush, simple curved smiling mouth, soft cel-shaded coloring with gentle one-tone shadows (no harsh outlines, no photorealism, no 3D render). Diverse, warm skin tones and varied hair styles/colors. Transparent background, no text, no logos, no watermarks. Subject: a young child sitting, resting their chin on both hands, looking thoughtful and slightly worried, with a backpack strap visible on one shoulder. Above/beside them, a small thought bubble containing a tiny flat school-house icon. Warm and gentle mood, not sad or distressing — this represents a child a parent is trying to understand, not a crisis. Square composition, generous padding.
+```
+
+### 5.8 (Opcional) Avatares de testimonios — `avatar-maria.png`, `avatar-carlos.png`, `avatar-ana.png`
+
+Hoy usamos círculos de color con la inicial del nombre (simple y funcional); esto es solo si prefieres avatares ilustrados como en tu referencia. Mismo prompt, generado 3 veces variando género/edad/apariencia:
+
+```
+Flat vector character illustration, warm and playful children's/parenting-app style (like modern flat illustration packs used in EdTech and parenting apps — think Freepik-style flat character illustrations). Simple dot or oval eyes with a small white highlight, soft cel-shaded coloring with gentle one-tone shadows (no harsh outlines, no photorealism, no 3D render). Diverse, warm skin tones and varied hair styles/colors. Transparent background, no text, no logos, no watermarks. Subject: a single adult parent, head-and-shoulders portrait, friendly warm smile, facing forward. Square composition, small even padding, face centered with margin on all sides (will be cropped into a circular avatar).
+```
 
 ### Cuando tengas los resultados
 
-Compárteme los PNG (idealmente 1024px o más, fondo transparente) y yo los integro directamente en el theme: la ilustración del hero reemplaza/acompaña la tarjeta de la app, las 5 de etapas reemplazan los íconos actuales de "brote de hojas" en `stages.php`, y la de casos prácticos se agrega junto al demo interactivo en `showcase.php`. No hace falta que los recortes queden perfectos — lo ajusto con CSS.
+Compárteme los 7 (u 10) PNG con esos nombres y yo los integro directamente en el theme: la familia reemplaza/acompaña la tarjeta de la app en `hero.php`, las 5 de etapas reemplazan los íconos actuales de "brote de hojas" en `stages.php`, la de casos prácticos se agrega junto al demo interactivo en `showcase.php`, y los avatares (si los generas) reemplazan los círculos con inicial en `testimonials.php`. No hace falta que los recortes queden perfectos — lo ajusto con CSS.
 
 ---
 
