@@ -43,6 +43,35 @@
 		} );
 	}
 
+	// Chip de usuario logueado (header): abre/cierra el menú desplegable.
+	var userMenu = document.querySelector( '[data-user-menu]' );
+	var userMenuTrigger = document.querySelector( '[data-user-menu-trigger]' );
+
+	if ( userMenu && userMenuTrigger ) {
+		var closeUserMenu = function () {
+			userMenu.classList.remove( 'is-open' );
+			userMenuTrigger.setAttribute( 'aria-expanded', 'false' );
+		};
+
+		userMenuTrigger.addEventListener( 'click', function ( event ) {
+			event.stopPropagation();
+			var isOpen = userMenu.classList.toggle( 'is-open' );
+			userMenuTrigger.setAttribute( 'aria-expanded', isOpen ? 'true' : 'false' );
+		} );
+
+		document.addEventListener( 'click', function ( event ) {
+			if ( ! userMenu.contains( event.target ) ) {
+				closeUserMenu();
+			}
+		} );
+
+		document.addEventListener( 'keydown', function ( event ) {
+			if ( 'Escape' === event.key ) {
+				closeUserMenu();
+			}
+		} );
+	}
+
 	// Demo del caso interactivo (solo front-end, sin envío a servidor todavía)
 	var caseDemo = document.querySelector( '[data-case-demo]' );
 

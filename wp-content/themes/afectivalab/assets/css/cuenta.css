@@ -1,0 +1,91 @@
+/* ===== Página /mi-cuenta ===== */
+.account-page {
+	padding-block: var(--space-8);
+	background: var(--color-bg-alt);
+	min-height: calc(100vh - 73px);
+}
+
+.account-card {
+	max-width: 480px;
+	margin-inline: auto;
+	background: var(--color-white);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-card);
+	padding: var(--space-6) var(--space-5);
+}
+
+.account-card h1 {
+	font-size: 1.6rem;
+	margin-bottom: var(--space-1);
+}
+
+.account-card__lead {
+	color: var(--color-text-muted);
+	margin-bottom: var(--space-5);
+}
+
+.avatar-picker {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--space-3);
+	margin-bottom: var(--space-5);
+	text-align: center;
+}
+
+.avatar-picker__preview .user-avatar {
+	font-size: 2.2rem;
+	box-shadow: var(--shadow-soft);
+}
+
+.avatar-picker__button {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	font-family: var(--font-display);
+	font-weight: 600;
+	font-size: 0.92rem;
+	color: var(--color-purple);
+	border: 1.5px solid var(--color-purple);
+	border-radius: var(--radius-pill);
+	padding: 10px 20px;
+	cursor: pointer;
+	transition: background 0.15s ease;
+}
+
+.avatar-picker__button:hover {
+	background: var(--color-purple-tint);
+}
+
+.avatar-picker__button svg {
+	width: 18px;
+	height: 18px;
+}
+
+.avatar-picker__hint {
+	font-size: 0.8rem;
+	color: var(--color-text-muted);
+	margin: 0;
+}
+
+.account-card__info {
+	margin-top: var(--space-6);
+	padding-top: var(--space-5);
+	border-top: 1px solid var(--color-border);
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-3);
+}
+
+.account-card__info .form-field {
+	margin-bottom: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--space-3);
+}
+
+.account-card__label {
+	color: var(--color-text-muted);
+	font-size: 0.88rem;
+}

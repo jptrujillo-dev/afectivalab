@@ -31,6 +31,14 @@ function afectivalab_setup() {
 		__( 'Padre/Madre', 'afectivalab' ),
 		array( 'read' => true )
 	);
+
+	// add_role() no actualiza roles que ya existen en la base de datos, así
+	// que la capacidad de subir su foto de perfil se agrega aparte (idempotente:
+	// add_cap() no hace nada si el rol ya la tiene).
+	$afectivalab_padre_role = get_role( 'afectivalab_padre' );
+	if ( $afectivalab_padre_role && ! $afectivalab_padre_role->has_cap( 'upload_files' ) ) {
+		$afectivalab_padre_role->add_cap( 'upload_files' );
+	}
 }
 add_action( 'after_setup_theme', 'afectivalab_setup' );
 

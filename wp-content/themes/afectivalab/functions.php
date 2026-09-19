@@ -15,3 +15,4 @@ require get_theme_file_path( 'inc/icons.php' );
 require get_theme_file_path( 'inc/nav.php' );
 require get_theme_file_path( 'inc/routes.php' );
 require get_theme_file_path( 'inc/auth.php' );
+require get_theme_file_path( 'inc/account.php' );

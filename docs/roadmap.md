@@ -35,7 +35,8 @@ Lo que se hará, en orden de prioridad. Sin fechas fijas todavía — se ajusta 
 - [ ] Confirmar que el envío de correo funcione de verdad en Hostinger — el flujo de `/recuperar` depende de `wp_mail()`, que en shared hosting suele necesitar un plugin SMTP para no caer en spam o fallar silenciosamente. Pendiente probarlo con un correo real.
 - [ ] Alta de hijos por perfil (edad, preocupaciones) — el registro de padre ya existe; confirmado que el hijo NO tiene cuenta propia (es un perfil dentro de la cuenta del padre, como en Netflix/Spotify family), falta construir esa parte.
 - [ ] Verificación de correo al registrarse (hoy la cuenta queda activa de inmediato).
-- [ ] Página de "Mi cuenta" / dashboard a la que redirige el login (hoy redirige al home).
+- [x] Chip de usuario en el header (avatar + nombre) con menú desplegable ("Mi cuenta" / "Salir"), en vez del saludo de texto plano anterior.
+- [x] Página `/mi-cuenta`: primera versión, solo con subida de foto de perfil (JPG/PNG/WEBP, máx. 3MB) — el avatar sale en el chip del header apenas se guarda. Falta convertirla en el dashboard real (progreso, hijos, etc.) al que redirige el login.
 - [ ] Estructura real de curso/microclase como contenido de WordPress (por ahora la sección de home usa datos de ejemplo hardcodeados, no contenido dinámico).
 - [ ] Mecánica de casos de decisión ramificados con persistencia real (la demo de home es solo front-end, sin guardar progreso).
 - [ ] Páginas reales para los enlaces del menú y footer que hoy son placeholders (`/nosotros`, `/privacidad`, `/terminos`, `/contacto`). `/registro`, `/ingresar`, `/recuperar` e `/restablecer` ya están resueltos.

@@ -38,8 +38,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="header-actions">
 			<?php if ( is_user_logged_in() ) : ?>
 				<?php $afectivalab_user = wp_get_current_user(); ?>
-				<span class="header-greeting"><?php echo esc_html( sprintf( /* translators: %s: nombre del usuario. */ __( 'Hola, %s', 'afectivalab' ), $afectivalab_user->display_name ) ); ?></span>
-				<a class="btn-ghost" href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>"><?php esc_html_e( 'Salir', 'afectivalab' ); ?></a>
+				<div class="user-menu" data-user-menu>
+					<button type="button" class="user-menu__trigger" data-user-menu-trigger aria-haspopup="true" aria-expanded="false">
+						<?php echo afectivalab_get_avatar_html( $afectivalab_user, 32 ); // phpcs:ignore WordPress.Security.EscapeOutput -- ya escapado dentro del helper. ?>
+						<span class="user-menu__name"><?php echo esc_html( $afectivalab_user->display_name ); ?></span>
+						<?php afectivalab_icon( 'chevron-down', 'user-menu__chevron' ); ?>
+					</button>
+					<div class="user-menu__panel" data-user-menu-panel>
+						<a href="<?php echo esc_url( home_url( '/mi-cuenta' ) ); ?>"><?php esc_html_e( 'Mi cuenta', 'afectivalab' ); ?></a>
+						<a href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>"><?php esc_html_e( 'Salir', 'afectivalab' ); ?></a>
+					</div>
+				</div>
 			<?php else : ?>
 				<?php $afectivalab_route = get_query_var( 'afectivalab_route' ); ?>
 				<?php if ( ! in_array( $afectivalab_route, array( 'ingresar', 'recuperar', 'restablecer' ), true ) ) : ?>
@@ -67,6 +76,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 		);
 		?>
 		<?php if ( is_user_logged_in() ) : ?>
+			<?php $afectivalab_mobile_user = wp_get_current_user(); ?>
+			<div class="mobile-nav__user">
+				<?php echo afectivalab_get_avatar_html( $afectivalab_mobile_user, 40 ); // phpcs:ignore WordPress.Security.EscapeOutput -- ya escapado dentro del helper. ?>
+				<span><?php echo esc_html( $afectivalab_mobile_user->display_name ); ?></span>
+			</div>
+			<a href="<?php echo esc_url( home_url( '/mi-cuenta' ) ); ?>"><?php esc_html_e( 'Mi cuenta', 'afectivalab' ); ?></a>
 			<a href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>"><?php esc_html_e( 'Salir', 'afectivalab' ); ?></a>
 		<?php elseif ( ! in_array( get_query_var( 'afectivalab_route' ), array( 'ingresar', 'recuperar', 'restablecer' ), true ) ) : ?>
 			<a href="<?php echo esc_url( home_url( '/ingresar' ) ); ?>"><?php esc_html_e( 'Ingresar', 'afectivalab' ); ?></a>

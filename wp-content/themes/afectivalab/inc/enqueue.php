@@ -42,6 +42,11 @@ function afectivalab_assets() {
 		wp_enqueue_script( 'afectivalab-auth', get_theme_file_uri( 'assets/js/auth.js' ), array(), afectivalab_asset_version( 'assets/js/auth.js' ), true );
 	}
 
+	if ( 'mi-cuenta' === get_query_var( 'afectivalab_route' ) ) {
+		wp_enqueue_style( 'afectivalab-cuenta', get_theme_file_uri( 'assets/css/cuenta.css' ), array( 'afectivalab-base' ), afectivalab_asset_version( 'assets/css/cuenta.css' ) );
+		wp_enqueue_script( 'afectivalab-cuenta', get_theme_file_uri( 'assets/js/cuenta.js' ), array(), afectivalab_asset_version( 'assets/js/cuenta.js' ), true );
+	}
+
 	wp_enqueue_script( 'afectivalab-main', get_theme_file_uri( 'assets/js/main.js' ), array(), afectivalab_asset_version( 'assets/js/main.js' ), true );
 }
 add_action( 'wp_enqueue_scripts', 'afectivalab_assets' );
