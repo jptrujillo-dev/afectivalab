@@ -42,7 +42,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<a class="btn-ghost" href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>"><?php esc_html_e( 'Salir', 'afectivalab' ); ?></a>
 			<?php else : ?>
 				<?php $afectivalab_route = get_query_var( 'afectivalab_route' ); ?>
-				<?php if ( 'ingresar' !== $afectivalab_route ) : ?>
+				<?php if ( ! in_array( $afectivalab_route, array( 'ingresar', 'recuperar', 'restablecer' ), true ) ) : ?>
 					<a class="btn-ghost" href="<?php echo esc_url( home_url( '/ingresar' ) ); ?>"><?php esc_html_e( 'Ingresar', 'afectivalab' ); ?></a>
 				<?php endif; ?>
 				<?php if ( 'registro' !== $afectivalab_route ) : ?>
@@ -68,7 +68,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		?>
 		<?php if ( is_user_logged_in() ) : ?>
 			<a href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>"><?php esc_html_e( 'Salir', 'afectivalab' ); ?></a>
-		<?php elseif ( 'ingresar' !== get_query_var( 'afectivalab_route' ) ) : ?>
+		<?php elseif ( ! in_array( get_query_var( 'afectivalab_route' ), array( 'ingresar', 'recuperar', 'restablecer' ), true ) ) : ?>
 			<a href="<?php echo esc_url( home_url( '/ingresar' ) ); ?>"><?php esc_html_e( 'Ingresar', 'afectivalab' ); ?></a>
 		<?php endif; ?>
 	</nav>

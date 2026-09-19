@@ -88,13 +88,19 @@
 }
 
 .form-alert {
-	background: #FDEEEE;
-	border: 1px solid #F3C6C6;
-	color: #A23A3A;
+	background: var(--color-error-tint);
+	border: 1px solid var(--color-error);
+	color: var(--color-error);
 	border-radius: var(--radius-sm);
 	padding: var(--space-3);
 	margin-bottom: var(--space-4);
 	font-size: 0.9rem;
+}
+
+.form-alert--success {
+	background: var(--color-success-tint);
+	border-color: var(--color-success);
+	color: var(--color-green-dark);
 }
 
 .form-alert ul {
@@ -114,6 +120,14 @@
 	margin-bottom: var(--space-2);
 }
 
+.form-field__hint {
+	display: block;
+	min-height: 1.2em;
+	margin-top: var(--space-1);
+	font-size: 0.82rem;
+	color: var(--color-error);
+}
+
 .form-input {
 	position: relative;
 	display: flex;
@@ -127,6 +141,14 @@
 .form-input:focus-within {
 	border-color: var(--color-purple);
 	box-shadow: 0 0 0 3px var(--color-purple-tint);
+}
+
+.form-field.is-invalid .form-input {
+	border-color: var(--color-error);
+}
+
+.form-field.is-valid .form-input {
+	border-color: var(--color-success);
 }
 
 .form-input__icon {
@@ -236,4 +258,56 @@
 .auth-switch a {
 	color: var(--color-purple);
 	font-weight: 600;
+}
+
+.password-strength {
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
+	margin-top: var(--space-2);
+	opacity: 0;
+	transition: opacity 0.15s ease;
+}
+
+.password-strength.is-visible {
+	opacity: 1;
+}
+
+.password-strength__track {
+	flex: 1;
+	height: 5px;
+	border-radius: var(--radius-pill);
+	background: var(--color-border);
+	overflow: hidden;
+}
+
+.password-strength__fill {
+	display: block;
+	height: 100%;
+	width: 0;
+	border-radius: var(--radius-pill);
+	transition: width 0.2s ease, background 0.2s ease;
+}
+
+.password-strength__fill.is-weak {
+	width: 33%;
+	background: var(--color-strength-weak);
+}
+
+.password-strength__fill.is-medium {
+	width: 66%;
+	background: var(--color-strength-medium);
+}
+
+.password-strength__fill.is-strong {
+	width: 100%;
+	background: var(--color-strength-strong);
+}
+
+.password-strength__label {
+	flex: none;
+	font-size: 0.78rem;
+	font-weight: 600;
+	color: var(--color-text-muted);
+	min-width: 3.2em;
 }

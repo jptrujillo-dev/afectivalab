@@ -29,13 +29,16 @@ Lo que se hará, en orden de prioridad. Sin fechas fijas todavía — se ajusta 
 - [x] Ilustraciones de personajes (familia del hero, 5 niños de etapas, niño de casos prácticos, 3 avatares de testimonios) generadas por el usuario con IA a partir de los prompts de [prompts-iconos-ia.md](prompts-iconos-ia.md) e integradas al theme como WebP optimizado.
 - [x] Probar el theme en un WordPress real — confirmado por el usuario en `afectivalab.agenciamagneto.org`, con capturas reales desde el celular.
 - [x] Registro e ingreso de padres: `/registro` y `/ingresar` reales y funcionales (no maquetas) — cuentas de WordPress de verdad, con un rol propio `afectivalab_padre`. Rutas resueltas por reescritura de URL (`inc/routes.php`), no dependen de crear Páginas en el escritorio.
-- [ ] Alta de hijos por perfil (edad, preocupaciones) — el registro de padre ya existe, falta el siguiente paso: crear el perfil del hijo dentro de la cuenta.
-- [ ] Verificación de correo al registrarse (hoy la cuenta queda activa de inmediato; requiere confirmar que el envío de mail funcione en Hostinger, típicamente con SMTP configurado aparte).
+- [x] Validación en vivo con JS en los formularios de auth (nombre, email, contraseña, confirmación) — ayuda visual únicamente, la validación real sigue siendo del lado del servidor en `inc/auth.php`.
+- [x] Medidor de fortaleza de contraseña (Baja/Media/Alta) en `/registro` y `/restablecer`.
+- [x] Flujo completo de "olvidé mi contraseña": `/recuperar` (pide el correo, envía el link con `wp_mail()`) y `/restablecer` (valida la key con las funciones nativas de WordPress y permite elegir una nueva). Reemplaza el flujo por defecto de `wp-login.php`.
+- [ ] Confirmar que el envío de correo funcione de verdad en Hostinger — el flujo de `/recuperar` depende de `wp_mail()`, que en shared hosting suele necesitar un plugin SMTP para no caer en spam o fallar silenciosamente. Pendiente probarlo con un correo real.
+- [ ] Alta de hijos por perfil (edad, preocupaciones) — el registro de padre ya existe; confirmado que el hijo NO tiene cuenta propia (es un perfil dentro de la cuenta del padre, como en Netflix/Spotify family), falta construir esa parte.
+- [ ] Verificación de correo al registrarse (hoy la cuenta queda activa de inmediato).
 - [ ] Página de "Mi cuenta" / dashboard a la que redirige el login (hoy redirige al home).
 - [ ] Estructura real de curso/microclase como contenido de WordPress (por ahora la sección de home usa datos de ejemplo hardcodeados, no contenido dinámico).
 - [ ] Mecánica de casos de decisión ramificados con persistencia real (la demo de home es solo front-end, sin guardar progreso).
-- [ ] Páginas reales para los enlaces del menú y footer que hoy son placeholders (`/nosotros`, `/privacidad`, `/terminos`, `/contacto`). `/registro` e `/ingresar` ya están resueltos.
-- [ ] Página propia de "olvidé mi contraseña" (hoy usa el flujo por defecto de `wp-login.php`, funcional pero sin la marca del sitio).
+- [ ] Páginas reales para los enlaces del menú y footer que hoy son placeholders (`/nosotros`, `/privacidad`, `/terminos`, `/contacto`). `/registro`, `/ingresar`, `/recuperar` e `/restablecer` ya están resueltos.
 - [ ] Configurar el menú "Menú principal" en Apariencia > Menús (por ahora el header usa un menú de respaldo hardcodeado en `inc/nav.php`).
 
 ## Fase posterior (fuera del alcance inicial)

@@ -43,22 +43,6 @@
 		} );
 	}
 
-	// Mostrar/ocultar contraseña en los formularios de registro/ingreso
-	document.querySelectorAll( '[data-password-toggle]' ).forEach( function ( button ) {
-		var input = document.getElementById( button.getAttribute( 'data-password-toggle' ) );
-
-		if ( ! input ) {
-			return;
-		}
-
-		button.addEventListener( 'click', function () {
-			var showing = input.type === 'text';
-			input.type = showing ? 'password' : 'text';
-			button.classList.toggle( 'is-visible', ! showing );
-			button.setAttribute( 'aria-label', showing ? button.dataset.labelShow : button.dataset.labelHide );
-		} );
-	} );
-
 	// Demo del caso interactivo (solo front-end, sin envío a servidor todavía)
 	var caseDemo = document.querySelector( '[data-case-demo]' );
 

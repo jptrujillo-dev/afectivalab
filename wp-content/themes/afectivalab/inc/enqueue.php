@@ -35,8 +35,11 @@ function afectivalab_assets() {
 		wp_enqueue_style( 'afectivalab-home', get_theme_file_uri( 'assets/css/home.css' ), array( 'afectivalab-base' ), afectivalab_asset_version( 'assets/css/home.css' ) );
 	}
 
-	if ( in_array( get_query_var( 'afectivalab_route' ), array( 'registro', 'ingresar' ), true ) ) {
+	$afectivalab_auth_routes = array( 'registro', 'ingresar', 'recuperar', 'restablecer' );
+
+	if ( in_array( get_query_var( 'afectivalab_route' ), $afectivalab_auth_routes, true ) ) {
 		wp_enqueue_style( 'afectivalab-auth', get_theme_file_uri( 'assets/css/auth.css' ), array( 'afectivalab-base' ), afectivalab_asset_version( 'assets/css/auth.css' ) );
+		wp_enqueue_script( 'afectivalab-auth', get_theme_file_uri( 'assets/js/auth.js' ), array(), afectivalab_asset_version( 'assets/js/auth.js' ), true );
 	}
 
 	wp_enqueue_script( 'afectivalab-main', get_theme_file_uri( 'assets/js/main.js' ), array(), afectivalab_asset_version( 'assets/js/main.js' ), true );

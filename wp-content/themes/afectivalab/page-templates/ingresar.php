@@ -41,6 +41,12 @@ get_header();
 			<h1><?php esc_html_e( 'Ingresa a tu cuenta', 'afectivalab' ); ?></h1>
 			<p><?php esc_html_e( 'Seguimos aprendiendo juntos.', 'afectivalab' ); ?></p>
 
+			<?php if ( isset( $_GET['reset'] ) && 'ok' === $_GET['reset'] ) : ?>
+				<div class="form-alert form-alert--success">
+					<?php esc_html_e( 'Tu contraseña se actualizó. Ya puedes ingresar con la nueva.', 'afectivalab' ); ?>
+				</div>
+			<?php endif; ?>
+
 			<?php if ( ! empty( $afectivalab_login['errors'] ) ) : ?>
 				<div class="form-alert" role="alert">
 					<ul>
@@ -51,7 +57,7 @@ get_header();
 				</div>
 			<?php endif; ?>
 
-			<form method="post" novalidate>
+			<form method="post" novalidate data-validate>
 				<?php wp_nonce_field( 'afectivalab_login', 'afectivalab_login_nonce' ); ?>
 
 				<div class="form-field">
@@ -65,8 +71,10 @@ get_header();
 							placeholder="tu@correo.com"
 							value="<?php echo esc_attr( $afectivalab_login['values']['email'] ); ?>"
 							required
+							data-validate-field="email"
 						>
 					</div>
+					<span class="form-field__hint"></span>
 				</div>
 
 				<div class="form-field">
@@ -83,7 +91,7 @@ get_header();
 						<input type="checkbox" name="recordarme" value="1">
 						<span><?php esc_html_e( 'Recordarme', 'afectivalab' ); ?></span>
 					</label>
-					<a href="<?php echo esc_url( wp_lostpassword_url( home_url( '/ingresar' ) ) ); ?>"><?php esc_html_e( '¿Olvidaste tu contraseña?', 'afectivalab' ); ?></a>
+					<a href="<?php echo esc_url( home_url( '/recuperar' ) ); ?>"><?php esc_html_e( '¿Olvidaste tu contraseña?', 'afectivalab' ); ?></a>
 				</div>
 
 				<button type="submit" name="afectivalab_login_submit" value="1" class="btn btn-primary form-submit">

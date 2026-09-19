@@ -12,8 +12,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function afectivalab_routes() {
 	return array(
-		'registro' => 'page-templates/registro.php',
-		'ingresar' => 'page-templates/ingresar.php',
+		'registro'    => 'page-templates/registro.php',
+		'ingresar'    => 'page-templates/ingresar.php',
+		'recuperar'   => 'page-templates/recuperar.php',
+		'restablecer' => 'page-templates/restablecer.php',
 	);
 }
 
@@ -49,6 +51,10 @@ function afectivalab_route_document_title( $title ) {
 		$title['title'] = __( 'Crea tu cuenta', 'afectivalab' );
 	} elseif ( 'ingresar' === $route ) {
 		$title['title'] = __( 'Ingresa a tu cuenta', 'afectivalab' );
+	} elseif ( 'recuperar' === $route ) {
+		$title['title'] = __( 'Recupera tu contraseña', 'afectivalab' );
+	} elseif ( 'restablecer' === $route ) {
+		$title['title'] = __( 'Restablece tu contraseña', 'afectivalab' );
 	}
 
 	return $title;
@@ -61,13 +67,14 @@ add_filter( 'document_title_parts', 'afectivalab_route_document_title' );
  * (after_switch_theme), pero este theme ya estaba activo cuando se agregaron
  * estas rutas. Se fuerza un único flush automático la primera vez que corre
  * este código; si más adelante se agregan más rutas, subir el número de la
- * clave de la opción para forzar otro flush.
+ * clave de la opción para forzar otro flush (por eso ya va en v2: se sumaron
+ * /recuperar y /restablecer después del primer flush).
  */
 function afectivalab_maybe_flush_rewrites() {
-	if ( ! get_option( 'afectivalab_rewrites_flushed_v1' ) ) {
+	if ( ! get_option( 'afectivalab_rewrites_flushed_v2' ) ) {
 		afectivalab_register_rewrites();
 		flush_rewrite_rules();
-		update_option( 'afectivalab_rewrites_flushed_v1', 1 );
+		update_option( 'afectivalab_rewrites_flushed_v2', 1 );
 	}
 }
 add_action( 'init', 'afectivalab_maybe_flush_rewrites', 20 );

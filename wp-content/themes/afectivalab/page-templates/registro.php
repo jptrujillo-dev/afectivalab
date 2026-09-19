@@ -51,7 +51,7 @@ get_header();
 				</div>
 			<?php endif; ?>
 
-			<form method="post" novalidate>
+			<form method="post" novalidate data-validate>
 				<?php wp_nonce_field( 'afectivalab_registro', 'afectivalab_registro_nonce' ); ?>
 
 				<div class="form-field">
@@ -65,8 +65,10 @@ get_header();
 							placeholder="<?php esc_attr_e( 'María González', 'afectivalab' ); ?>"
 							value="<?php echo esc_attr( $afectivalab_reg['values']['nombre'] ); ?>"
 							required
+							data-validate-field="nombre"
 						>
 					</div>
+					<span class="form-field__hint"></span>
 				</div>
 
 				<div class="form-field">
@@ -80,26 +82,31 @@ get_header();
 							placeholder="tu@correo.com"
 							value="<?php echo esc_attr( $afectivalab_reg['values']['email'] ); ?>"
 							required
+							data-validate-field="email"
 						>
 					</div>
+					<span class="form-field__hint"></span>
 				</div>
 
 				<div class="form-field">
 					<label for="password"><?php esc_html_e( 'Contraseña', 'afectivalab' ); ?></label>
 					<div class="form-input">
 						<span class="form-input__icon"><?php afectivalab_icon( 'lock' ); ?></span>
-						<input type="password" id="password" name="password" placeholder="Mínimo 8 caracteres" required minlength="8">
+						<input type="password" id="password" name="password" placeholder="Mínimo 8 caracteres" required minlength="8" data-validate-field="password">
 						<?php afectivalab_password_toggle( 'password' ); ?>
 					</div>
+					<span class="form-field__hint"></span>
+					<?php afectivalab_password_strength_meter( 'password' ); ?>
 				</div>
 
 				<div class="form-field">
 					<label for="password2"><?php esc_html_e( 'Confirmar contraseña', 'afectivalab' ); ?></label>
 					<div class="form-input">
 						<span class="form-input__icon"><?php afectivalab_icon( 'lock' ); ?></span>
-						<input type="password" id="password2" name="password2" placeholder="Repite tu contraseña" required minlength="8">
+						<input type="password" id="password2" name="password2" placeholder="Repite tu contraseña" required minlength="8" data-validate-field="password-match" data-match="password">
 						<?php afectivalab_password_toggle( 'password2' ); ?>
 					</div>
+					<span class="form-field__hint"></span>
 				</div>
 
 				<label class="form-check">

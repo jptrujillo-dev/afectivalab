@@ -52,7 +52,7 @@ function afectivalab_icon( $name, $class = '' ) {
 /**
  * Botón de mostrar/ocultar contraseña para un campo de un formulario.
  * Los dos íconos van ambos en el HTML; el CSS/JS solo alterna cuál se ve
- * (ver .form-input__toggle en auth.css y data-password-toggle en main.js),
+ * (ver .form-input__toggle en auth.css y data-password-toggle en auth.js),
  * así el botón funciona igual si JS no llega a cargar (el input se queda
  * como password, que es lo seguro).
  *
@@ -66,5 +66,20 @@ function afectivalab_password_toggle( $for ) {
 		esc_attr__( 'Ocultar contraseña', 'afectivalab' ),
 		afectivalab_get_icon( 'eye' ), // phpcs:ignore WordPress.Security.EscapeOutput -- SVG confiable del propio theme.
 		afectivalab_get_icon( 'eye-off' ) // phpcs:ignore WordPress.Security.EscapeOutput -- SVG confiable del propio theme.
+	);
+}
+
+/**
+ * Medidor de fortaleza de contraseña (Baja/Media/Alta). Lo llena y muestra
+ * auth.js mientras la persona escribe en el campo indicado; si JS no corre,
+ * el <div> se queda vacío y no estorba (la validación real sigue siendo el
+ * mínimo de 8 caracteres del servidor, esto es solo una ayuda visual).
+ *
+ * @param string $for El id del <input> de contraseña que mide.
+ */
+function afectivalab_password_strength_meter( $for ) {
+	printf(
+		'<div class="password-strength" data-password-strength="%1$s"><div class="password-strength__track"><span class="password-strength__fill"></span></div><span class="password-strength__label"></span></div>',
+		esc_attr( $for )
 	);
 }

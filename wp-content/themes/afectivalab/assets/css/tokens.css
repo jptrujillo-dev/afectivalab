@@ -21,6 +21,15 @@
 	--color-bg: #FFFFFF;
 	--color-bg-alt: #FBFAFF;
 
+	/* Semánticos (independientes del acento de marca — éxito, error, niveles) */
+	--color-error: #C24444;
+	--color-error-tint: #FDEEEE;
+	--color-success: var(--color-green);
+	--color-success-tint: var(--color-green-tint);
+	--color-strength-weak: #C24444;
+	--color-strength-medium: #D69A2D;
+	--color-strength-strong: var(--color-green);
+
 	/* Tipografía */
 	--font-display: 'Fredoka', system-ui, sans-serif;
 	--font-body: 'Nunito Sans', system-ui, sans-serif;
