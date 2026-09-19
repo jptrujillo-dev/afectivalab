@@ -12,7 +12,7 @@ function afectivalab_assets() {
 
 	wp_enqueue_style(
 		'afectivalab-fonts',
-		'https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito+Sans:wght@400;600;700&display=swap',
+		'https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito+Sans:wght@400;600;700&family=Caveat:wght@600;700&display=swap',
 		array(),
 		null
 	);

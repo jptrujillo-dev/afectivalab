@@ -54,6 +54,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php afectivalab_icon( 'doodle-leaf', 'hero__doodle hero__doodle--leaf-1' ); ?>
 			<?php afectivalab_icon( 'doodle-leaf', 'hero__doodle hero__doodle--leaf-2' ); ?>
 			<?php afectivalab_icon( 'doodle-heart', 'hero__doodle hero__doodle--heart' ); ?>
+			<span class="hero__caption hero__caption--leaf"><?php esc_html_e( 'Pequeños pasos, grandes logros', 'afectivalab' ); ?></span>
 
 			<!--
 				Placeholder de la ilustración de familia: mientras no tengamos el arte

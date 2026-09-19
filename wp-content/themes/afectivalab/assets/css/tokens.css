@@ -24,6 +24,7 @@
 	/* Tipografía */
 	--font-display: 'Fredoka', system-ui, sans-serif;
 	--font-body: 'Nunito Sans', system-ui, sans-serif;
+	--font-hand: 'Caveat', cursive;
 
 	/* Radios y sombra */
 	--radius-sm: 12px;
