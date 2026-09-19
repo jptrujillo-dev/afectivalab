@@ -763,7 +763,6 @@
 .final-cta {
 	background: var(--color-purple);
 	border-radius: var(--radius-lg);
-	margin-inline: var(--space-4);
 	padding: var(--space-6) var(--space-5);
 	color: var(--color-white);
 	display: flex;
@@ -774,7 +773,6 @@
 
 @media (min-width: 780px) {
 	.final-cta {
-		margin-inline: var(--space-6);
 		flex-direction: row;
 		align-items: center;
 		justify-content: space-between;

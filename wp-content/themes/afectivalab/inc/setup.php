@@ -37,3 +37,22 @@ function afectivalab_disable_emojis() {
 	remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
 }
 add_action( 'init', 'afectivalab_disable_emojis' );
+
+/**
+ * Favicon del theme (brand/afectivalab-v3/favicon). Se omite si en algún
+ * momento se configura un "Site Icon" propio desde el Personalizador, para
+ * no duplicar etiquetas.
+ */
+function afectivalab_favicon() {
+	if ( has_site_icon() ) {
+		return;
+	}
+	?>
+	<link rel="icon" href="<?php echo esc_url( get_theme_file_uri( 'assets/favicon/favicon.ico' ) ); ?>" sizes="any">
+	<link rel="icon" type="image/svg+xml" href="<?php echo esc_url( get_theme_file_uri( 'assets/favicon/favicon.svg' ) ); ?>">
+	<link rel="icon" type="image/png" sizes="32x32" href="<?php echo esc_url( get_theme_file_uri( 'assets/favicon/icon-32.png' ) ); ?>">
+	<link rel="icon" type="image/png" sizes="16x16" href="<?php echo esc_url( get_theme_file_uri( 'assets/favicon/icon-16.png' ) ); ?>">
+	<link rel="apple-touch-icon" href="<?php echo esc_url( get_theme_file_uri( 'assets/favicon/icon-180.png' ) ); ?>">
+	<?php
+}
+add_action( 'wp_head', 'afectivalab_favicon', 1 );
