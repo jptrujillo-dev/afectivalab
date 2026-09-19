@@ -1,0 +1,226 @@
+[
+  {
+    "grupo": "logo",
+    "nombre": "afectivalab-icon-color",
+    "etiqueta": "Isotipo color",
+    "svg": "logo/afectivalab-icon-color.svg",
+    "png": "logo/afectivalab-icon-color.png"
+  },
+  {
+    "grupo": "logo",
+    "nombre": "afectivalab-icon-white",
+    "etiqueta": "Isotipo white",
+    "svg": "logo/afectivalab-icon-white.svg",
+    "png": "logo/afectivalab-icon-white.png"
+  },
+  {
+    "grupo": "logo",
+    "nombre": "afectivalab-logo-color",
+    "etiqueta": "Logo afectivalab color",
+    "svg": "logo/afectivalab-logo-color.svg",
+    "png": "logo/afectivalab-logo-color.png"
+  },
+  {
+    "grupo": "logo",
+    "nombre": "afectivalab-logo-white",
+    "etiqueta": "Logo afectivalab white",
+    "svg": "logo/afectivalab-logo-white.svg",
+    "png": "logo/afectivalab-logo-white.png"
+  },
+  {
+    "grupo": "favicon",
+    "nombre": "favicon",
+    "etiqueta": "Favicon",
+    "svg": "favicon/favicon.svg",
+    "png": "favicon/favicon.png"
+  },
+  {
+    "grupo": "categorias",
+    "nombre": "crecer-seguro",
+    "etiqueta": "Crecer seguro",
+    "svg": "categorias/crecer-seguro.svg",
+    "png": "categorias/crecer-seguro.png"
+  },
+  {
+    "grupo": "categorias",
+    "nombre": "conectar",
+    "etiqueta": "Conectar",
+    "svg": "categorias/conectar.svg",
+    "png": "categorias/conectar.png"
+  },
+  {
+    "grupo": "categorias",
+    "nombre": "emociones",
+    "etiqueta": "Emociones",
+    "svg": "categorias/emociones.svg",
+    "png": "categorias/emociones.png"
+  },
+  {
+    "grupo": "categorias",
+    "nombre": "proteger",
+    "etiqueta": "Proteger",
+    "svg": "categorias/proteger.svg",
+    "png": "categorias/proteger.png"
+  },
+  {
+    "grupo": "categorias",
+    "nombre": "mundo-digital",
+    "etiqueta": "Mundo digital",
+    "svg": "categorias/mundo-digital.svg",
+    "png": "categorias/mundo-digital.png"
+  },
+  {
+    "grupo": "categorias",
+    "nombre": "convivir",
+    "etiqueta": "Convivir",
+    "svg": "categorias/convivir.svg",
+    "png": "categorias/convivir.png"
+  },
+  {
+    "grupo": "categorias",
+    "nombre": "sexualidad-afectividad",
+    "etiqueta": "Sexualidad y afectividad",
+    "svg": "categorias/sexualidad-afectividad.svg",
+    "png": "categorias/sexualidad-afectividad.png"
+  },
+  {
+    "grupo": "categorias",
+    "nombre": "vida-escolar",
+    "etiqueta": "Vida escolar",
+    "svg": "categorias/vida-escolar.svg",
+    "png": "categorias/vida-escolar.png"
+  },
+  {
+    "grupo": "gamificacion",
+    "nombre": "racha-semanal",
+    "etiqueta": "Racha semanal",
+    "svg": "gamificacion/racha-semanal.svg",
+    "png": "gamificacion/racha-semanal.png"
+  },
+  {
+    "grupo": "gamificacion",
+    "nombre": "experiencia",
+    "etiqueta": "XP / experiencia",
+    "svg": "gamificacion/experiencia.svg",
+    "png": "gamificacion/experiencia.png"
+  },
+  {
+    "grupo": "gamificacion",
+    "nombre": "insignia",
+    "etiqueta": "Insignia / habilidad",
+    "svg": "gamificacion/insignia.svg",
+    "png": "gamificacion/insignia.png"
+  },
+  {
+    "grupo": "gamificacion",
+    "nombre": "monedas",
+    "etiqueta": "Monedas",
+    "svg": "gamificacion/monedas.svg",
+    "png": "gamificacion/monedas.png"
+  },
+  {
+    "grupo": "gamificacion",
+    "nombre": "mapa-desbloqueable",
+    "etiqueta": "Mapa desbloqueable",
+    "svg": "gamificacion/mapa-desbloqueable.svg",
+    "png": "gamificacion/mapa-desbloqueable.png"
+  },
+  {
+    "grupo": "gamificacion",
+    "nombre": "certificado",
+    "etiqueta": "Certificado",
+    "svg": "gamificacion/certificado.svg",
+    "png": "gamificacion/certificado.png"
+  },
+  {
+    "grupo": "gamificacion",
+    "nombre": "mision-reto",
+    "etiqueta": "Misión / reto",
+    "svg": "gamificacion/mision-reto.svg",
+    "png": "gamificacion/mision-reto.png"
+  },
+  {
+    "grupo": "lecciones",
+    "nombre": "video-principal",
+    "etiqueta": "Video principal",
+    "svg": "lecciones/video-principal.svg",
+    "png": "lecciones/video-principal.png"
+  },
+  {
+    "grupo": "lecciones-morado",
+    "nombre": "video-principal",
+    "etiqueta": "Video principal",
+    "svg": "lecciones-morado/video-principal.svg",
+    "png": "lecciones-morado/video-principal.png"
+  },
+  {
+    "grupo": "lecciones",
+    "nombre": "caso-interactivo",
+    "etiqueta": "Caso interactivo",
+    "svg": "lecciones/caso-interactivo.svg",
+    "png": "lecciones/caso-interactivo.png"
+  },
+  {
+    "grupo": "lecciones-morado",
+    "nombre": "caso-interactivo",
+    "etiqueta": "Caso interactivo",
+    "svg": "lecciones-morado/caso-interactivo.svg",
+    "png": "lecciones-morado/caso-interactivo.png"
+  },
+  {
+    "grupo": "lecciones",
+    "nombre": "mini-evaluacion",
+    "etiqueta": "Mini evaluación",
+    "svg": "lecciones/mini-evaluacion.svg",
+    "png": "lecciones/mini-evaluacion.png"
+  },
+  {
+    "grupo": "lecciones-morado",
+    "nombre": "mini-evaluacion",
+    "etiqueta": "Mini evaluación",
+    "svg": "lecciones-morado/mini-evaluacion.svg",
+    "png": "lecciones-morado/mini-evaluacion.png"
+  },
+  {
+    "grupo": "lecciones",
+    "nombre": "recurso-descargable",
+    "etiqueta": "Recurso descargable",
+    "svg": "lecciones/recurso-descargable.svg",
+    "png": "lecciones/recurso-descargable.png"
+  },
+  {
+    "grupo": "lecciones-morado",
+    "nombre": "recurso-descargable",
+    "etiqueta": "Recurso descargable",
+    "svg": "lecciones-morado/recurso-descargable.svg",
+    "png": "lecciones-morado/recurso-descargable.png"
+  },
+  {
+    "grupo": "lecciones",
+    "nombre": "mision-casa",
+    "etiqueta": "Misión para casa",
+    "svg": "lecciones/mision-casa.svg",
+    "png": "lecciones/mision-casa.png"
+  },
+  {
+    "grupo": "lecciones-morado",
+    "nombre": "mision-casa",
+    "etiqueta": "Misión para casa",
+    "svg": "lecciones-morado/mision-casa.svg",
+    "png": "lecciones-morado/mision-casa.png"
+  },
+  {
+    "grupo": "lecciones",
+    "nombre": "mision-taller",
+    "etiqueta": "Misión tipo taller",
+    "svg": "lecciones/mision-taller.svg",
+    "png": "lecciones/mision-taller.png"
+  },
+  {
+    "grupo": "lecciones-morado",
+    "nombre": "mision-taller",
+    "etiqueta": "Misión tipo taller",
+    "svg": "lecciones-morado/mision-taller.svg",
+    "png": "lecciones-morado/mision-taller.png"
+  }
+]

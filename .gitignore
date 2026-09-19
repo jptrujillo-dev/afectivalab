@@ -1,0 +1,16 @@
+# Credenciales y configuración local — nunca deben subirse
+wp-config.php
+.vscode/sftp.json
+
+# WordPress: contenido generado/subido, no código fuente
+wp-content/uploads/
+wp-content/cache/
+wp-content/upgrade/
+
+# Sistema operativo / editor
+.DS_Store
+Thumbs.db
+
+# Dependencias (por si se instalan más adelante)
+node_modules/
+vendor/
