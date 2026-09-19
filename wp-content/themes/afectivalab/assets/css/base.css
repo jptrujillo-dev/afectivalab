@@ -220,6 +220,14 @@ section {
 	background: var(--color-white);
 }
 
+/* En mobile el botón del header comparte espacio con el logo y el ícono
+   de menú — el tamaño de .btn (pensado para CTAs sueltos) se ve
+   desproporcionado ahí, así que se reduce solo en este contexto. */
+.header-actions .btn-primary {
+	padding: 10px 18px;
+	font-size: 0.85rem;
+}
+
 .nav-toggle svg {
 	width: 22px;
 	height: 22px;
@@ -259,6 +267,11 @@ section {
 
 	.mobile-nav {
 		display: none !important;
+	}
+
+	.header-actions .btn-primary {
+		padding: 14px 28px;
+		font-size: 1rem;
 	}
 }
 
