@@ -1,6 +1,37 @@
 ( function () {
 	'use strict';
 
+	// Aparición de secciones al hacer scroll. Progressive enhancement:
+	// la clase que oculta los elementos (.js-reveal) solo la agrega JS,
+	// así que si algo falla aquí el contenido se ve normal, nunca oculto.
+	var revealEls = document.querySelectorAll( '.reveal, .reveal-stagger' );
+
+	if ( revealEls.length ) {
+		document.documentElement.classList.add( 'js-reveal' );
+
+		if ( 'IntersectionObserver' in window ) {
+			var revealObserver = new IntersectionObserver(
+				function ( entries, observer ) {
+					entries.forEach( function ( entry ) {
+						if ( entry.isIntersecting ) {
+							entry.target.classList.add( 'is-visible' );
+							observer.unobserve( entry.target );
+						}
+					} );
+				},
+				{ threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
+			);
+
+			revealEls.forEach( function ( el ) {
+				revealObserver.observe( el );
+			} );
+		} else {
+			revealEls.forEach( function ( el ) {
+				el.classList.add( 'is-visible' );
+			} );
+		}
+	}
+
 	// Menú móvil
 	var toggle = document.querySelector( '.nav-toggle' );
 	var mobileNav = document.querySelector( '.mobile-nav' );

@@ -32,7 +32,7 @@ $afectivalab_features = array(
 ?>
 <section class="features">
 	<div class="container">
-		<div class="features__grid">
+		<div class="features__grid reveal-stagger">
 			<?php foreach ( $afectivalab_features as $feature ) : ?>
 				<div class="feature-card">
 					<div class="feature-card__icon"><?php afectivalab_icon( $feature['icon'] ); ?></div>

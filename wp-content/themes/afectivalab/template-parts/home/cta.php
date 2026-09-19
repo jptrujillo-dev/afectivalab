@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 <section>
 	<div class="container">
-		<div class="final-cta">
+		<div class="final-cta reveal">
 			<div>
 				<h2><?php esc_html_e( 'Criar también se aprende', 'afectivalab' ); ?></h2>
 				<p><?php esc_html_e( 'Hoy puedes dar un paso hacia una familia más fuerte.', 'afectivalab' ); ?></p>

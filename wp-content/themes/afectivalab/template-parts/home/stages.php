@@ -42,12 +42,12 @@ $afectivalab_stages = array(
 ?>
 <section class="stages" id="etapas">
 	<div class="container">
-		<div class="section-head">
+		<div class="section-head reveal">
 			<span class="eyebrow"><?php esc_html_e( 'Explora por etapas', 'afectivalab' ); ?></span>
 			<h2><?php esc_html_e( 'Cada etapa trae nuevos retos y grandes oportunidades', 'afectivalab' ); ?></h2>
 		</div>
 
-		<div class="stages__grid">
+		<div class="stages__grid reveal-stagger">
 			<?php foreach ( $afectivalab_stages as $stage ) : ?>
 				<div class="stage-card">
 					<div class="stage-card__portrait">

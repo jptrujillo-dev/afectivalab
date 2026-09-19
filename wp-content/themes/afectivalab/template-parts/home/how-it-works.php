@@ -27,12 +27,12 @@ $afectivalab_steps = array(
 ?>
 <section class="how-it-works" id="como-funciona">
 	<div class="container">
-		<div class="section-head center">
+		<div class="section-head center reveal">
 			<span class="eyebrow"><?php esc_html_e( '¿Cómo funciona?', 'afectivalab' ); ?></span>
 			<h2><?php esc_html_e( 'En solo tres pasos, empieza a acompañar mejor a tu familia', 'afectivalab' ); ?></h2>
 		</div>
 
-		<div class="steps">
+		<div class="steps reveal-stagger">
 			<?php foreach ( $afectivalab_steps as $index => $step ) : ?>
 				<div class="step">
 					<span class="step__number"><?php echo esc_html( $index + 1 ); ?></span>

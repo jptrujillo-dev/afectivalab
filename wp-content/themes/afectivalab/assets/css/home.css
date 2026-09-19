@@ -12,6 +12,117 @@
 	align-items: center;
 }
 
+/* Entrada del hero al cargar la página (no depende de scroll ni de JS) */
+@media (prefers-reduced-motion: no-preference) {
+	@keyframes hero-fade-up {
+		from {
+			opacity: 0;
+			transform: translateY(24px);
+		}
+
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.hero__badge,
+	.hero h1,
+	.hero__lead,
+	.hero__actions,
+	.hero__trust,
+	.hero__visual {
+		animation: hero-fade-up 0.7s ease both;
+	}
+
+	.hero__badge {
+		animation-delay: 0s;
+	}
+
+	.hero h1 {
+		animation-delay: 0.08s;
+	}
+
+	.hero__lead {
+		animation-delay: 0.16s;
+	}
+
+	.hero__actions {
+		animation-delay: 0.24s;
+	}
+
+	.hero__trust {
+		animation-delay: 0.32s;
+	}
+
+	.hero__visual {
+		animation-delay: 0.2s;
+	}
+
+	@keyframes icon-pop {
+		0% {
+			opacity: 0;
+			transform: scale(0.5);
+		}
+
+		60% {
+			opacity: 1;
+			transform: scale(1.15);
+		}
+
+		100% {
+			transform: scale(1);
+		}
+	}
+
+	.app-card__header .icon-badge {
+		animation: icon-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+		animation-delay: 0.55s;
+	}
+
+	@keyframes float-leaf-1 {
+		0%, 100% {
+			transform: translateY(0) rotate(-18deg);
+		}
+
+		50% {
+			transform: translateY(-8px) rotate(-14deg);
+		}
+	}
+
+	@keyframes float-leaf-2 {
+		0%, 100% {
+			transform: translateY(0) rotate(24deg);
+		}
+
+		50% {
+			transform: translateY(-7px) rotate(20deg);
+		}
+	}
+
+	@keyframes float-heart {
+		0%, 100% {
+			transform: translateY(0) rotate(-8deg);
+		}
+
+		50% {
+			transform: translateY(-9px) rotate(-4deg);
+		}
+	}
+
+	.hero__doodle--leaf-1 {
+		animation: float-leaf-1 5s ease-in-out infinite;
+	}
+
+	.hero__doodle--leaf-2 {
+		animation: float-leaf-2 4.5s ease-in-out infinite;
+	}
+
+	.hero__doodle--heart {
+		animation: float-heart 5.5s ease-in-out infinite;
+	}
+}
+
 @media (min-width: 960px) {
 	.hero__inner {
 		grid-template-columns: 1.05fr 0.95fr;

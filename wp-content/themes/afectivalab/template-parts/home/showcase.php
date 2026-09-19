@@ -35,7 +35,7 @@ $afectivalab_route = array(
 );
 ?>
 <section class="showcase" id="casos-practicos">
-	<div class="container showcase__grid">
+	<div class="container showcase__grid reveal-stagger">
 		<div class="showcase-card">
 			<div class="showcase-card__head">
 				<h3><?php esc_html_e( 'Ruta recomendada · 8 años', 'afectivalab' ); ?></h3>

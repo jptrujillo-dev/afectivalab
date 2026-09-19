@@ -27,12 +27,12 @@ $afectivalab_testimonials = array(
 ?>
 <section class="testimonials">
 	<div class="container">
-		<div class="section-head">
+		<div class="section-head reveal">
 			<span class="eyebrow"><?php esc_html_e( 'Lo que dicen otras familias', 'afectivalab' ); ?></span>
 			<h2><?php esc_html_e( 'Historias reales que inspiran', 'afectivalab' ); ?></h2>
 		</div>
 
-		<div class="testimonials__grid">
+		<div class="testimonials__grid reveal-stagger">
 			<?php foreach ( $afectivalab_testimonials as $testimonial ) : ?>
 				<div class="testimonial-card">
 					<div class="testimonial-card__stars">
