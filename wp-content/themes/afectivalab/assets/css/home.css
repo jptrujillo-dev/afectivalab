@@ -100,6 +100,85 @@
 	border-radius: var(--radius-lg);
 }
 
+.hero__doodle {
+	position: absolute;
+	width: 40px;
+	height: 50px;
+	z-index: 2;
+}
+
+.hero__doodle--leaf-1 {
+	top: 4%;
+	left: 6%;
+	color: var(--color-green);
+	opacity: 0.5;
+	transform: rotate(-18deg);
+}
+
+.hero__doodle--leaf-2 {
+	bottom: 8%;
+	right: 4%;
+	width: 32px;
+	height: 40px;
+	color: var(--color-green);
+	opacity: 0.4;
+	transform: rotate(24deg);
+}
+
+.hero__doodle--heart {
+	top: 14%;
+	right: 10%;
+	width: 34px;
+	height: 30px;
+	color: var(--color-purple);
+	opacity: 0.45;
+	transform: rotate(-8deg);
+}
+
+/*
+ * Placeholder de la ilustración de familia (ver comentario en hero.php):
+ * un grupo de 3 formas abstractas sin rostro, a la espera del arte
+ * ilustrado real generado con IA (docs/prompts-iconos-ia.md, 5.1).
+ */
+.hero__illustration {
+	position: absolute;
+	top: -36px;
+	left: 4%;
+	width: 300px;
+	height: 300px;
+	z-index: 0;
+}
+
+.hero__illustration-shape {
+	position: absolute;
+	border-radius: 50%;
+}
+
+.hero__illustration-shape--a {
+	width: 190px;
+	height: 190px;
+	top: 0;
+	left: 10px;
+	background: var(--color-purple-tint);
+}
+
+.hero__illustration-shape--b {
+	width: 160px;
+	height: 160px;
+	top: 60px;
+	right: 0;
+	background: var(--color-green-tint);
+}
+
+.hero__illustration-shape--c {
+	width: 120px;
+	height: 120px;
+	bottom: 0;
+	left: 70px;
+	background: var(--color-white);
+	border: 2px solid var(--color-border);
+}
+
 .app-card {
 	position: relative;
 	z-index: 1;
