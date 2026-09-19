@@ -116,6 +116,7 @@ section {
 	padding: 14px 28px;
 	border-radius: var(--radius-pill);
 	border: 2px solid transparent;
+	white-space: nowrap;
 	transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
