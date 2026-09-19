@@ -1,0 +1,46 @@
+/*
+ * Design tokens — ver docs/brand.md en la raíz del proyecto para la fuente de verdad.
+ * No hardcodear estos valores en otros archivos CSS: siempre referenciar la variable.
+ */
+:root {
+	/* Color de marca */
+	--color-purple: #6C4FD6;
+	--color-purple-dark: #4E36A8;
+	--color-purple-tint: #EFEAFC;
+	--color-green: #38B36B;
+	--color-green-dark: #279250;
+	--color-green-tint: #E5F6EC;
+	--color-ink: #2B2140;
+	--color-surface: #FBFAFF;
+
+	/* Neutros */
+	--color-white: #FFFFFF;
+	--color-text: #2B2140;
+	--color-text-muted: #6B6480;
+	--color-border: #E7E2F5;
+	--color-bg: #FFFFFF;
+	--color-bg-alt: #FBFAFF;
+
+	/* Tipografía */
+	--font-display: 'Fredoka', system-ui, sans-serif;
+	--font-body: 'Nunito Sans', system-ui, sans-serif;
+
+	/* Radios y sombra */
+	--radius-sm: 12px;
+	--radius-md: 20px;
+	--radius-lg: 28px;
+	--radius-pill: 999px;
+	--shadow-card: 0 12px 30px -12px rgba(43, 33, 64, 0.18);
+	--shadow-soft: 0 6px 16px -8px rgba(43, 33, 64, 0.12);
+
+	/* Layout */
+	--container-max: 1200px;
+	--space-1: 4px;
+	--space-2: 8px;
+	--space-3: 16px;
+	--space-4: 24px;
+	--space-5: 32px;
+	--space-6: 48px;
+	--space-7: 64px;
+	--space-8: 96px;
+}

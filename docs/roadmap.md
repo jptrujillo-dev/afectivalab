@@ -4,7 +4,7 @@ Lo que se hará, en orden de prioridad. Sin fechas fijas todavía — se ajusta 
 
 ## 0. Fundacional (antes de escribir código de la plataforma)
 
-- [ ] Definir si se inicializa control de versiones (git) para el proyecto, y con qué alcance de `.gitignore` (proteger `wp-config.php` y `.vscode/sftp.json`, que contienen credenciales reales).
+- [x] Control de versiones: git local inicializado, con `.gitignore` que protege `wp-config.php` y `.vscode/sftp.json`.
 - [ ] Resolver las preguntas abiertas de producto listadas en [concepto-plataforma.md](concepto-plataforma.md#preguntas-abiertas-para-la-reunión-usuario-mencionó-reunión-al-día-siguiente-de-este-audio):
   - Rango exacto del segundo grupo de edad (¿6–8 u 6–9 años?).
   - ¿Los "mundos" temáticos van en el MVP o quedan para después?
@@ -24,11 +24,14 @@ Lo que se hará, en orden de prioridad. Sin fechas fijas todavía — se ajusta 
 
 ## 2. Construcción
 
-- [ ] Theme (o child theme) base del sitio, integrando la marca de `brand/afectivalab-v3/` (logo, favicon, paleta, tipografía Fredoka).
-- [ ] Pantalla de inicio / ruta visual tipo Duolingo (pendiente: el usuario debía enviar una imagen de referencia de esta pantalla — no ha llegado aún).
+- [x] Theme propio desde cero (`wp-content/themes/afectivalab`, sin depender de Twenty Twenty-Five), integrando la marca (logo, favicon, paleta, Fredoka) y un helper de íconos SVG (`afectivalab_icon()`) que garantiza que nunca se usen emojis/símbolos de texto en la UI.
+- [x] Página de inicio (home) construida a partir de la referencia visual del usuario: hero, franja de features, "cómo funciona" (3 pasos), etapas por edad (5), ruta recomendada + caso práctico interactivo (funcional en JS, sin backend todavía), testimonios y CTA final. Contenido en español con los datos reales del concepto (ejes, edades, ejemplo de Mateo/8 años).
 - [ ] Registro de padre + alta de hijos (edad, preocupaciones).
-- [ ] Estructura de curso/microclase (video, caso interactivo, mini evaluación, recurso descargable, misión).
-- [ ] Mecánica de casos de decisión ramificados (opción A/B/C/D con explicación y continuación).
+- [ ] Estructura real de curso/microclase como contenido de WordPress (por ahora la sección de home usa datos de ejemplo hardcodeados, no contenido dinámico).
+- [ ] Mecánica de casos de decisión ramificados con persistencia real (la demo de home es solo front-end, sin guardar progreso).
+- [ ] Páginas reales para los enlaces del menú y footer que hoy son placeholders (`/registro`, `/ingresar`, `/nosotros`, `/privacidad`, `/terminos`, `/contacto`).
+- [ ] Configurar el menú "Menú principal" en Apariencia > Menús (por ahora el header usa un menú de respaldo hardcodeado en `inc/nav.php`).
+- [ ] Probar el theme en un WordPress real (este entorno no tiene PHP+MySQL+WP corriendo; la home se verificó visualmente renderizando las plantillas reales con un harness de pruebas que simula las funciones núcleo de WordPress — ver bitácora).
 
 ## Fase posterior (fuera del alcance inicial)
 
