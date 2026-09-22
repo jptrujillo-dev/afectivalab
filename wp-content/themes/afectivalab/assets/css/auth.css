@@ -87,95 +87,10 @@
 	margin-bottom: var(--space-5);
 }
 
-.form-alert {
-	background: var(--color-error-tint);
-	border: 1px solid var(--color-error);
-	color: var(--color-error);
-	border-radius: var(--radius-sm);
-	padding: var(--space-3);
-	margin-bottom: var(--space-4);
-	font-size: 0.9rem;
-}
-
-.form-alert--success {
-	background: var(--color-success-tint);
-	border-color: var(--color-success);
-	color: var(--color-green-dark);
-}
-
-.form-alert ul {
-	margin: 0;
-	padding-left: var(--space-4);
-	list-style: disc;
-}
-
-.form-field {
-	margin-bottom: var(--space-3);
-}
-
-.form-field label {
-	display: block;
-	font-weight: 600;
-	font-size: 0.9rem;
-	margin-bottom: var(--space-2);
-}
-
-.form-field__hint {
-	display: block;
-	min-height: 1.2em;
-	margin-top: var(--space-1);
-	font-size: 0.82rem;
-	color: var(--color-error);
-}
-
-.form-input {
-	position: relative;
-	display: flex;
-	align-items: center;
-	border: 1.5px solid var(--color-border);
-	border-radius: var(--radius-sm);
-	background: var(--color-white);
-	transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.form-input:focus-within {
-	border-color: var(--color-purple);
-	box-shadow: 0 0 0 3px var(--color-purple-tint);
-}
-
-.form-field.is-invalid .form-input {
-	border-color: var(--color-error);
-}
-
-.form-field.is-valid .form-input {
-	border-color: var(--color-success);
-}
-
-.form-input__icon {
-	flex: none;
-	width: 20px;
-	height: 20px;
-	margin-inline: var(--space-3);
-	color: var(--color-text-muted);
-}
-
-.form-input input {
-	flex: 1;
-	min-width: 0;
-	border: none;
-	outline: none;
-	background: transparent;
-	padding-block: 12px;
-	padding-right: var(--space-3);
-	font-family: var(--font-body);
-	font-size: 1rem;
-	color: var(--color-text);
-}
-
-.form-input input::placeholder {
-	color: var(--color-text-muted);
-	opacity: 0.7;
-}
+/* Las primitivas de formulario (.form-alert, .form-field, .form-input) se
+   movieron a base.css: también las usan /mi-cuenta y /mis-hijos, que no
+   cargan este archivo. Aquí queda solo lo propio de las páginas de
+   autenticación. */
 
 .form-input__toggle {
 	flex: none;

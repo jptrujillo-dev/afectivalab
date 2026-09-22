@@ -13,9 +13,9 @@ Lo que se hará, en orden de prioridad. Sin fechas fijas todavía — se ajusta 
 ## 1. Modelo de datos y arquitectura
 
 - [x] Tipos de contenido propios: `afectivalab_curso` y `afectivalab_clase` (microclase), con las taxonomías `afectivalab_etapa` (5 etapas) y `afectivalab_eje` (8 ejes) sembradas desde código — ver `inc/content.php`. Los rangos de edad van como term meta (no solo en el nombre) porque la ruta personalizada se arma buscando qué etapa contiene la edad del hijo.
-- [ ] Modelo de datos del hijo: perfiles de hijo dentro de la cuenta del padre, con edad y preocupaciones marcadas.
-- [ ] Armado de la ruta personalizada: cruzar edad del hijo (→ etapa) + preocupaciones (→ ejes) contra los cursos publicados.
-- [ ] Progreso por ruta/curso/clase **por hijo** (no por cuenta: un padre con 3 hijos lleva 3 progresos distintos).
+- [x] Modelo de datos del hijo: `afectivalab_hijo`, un contenido propio con `post_author` = el padre (ver `inc/hijos.php`). Se guarda **mes y año de nacimiento**, no la edad: una edad escrita a mano queda desactualizada sola, y el "GPS de crianza" necesita saber cuándo el hijo cambia de etapa. Las preocupaciones se guardan como post meta (slugs de eje) y no como términos, para que el conteo de cada eje en el escritorio siga contando solo cursos.
+- [x] Armado de la ruta personalizada (`inc/ruta.php`): los cursos de la etapa del hijo, con los que el padre marcó como preocupación primero y el resto en el orden de prioridad de los ejes. No se guarda: se calcula cada vez a partir de la edad de hoy, que es lo que hace que un hijo cambie de etapa solo al cumplir años.
+- [x] Progreso por hijo (`inc/progreso.php`): lista de microclases completadas guardada en el perfil del hijo, no en la cuenta del padre. De ahí salen el % del curso, la clase que toca y el desbloqueo en cadena.
 - [ ] Sistema de misiones: distinguir misión "taller" (con evidencia subida) de misión "en casa" (solo marcar hecha), y su almacenamiento.
 - [ ] Sistema de gamificación: monedas, estrellas, XP, insignias/habilidades, certificados — persistencia y reglas.
 - [ ] Certificado: el cliente confirmó **PDF descargable + insignia visual**. Falta definir qué datos lleva (nombre, curso, fecha, firma de quién).
@@ -35,13 +35,16 @@ Lo que se hará, en orden de prioridad. Sin fechas fijas todavía — se ajusta 
 - [x] Envío de correo: el cliente confirmó que el SMTP ya está configurado en el hosting, así que `/recuperar` no necesita nada adicional. Igual conviene probarlo con un correo real alguna vez.
 - [x] Rol de instructor (`afectivalab_instructor`) para que el equipo del cliente cargue el contenido: puede crear, editar y publicar cursos y microclases (y editar los de sus colegas), pero no borrar lo ajeno ni tocar el blog. Ver `inc/roles.php`.
 - [x] Campos de microclase en el escritorio: curso al que pertenece, orden, duración y video — con las dos formas que pidió el cliente, enlace de YouTube/Vimeo o archivo subido a la librería de medios. Ver `inc/content-admin.php`.
-- [ ] Alta de hijos por perfil (edad, preocupaciones) — el registro de padre ya existe; confirmado que el hijo NO tiene cuenta propia (es un perfil dentro de la cuenta del padre, como en Netflix/Spotify family), falta construir esa parte.
-- [ ] Plantillas de front-end para curso y microclase (hoy caen en `index.php`, que solo muestra título y contenido dentro del layout del sitio).
+- [x] Alta de hijos: página `/mis-hijos` con lista de perfiles, alta, edición y baja, más el selector de los 8 temas que le preocupan al padre. El registro ahora termina ahí en vez de en la home, porque sin al menos un hijo la cuenta no sirve de nada.
+- [x] Panel del padre en `/panel`, al que ahora redirige el login: saludo por hora, selector de hijo, el curso que toca con la razón por la que se recomienda, la ruta completa y las habilidades adquiridas. Se dejó aparte de `/mi-cuenta`, que sigue siendo solo los datos de la cuenta — mezclar "tu avance" con "cambia tu foto" confunde las dos cosas.
+- [x] Plantillas de front-end para curso y microclase: `single-afectivalab_curso.php` dibuja las microclases como un camino serpenteante estilo Duolingo (hecha / te toca / bloqueada) rematado en el nodo de certificado, y `single-afectivalab_clase.php` muestra el video, el contenido y el botón de marcarla como vista.
+- [ ] Vista de un curso para quien ya lo terminó: hoy vuelve a ver el camino completo en verde, que está bien, pero no hay dónde descargar el certificado (falta el certificado en sí).
 - [ ] Vista de exploración libre por mundo temático — el cliente confirmó que sí va, como navegación secundaria a la ruta personalizada.
 - [x] ~~Verificación de correo al registrarse~~ — el cliente confirmó que **no es obligatoria**; la cuenta queda activa de inmediato, como está hoy.
 - [x] Chip de usuario en el header (avatar + nombre) con menú desplegable ("Mi cuenta" / "Salir"), en vez del saludo de texto plano anterior.
 - [x] Página `/mi-cuenta`: primera versión, solo con subida de foto de perfil (JPG/PNG/WEBP, máx. 3MB) — el avatar sale en el chip del header apenas se guarda. Falta convertirla en el dashboard real (progreso, hijos, etc.) al que redirige el login.
-- [ ] Estructura real de curso/microclase como contenido de WordPress (por ahora la sección de home usa datos de ejemplo hardcodeados, no contenido dinámico).
+- [x] Contenido de prueba: botón en **Cursos > Contenido de prueba** que crea 7 cursos y 32 microclases de relleno repartidos en 3 etapas, para ver el panel y el camino funcionando antes de cargar el contenido real. Todo queda marcado con la meta `_afectivalab_demo` y se borra con otro botón. **Hay que borrarlo antes de abrir el sitio al público.**
+- [ ] La home sigue usando datos de ejemplo hardcodeados en `template-parts/home/showcase.php` (la ruta de Mateo y el caso práctico). Ahora que hay contenido real, esa sección podría alimentarse de la base de datos.
 - [ ] Mecánica de casos de decisión ramificados con persistencia real (la demo de home es solo front-end, sin guardar progreso).
 - [ ] Páginas reales para los enlaces del menú y footer que hoy son placeholders (`/nosotros`, `/privacidad`, `/terminos`, `/contacto`). `/registro`, `/ingresar`, `/recuperar` e `/restablecer` ya están resueltos.
 - [ ] Configurar el menú "Menú principal" en Apariencia > Menús (por ahora el header usa un menú de respaldo hardcodeado en `inc/nav.php`).

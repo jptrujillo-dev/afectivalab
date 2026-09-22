@@ -98,7 +98,10 @@ function afectivalab_handle_registration() {
 	wp_set_current_user( $user_id );
 	wp_set_auth_cookie( $user_id, true );
 
-	wp_safe_redirect( home_url( '/' ) );
+	// Recién registrado, la cuenta todavía no sirve de nada: sin al menos un
+	// hijo no hay ruta que armar. El registro termina en /mis-hijos, no en la
+	// home.
+	wp_safe_redirect( home_url( '/mis-hijos' ) );
 	exit;
 }
 
@@ -144,7 +147,9 @@ function afectivalab_handle_login() {
 		return $result;
 	}
 
-	wp_safe_redirect( home_url( '/' ) );
+	// Al entrar, el padre va a su panel (su ruta y su avance), no a la home,
+	// que es la página de venta para quien todavía no tiene cuenta.
+	wp_safe_redirect( home_url( '/panel' ) );
 	exit;
 }
 

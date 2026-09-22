@@ -18,7 +18,11 @@ require get_theme_file_path( 'inc/auth.php' );
 require get_theme_file_path( 'inc/account.php' );
 require get_theme_file_path( 'inc/content.php' );
 require get_theme_file_path( 'inc/roles.php' );
+require get_theme_file_path( 'inc/hijos.php' );
+require get_theme_file_path( 'inc/progreso.php' );
+require get_theme_file_path( 'inc/ruta.php' );
 
 if ( is_admin() ) {
 	require get_theme_file_path( 'inc/content-admin.php' );
+	require get_theme_file_path( 'inc/demo.php' );
 }

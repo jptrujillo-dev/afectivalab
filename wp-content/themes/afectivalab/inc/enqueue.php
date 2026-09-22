@@ -47,6 +47,20 @@ function afectivalab_assets() {
 		wp_enqueue_script( 'afectivalab-cuenta', get_theme_file_uri( 'assets/js/cuenta.js' ), array(), afectivalab_asset_version( 'assets/js/cuenta.js' ), true );
 	}
 
+	// El panel y las pantallas de curso/microclase comparten hoja: son la
+	// misma parte del producto, la que ve la familia.
+	if ( 'panel' === get_query_var( 'afectivalab_route' ) || is_singular( array( AFECTIVALAB_CPT_CURSO, AFECTIVALAB_CPT_CLASE ) ) ) {
+		wp_enqueue_style( 'afectivalab-plataforma', get_theme_file_uri( 'assets/css/plataforma.css' ), array( 'afectivalab-base' ), afectivalab_asset_version( 'assets/css/plataforma.css' ) );
+	}
+
+	if ( 'mis-hijos' === get_query_var( 'afectivalab_route' ) ) {
+		// cuenta.css además de hijos.css: de ahí sale .account-page, el
+		// envoltorio de fondo y padding que comparten las dos páginas.
+		wp_enqueue_style( 'afectivalab-cuenta', get_theme_file_uri( 'assets/css/cuenta.css' ), array( 'afectivalab-base' ), afectivalab_asset_version( 'assets/css/cuenta.css' ) );
+		wp_enqueue_style( 'afectivalab-hijos', get_theme_file_uri( 'assets/css/hijos.css' ), array( 'afectivalab-cuenta' ), afectivalab_asset_version( 'assets/css/hijos.css' ) );
+		wp_enqueue_script( 'afectivalab-hijos', get_theme_file_uri( 'assets/js/hijos.js' ), array(), afectivalab_asset_version( 'assets/js/hijos.js' ), true );
+	}
+
 	wp_enqueue_script( 'afectivalab-main', get_theme_file_uri( 'assets/js/main.js' ), array(), afectivalab_asset_version( 'assets/js/main.js' ), true );
 }
 add_action( 'wp_enqueue_scripts', 'afectivalab_assets' );

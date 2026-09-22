@@ -1,0 +1,819 @@
+/* ===== Plataforma: panel, curso y microclase =====
+   Comparten lenguaje visual, así que comparten hoja. Es la parte que ve la
+   familia, así que pide más color y más redondez que las pantallas de cuenta:
+   círculos grandes, sombras suaves y estados muy evidentes (hecho / te toca /
+   todavía no). */
+
+/* --- Barra de progreso, usada en el panel y en el curso --- */
+.progreso-bar {
+	height: 12px;
+	border-radius: var(--radius-pill);
+	background: var(--color-purple-tint);
+	overflow: hidden;
+}
+
+.progreso-bar__fill {
+	display: block;
+	height: 100%;
+	border-radius: var(--radius-pill);
+	background: linear-gradient(90deg, var(--color-green), var(--color-green-dark));
+	transition: width 0.4s ease;
+}
+
+/* ===== Panel ===== */
+.panel-page {
+	padding-block: var(--space-6) var(--space-8);
+	background: var(--color-bg-alt);
+	min-height: calc(100vh - 73px);
+}
+
+.panel-saludo {
+	margin-bottom: var(--space-5);
+}
+
+.panel-saludo h1 {
+	font-size: 1.9rem;
+	margin-bottom: var(--space-1);
+}
+
+.panel-saludo__lead {
+	color: var(--color-text-muted);
+	margin: 0;
+	font-size: 1.05rem;
+}
+
+.panel-seccion__titulo {
+	font-size: 1.25rem;
+	margin-bottom: var(--space-3);
+}
+
+/* --- Selector de hijo --- */
+.hijo-switch {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-2);
+	margin-bottom: var(--space-5);
+}
+
+.hijo-switch__item {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	background: var(--color-white);
+	border: 1.5px solid var(--color-border);
+	border-radius: var(--radius-pill);
+	padding: 6px 16px 6px 6px;
+	font-family: var(--font-display);
+	font-weight: 600;
+	font-size: 0.92rem;
+	color: var(--color-text);
+	transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.hijo-switch__item:hover {
+	border-color: var(--color-purple);
+}
+
+.hijo-switch__item.is-activo {
+	border-color: var(--color-purple);
+	background: var(--color-purple-tint);
+	color: var(--color-purple-dark);
+}
+
+.hijo-switch__avatar {
+	width: 30px;
+	height: 30px;
+	font-size: 0.9rem;
+}
+
+/* --- Tarjeta destacada: qué le toca ahora --- */
+.panel-destacado {
+	background: var(--color-white);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-card);
+	padding: var(--space-5) var(--space-4);
+	margin-bottom: var(--space-6);
+	border: 2px solid var(--color-purple-tint);
+}
+
+.panel-destacado__etiqueta {
+	display: inline-block;
+	background: var(--color-green-tint);
+	color: var(--color-green-dark);
+	border-radius: var(--radius-pill);
+	padding: 5px 14px;
+	font-family: var(--font-display);
+	font-weight: 600;
+	font-size: 0.8rem;
+	margin-bottom: var(--space-3);
+}
+
+.panel-destacado__cuerpo {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--space-4);
+}
+
+/* Los íconos de eje son insignias a todo color: van sobre fondo claro, no
+   sobre un círculo de color que compita con ellos. */
+.panel-destacado__icono {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 72px;
+	height: 72px;
+	background: var(--color-bg-alt);
+	border-radius: var(--radius-md);
+}
+
+.panel-destacado__icono svg {
+	width: 52px;
+	height: 52px;
+}
+
+.panel-destacado__texto {
+	flex: 1;
+	min-width: 0;
+}
+
+.panel-destacado__texto h2 {
+	font-size: 1.35rem;
+	margin-bottom: var(--space-2);
+}
+
+.panel-destacado__razon {
+	color: var(--color-text-muted);
+	font-size: 0.92rem;
+	margin-bottom: var(--space-3);
+}
+
+.panel-destacado__avance {
+	display: block;
+	font-size: 0.85rem;
+	color: var(--color-text-muted);
+	margin: var(--space-2) 0 var(--space-4);
+}
+
+.panel-destacado--completo {
+	text-align: center;
+}
+
+.panel-destacado__icono-grande {
+	width: 88px;
+	height: 88px;
+	margin-bottom: var(--space-3);
+}
+
+.panel-destacado--completo h2 {
+	font-size: 1.4rem;
+	margin-bottom: var(--space-2);
+}
+
+.panel-destacado--completo p {
+	color: var(--color-text-muted);
+	margin: 0;
+}
+
+/* --- Estado vacío --- */
+.panel-vacio {
+	background: var(--color-white);
+	border: 2px dashed var(--color-border);
+	border-radius: var(--radius-lg);
+	padding: var(--space-7) var(--space-4);
+	text-align: center;
+}
+
+.panel-vacio__icon {
+	width: 80px;
+	height: 80px;
+	margin-bottom: var(--space-3);
+}
+
+.panel-vacio h2 {
+	font-size: 1.3rem;
+	margin-bottom: var(--space-2);
+}
+
+.panel-vacio p {
+	color: var(--color-text-muted);
+	max-width: 46ch;
+	margin: 0 auto var(--space-4);
+}
+
+.panel-vacio .btn {
+	margin-top: var(--space-2);
+}
+
+/* --- Lista de cursos de la ruta --- */
+.panel-ruta,
+.panel-habilidades {
+	margin-bottom: var(--space-6);
+}
+
+.ruta-cursos {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: var(--space-2);
+}
+
+.ruta-curso > a {
+	display: flex;
+	align-items: center;
+	gap: var(--space-3);
+	background: var(--color-white);
+	border: 1.5px solid var(--color-border);
+	border-radius: var(--radius-md);
+	padding: var(--space-3);
+	color: var(--color-text);
+	transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.ruta-curso > a:hover {
+	border-color: var(--color-purple);
+	transform: translateX(3px);
+}
+
+.ruta-curso__icono {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 48px;
+	height: 48px;
+	border-radius: var(--radius-sm);
+	background: var(--color-bg-alt);
+}
+
+.ruta-curso__icono svg {
+	width: 34px;
+	height: 34px;
+}
+
+.ruta-curso.is-hecho .ruta-curso__icono {
+	background: var(--color-green);
+	color: var(--color-white);
+}
+
+.ruta-curso.is-hecho .ruta-curso__icono svg {
+	width: 24px;
+	height: 24px;
+}
+
+.ruta-curso__texto {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.ruta-curso__meta {
+	font-size: 0.82rem;
+	color: var(--color-text-muted);
+}
+
+.ruta-curso__chip {
+	flex: none;
+	background: var(--color-purple-tint);
+	color: var(--color-purple-dark);
+	border-radius: var(--radius-pill);
+	padding: 4px 12px;
+	font-size: 0.72rem;
+	font-weight: 700;
+	font-family: var(--font-display);
+}
+
+/* --- Habilidades --- */
+.habilidades-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: var(--space-3);
+}
+
+.habilidad-card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--space-1);
+	text-align: center;
+	background: var(--color-white);
+	border-radius: var(--radius-md);
+	box-shadow: var(--shadow-card);
+	padding: var(--space-4) var(--space-3);
+}
+
+.habilidad-card__icon {
+	width: 56px;
+	height: 56px;
+	margin-bottom: var(--space-1);
+}
+
+.habilidad-card strong {
+	font-size: 0.98rem;
+}
+
+.habilidad-card span {
+	font-size: 0.8rem;
+	color: var(--color-text-muted);
+}
+
+/* ===== Curso ===== */
+.curso-page {
+	padding-bottom: var(--space-8);
+	background: var(--color-bg-alt);
+}
+
+.curso-hero {
+	background: linear-gradient(180deg, var(--color-purple-tint), var(--color-bg-alt));
+	padding-block: var(--space-6) var(--space-5);
+	margin-bottom: var(--space-4);
+}
+
+.curso-hero__inner {
+	max-width: 720px;
+}
+
+.curso-hero__eje {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	background: var(--color-white);
+	border-radius: var(--radius-pill);
+	padding: 5px 16px 5px 5px;
+	font-family: var(--font-display);
+	font-weight: 600;
+	font-size: 0.85rem;
+	color: var(--color-purple-dark);
+	margin-bottom: var(--space-3);
+}
+
+.curso-hero__eje svg {
+	width: 28px;
+	height: 28px;
+}
+
+.curso-hero__title {
+	font-size: 2rem;
+	margin-bottom: var(--space-2);
+}
+
+.curso-hero__lead {
+	color: var(--color-text-muted);
+	font-size: 1.05rem;
+	margin-bottom: var(--space-4);
+}
+
+.curso-hero__facts {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-3);
+}
+
+.curso-hero__facts li {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	font-size: 0.88rem;
+	color: var(--color-text-muted);
+}
+
+.curso-hero__facts svg {
+	width: 26px;
+	height: 26px;
+	flex: none;
+}
+
+.curso-hero__progreso {
+	margin-top: var(--space-4);
+	max-width: 420px;
+}
+
+.curso-hero__progreso-texto {
+	margin: var(--space-2) 0 0;
+	font-size: 0.85rem;
+	color: var(--color-text-muted);
+}
+
+/* --- Invitación a registrarse --- */
+.curso-invitacion {
+	display: flex;
+	align-items: center;
+	gap: var(--space-3);
+	flex-wrap: wrap;
+	background: var(--color-white);
+	border: 2px solid var(--color-green-tint);
+	border-radius: var(--radius-lg);
+	padding: var(--space-4);
+	margin-bottom: var(--space-4);
+}
+
+.curso-invitacion__icon {
+	width: 56px;
+	height: 56px;
+	flex: none;
+}
+
+.curso-invitacion div {
+	flex: 1;
+	min-width: 200px;
+}
+
+.curso-invitacion p {
+	margin: 2px 0 0;
+	color: var(--color-text-muted);
+	font-size: 0.9rem;
+}
+
+/* --- El camino --- */
+.camino {
+	position: relative;
+	list-style: none;
+	margin: 0 auto var(--space-6);
+	padding: var(--space-5) 0;
+	max-width: 480px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--space-5);
+}
+
+/* La línea punteada detrás de los nodos es lo que convierte la lista en un
+   camino. Va centrada y los nodos serpentean a su alrededor. */
+.camino::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 50%;
+	border-left: 3px dashed var(--color-border);
+	transform: translateX(-50%);
+}
+
+.camino__paso {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--space-2);
+	width: 190px;
+	text-align: center;
+}
+
+/* Serpenteo: una onda de 8 pasos que se repite. */
+.camino__paso:nth-child(8n + 2) { transform: translateX(34px); }
+.camino__paso:nth-child(8n + 3) { transform: translateX(52px); }
+.camino__paso:nth-child(8n + 4) { transform: translateX(34px); }
+.camino__paso:nth-child(8n + 6) { transform: translateX(-34px); }
+.camino__paso:nth-child(8n + 7) { transform: translateX(-52px); }
+.camino__paso:nth-child(8n + 8) { transform: translateX(-34px); }
+
+.camino__nodo {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 76px;
+	height: 76px;
+	border-radius: 50%;
+	background: var(--color-border);
+	color: var(--color-text-muted);
+	box-shadow: var(--shadow-soft);
+	transition: transform 0.15s ease;
+}
+
+.camino__marca {
+	width: 32px;
+	height: 32px;
+}
+
+.camino__paso.is-hecha .camino__nodo {
+	background: var(--color-green);
+	color: var(--color-white);
+}
+
+.camino__paso.is-actual .camino__nodo {
+	background: var(--color-purple);
+	color: var(--color-white);
+	width: 88px;
+	height: 88px;
+}
+
+a.camino__nodo:hover {
+	transform: scale(1.06);
+}
+
+.camino__numero {
+	font-size: 0.75rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--color-text-muted);
+}
+
+.camino__titulo {
+	font-family: var(--font-display);
+	font-size: 0.98rem;
+	line-height: 1.3;
+}
+
+.camino__titulo a {
+	color: var(--color-text);
+}
+
+.camino__titulo a:hover {
+	color: var(--color-purple);
+}
+
+.camino__paso.is-bloqueada .camino__titulo,
+.camino__paso.is-bloqueada .camino__meta {
+	color: var(--color-text-muted);
+}
+
+.camino__meta {
+	font-size: 0.8rem;
+	color: var(--color-text-muted);
+}
+
+/* El nodo de meta lleva el ícono de certificado, que es a todo color: va
+   sobre blanco para que no pelee con el fondo. */
+.camino__nodo--meta {
+	background: var(--color-white);
+	border: 3px solid var(--color-purple-tint);
+	width: 88px;
+	height: 88px;
+}
+
+.camino__paso--meta.is-hecha .camino__nodo--meta {
+	border-color: var(--color-green);
+}
+
+.camino__nodo--meta .camino__marca {
+	width: 46px;
+	height: 46px;
+}
+
+/* --- Curso completo --- */
+.curso-logro {
+	background: var(--color-green-tint);
+	border-radius: var(--radius-lg);
+	padding: var(--space-6) var(--space-4);
+	text-align: center;
+	margin-bottom: var(--space-6);
+}
+
+.curso-logro__icon {
+	width: 80px;
+	height: 80px;
+	margin-bottom: var(--space-3);
+}
+
+.curso-logro h2 {
+	font-size: 1.5rem;
+	margin-bottom: var(--space-2);
+}
+
+.curso-logro p {
+	color: var(--color-text-muted);
+	margin-bottom: var(--space-4);
+}
+
+.curso-vacio {
+	background: var(--color-white);
+	border: 2px dashed var(--color-border);
+	border-radius: var(--radius-lg);
+	padding: var(--space-7) var(--space-4);
+	text-align: center;
+	margin-bottom: var(--space-6);
+}
+
+.curso-vacio__icon {
+	width: 72px;
+	height: 72px;
+	margin-bottom: var(--space-3);
+}
+
+.curso-vacio h2 {
+	font-size: 1.2rem;
+	margin-bottom: var(--space-2);
+}
+
+.curso-vacio p {
+	color: var(--color-text-muted);
+	margin: 0;
+}
+
+.curso-detalle {
+	max-width: 680px;
+	margin-inline: auto;
+	background: var(--color-white);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-card);
+	padding: var(--space-5) var(--space-4);
+}
+
+.curso-detalle h2 {
+	font-size: 1.25rem;
+	margin-bottom: var(--space-3);
+}
+
+.curso-detalle__texto > * + * {
+	margin-top: var(--space-3);
+}
+
+/* ===== Microclase ===== */
+.clase-page {
+	padding-block: var(--space-5) var(--space-8);
+	background: var(--color-bg-alt);
+	min-height: calc(100vh - 73px);
+}
+
+.clase-page__inner {
+	max-width: 760px;
+}
+
+.clase-volver {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	font-size: 0.88rem;
+	font-weight: 600;
+	color: var(--color-purple);
+	margin-bottom: var(--space-4);
+}
+
+.clase-volver__icon {
+	width: 18px;
+	height: 18px;
+	transform: rotate(180deg);
+}
+
+.clase-head {
+	margin-bottom: var(--space-4);
+}
+
+.clase-head__numero {
+	display: inline-block;
+	background: var(--color-purple-tint);
+	color: var(--color-purple-dark);
+	border-radius: var(--radius-pill);
+	padding: 4px 14px;
+	font-family: var(--font-display);
+	font-weight: 600;
+	font-size: 0.78rem;
+	margin-bottom: var(--space-2);
+}
+
+.clase-head__title {
+	font-size: 1.8rem;
+	margin-bottom: var(--space-2);
+}
+
+.clase-head__meta {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	font-size: 0.88rem;
+	color: var(--color-text-muted);
+}
+
+.clase-head__meta svg {
+	width: 26px;
+	height: 26px;
+}
+
+.clase-video {
+	position: relative;
+	border-radius: var(--radius-lg);
+	overflow: hidden;
+	background: var(--color-ink);
+	box-shadow: var(--shadow-card);
+	margin-bottom: var(--space-5);
+	aspect-ratio: 16 / 9;
+}
+
+.clase-video iframe,
+.clase-video video {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	border: none;
+	display: block;
+}
+
+.clase-video__enlace {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--color-white);
+	font-family: var(--font-display);
+	font-weight: 600;
+}
+
+.clase-contenido {
+	background: var(--color-white);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-card);
+	padding: var(--space-5) var(--space-4);
+	margin-bottom: var(--space-5);
+}
+
+.clase-contenido > * + * {
+	margin-top: var(--space-3);
+}
+
+/* --- Marcar como vista --- */
+.clase-accion {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: var(--space-3);
+	background: var(--color-white);
+	border: 2px solid var(--color-purple-tint);
+	border-radius: var(--radius-lg);
+	padding: var(--space-4);
+}
+
+.clase-accion.is-hecha {
+	border-color: var(--color-green-tint);
+	background: var(--color-green-tint);
+}
+
+.clase-accion__texto {
+	flex: 1;
+	min-width: 220px;
+}
+
+.clase-accion__texto p {
+	margin: 2px 0 0;
+	color: var(--color-text-muted);
+	font-size: 0.9rem;
+}
+
+.clase-accion__sello {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	font-family: var(--font-display);
+	font-weight: 600;
+	color: var(--color-green-dark);
+}
+
+.clase-accion__sello svg {
+	width: 24px;
+	height: 24px;
+}
+
+.clase-accion form {
+	margin: 0;
+}
+
+@media (min-width: 560px) {
+	.habilidades-list {
+		grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+	}
+}
+
+@media (min-width: 720px) {
+	.camino {
+		max-width: 560px;
+	}
+
+	.camino__paso {
+		width: 220px;
+	}
+
+	.camino__paso:nth-child(8n + 2) { transform: translateX(60px); }
+	.camino__paso:nth-child(8n + 3) { transform: translateX(96px); }
+	.camino__paso:nth-child(8n + 4) { transform: translateX(60px); }
+	.camino__paso:nth-child(8n + 6) { transform: translateX(-60px); }
+	.camino__paso:nth-child(8n + 7) { transform: translateX(-96px); }
+	.camino__paso:nth-child(8n + 8) { transform: translateX(-60px); }
+}
+
+/* El nodo que toca late suavemente para que el ojo lo encuentre solo. Como
+   toda la animación del sitio, se apaga si el sistema pide menos movimiento. */
+@media (prefers-reduced-motion: no-preference) {
+	.camino__paso.is-actual .camino__nodo {
+		animation: afectivalab-latido 2.4s ease-in-out infinite;
+	}
+
+	@keyframes afectivalab-latido {
+		0%, 100% {
+			box-shadow: 0 0 0 0 rgba(108, 79, 214, 0.45);
+		}
+		50% {
+			box-shadow: 0 0 0 14px rgba(108, 79, 214, 0);
+		}
+	}
+}
