@@ -25,6 +25,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 const AFECTIVALAB_DEMO_META = '_afectivalab_demo';
 
 /**
+ * Video de ejemplo: "Big Buck Bunny", el corto libre de la Blender
+ * Foundation. Se eligió por ser contenido abierto, estable desde hace años y
+ * sin problemas de derechos — no por tener nada que ver con la crianza. Es
+ * solo para ver el reproductor funcionando.
+ */
+const AFECTIVALAB_DEMO_VIDEO = 'https://www.youtube.com/watch?v=YE7VzlLtp-4';
+
+/**
  * Los cursos de prueba. Están repartidos en tres etapas a propósito: así se
  * puede cambiar la edad de un hijo y ver que la ruta cambia sola. Y dentro de
  * "niñez inicial" hay cuatro ejes distintos, que es lo que deja comprobar que
@@ -43,7 +51,12 @@ function afectivalab_demo_cursos() {
 				array( 'Elogiar el esfuerzo, no el resultado', 9 ),
 				array( 'Cuando se frustra y quiere rendirse', 12 ),
 				array( 'Comparaciones con hermanos y compañeros', 10 ),
-				array( 'Misión en familia: tres cosas que hiciste bien', 8 ),
+				array(
+					'Misión en familia: tres cosas que hiciste bien',
+					8,
+					'casa',
+					'Pregúntale a tu hijo: ¿qué fue lo que mejor hiciste esta semana aunque te haya costado? Anoten juntos tres cosas.',
+				),
 			),
 		),
 		array(
@@ -58,7 +71,12 @@ function afectivalab_demo_cursos() {
 				array( 'Cómo abrir la conversación', 11 ),
 				array( 'Hablar con el colegio: qué pedir', 13 ),
 				array( 'Si tu hijo es quien molesta', 12 ),
-				array( 'Acompañar después de que pasó', 9 ),
+				array(
+					'Acompañar después de que pasó',
+					9,
+					'taller',
+					'Hagan juntos un dibujo o una carta sobre cómo se sintió esta semana, y suban una foto como recuerdo.',
+				),
 			),
 		),
 		array(
@@ -187,7 +205,9 @@ function afectivalab_demo_crear() {
 		$orden = 1;
 
 		foreach ( $datos['clases'] as $clase ) {
-			list( $titulo, $minutos ) = $clase;
+			// Los dos últimos elementos son opcionales: la mayoría de las
+			// clases de ejemplo no lleva misión.
+			list( $titulo, $minutos, $mision_tipo, $mision_texto ) = array_pad( $clase, 4, null );
 
 			$clase_id = wp_insert_post(
 				array(
@@ -208,10 +228,21 @@ function afectivalab_demo_crear() {
 
 			update_post_meta( $clase_id, '_afectivalab_curso', $curso_id );
 			update_post_meta( $clase_id, '_afectivalab_duracion', $minutos );
-			// Sin video a propósito: no vamos a enlazar videos de terceros que
-			// nadie revisó. Para probar el reproductor, basta pegar una URL de
-			// YouTube o Vimeo en cualquiera de estas clases.
-			update_post_meta( $clase_id, '_afectivalab_video_tipo', 'ninguno' );
+
+			// Solo la primera clase de cada curso lleva video, para poder ver
+			// el reproductor sin llenar todo de repeticiones del mismo corto.
+			if ( 1 === $orden ) {
+				update_post_meta( $clase_id, '_afectivalab_video_tipo', 'url' );
+				update_post_meta( $clase_id, '_afectivalab_video_url', AFECTIVALAB_DEMO_VIDEO );
+			} else {
+				update_post_meta( $clase_id, '_afectivalab_video_tipo', 'ninguno' );
+			}
+
+			if ( $mision_tipo ) {
+				update_post_meta( $clase_id, '_afectivalab_mision_tipo', $mision_tipo );
+				update_post_meta( $clase_id, '_afectivalab_mision_texto', $mision_texto );
+			}
+
 			update_post_meta( $clase_id, AFECTIVALAB_DEMO_META, 1 );
 
 			$orden++;
@@ -349,7 +380,7 @@ function afectivalab_demo_pantalla() {
 		</form>
 
 		<p class="description">
-			<?php esc_html_e( 'Las clases se crean sin video, para no enlazar videos de terceros. Para probar el reproductor, pega una URL de YouTube o Vimeo en cualquiera de ellas.', 'afectivalab' ); ?>
+			<?php esc_html_e( 'La primera clase de cada curso trae un video de ejemplo ("Big Buck Bunny", un corto libre de la Blender Foundation) solo para ver el reproductor. Las demás quedan sin video. Dos clases (la última de "Autoestima" y la última de "Bullying") traen misión de ejemplo, una de cada tipo, para probar ese flujo.', 'afectivalab' ); ?>
 		</p>
 	</div>
 	<?php

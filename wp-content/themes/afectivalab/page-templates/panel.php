@@ -16,6 +16,18 @@ if ( ! is_user_logged_in() ) {
 	exit;
 }
 
+// Quien produce el contenido no es una familia: mostrarle "agrega a tu hijo"
+// no tiene sentido. Ve su propio panel, salvo que pida expresamente la vista
+// de familia (útil para probar la plataforma como la usa el padre).
+$afectivalab_equipo = afectivalab_es_del_equipo()
+	&& ( ! isset( $_GET['vista'] ) || 'familia' !== $_GET['vista'] );
+
+// Las acciones del panel (guardar, eliminar, cambiar rol) se resuelven antes
+// de imprimir nada: si salen bien redirigen, y así recargar no las repite.
+$afectivalab_estado = $afectivalab_equipo
+	? afectivalab_panel_handle()
+	: array( 'errors' => array(), 'valores' => array() );
+
 $afectivalab_user  = wp_get_current_user();
 $afectivalab_hijos = afectivalab_get_hijos();
 $afectivalab_hijo  = afectivalab_hijo_activo();
@@ -32,31 +44,49 @@ get_header();
 <main class="panel-page">
 	<div class="container">
 
-		<header class="panel-saludo reveal">
-			<h1>
-				<?php
-				printf(
-					/* translators: 1: saludo según la hora, 2: nombre del padre. */
-					esc_html__( '%1$s, %2$s', 'afectivalab' ),
-					esc_html( afectivalab_saludo() ),
-					esc_html( $afectivalab_user->display_name )
-				);
-				?>
-			</h1>
+		<?php if ( $afectivalab_equipo ) : ?>
 
-			<?php if ( $afectivalab_hijo && null !== $afectivalab_edad ) : ?>
-				<p class="panel-saludo__lead">
+			<?php get_template_part( 'template-parts/panel-equipo', null, array( 'estado' => $afectivalab_estado ) ); ?>
+
+		<?php else : ?>
+
+		<header class="panel-saludo reveal">
+			<div class="panel-saludo__texto">
+				<h1>
 					<?php
 					printf(
-						/* translators: 1: nombre del hijo, 2: edad en años. */
-						esc_html__( 'Esta semana con %1$s, de %2$d años.', 'afectivalab' ),
-						esc_html( $afectivalab_hijo->post_title ),
-						absint( $afectivalab_edad )
+						/* translators: 1: saludo según la hora, 2: nombre del padre. */
+						esc_html__( '%1$s, %2$s', 'afectivalab' ),
+						esc_html( afectivalab_saludo() ),
+						esc_html( $afectivalab_user->display_name )
 					);
 					?>
-				</p>
-			<?php endif; ?>
+				</h1>
+
+				<?php if ( $afectivalab_hijo && null !== $afectivalab_edad ) : ?>
+					<p class="panel-saludo__lead">
+						<?php
+						printf(
+							/* translators: 1: nombre del hijo, 2: edad en años. */
+							esc_html__( 'Esta semana con %1$s, de %2$d años.', 'afectivalab' ),
+							esc_html( $afectivalab_hijo->post_title ),
+							absint( $afectivalab_edad )
+						);
+						?>
+					</p>
+				<?php endif; ?>
+			</div>
+
+			<?php // Las monedas son de la cuenta, no del hijo: se ganan resolviendo misiones (ver inc/misiones.php). ?>
+			<span class="monedas-chip">
+				<?php afectivalab_icon( 'juego-monedas' ); ?>
+				<?php echo esc_html( afectivalab_padre_monedas( $afectivalab_user->ID ) ); ?>
+			</span>
 		</header>
+
+		<?php if ( afectivalab_mostrar_onboarding() ) : ?>
+			<?php get_template_part( 'template-parts/onboarding' ); ?>
+		<?php endif; ?>
 
 		<?php if ( ! $afectivalab_hijos ) : ?>
 
@@ -292,6 +322,16 @@ get_header();
 					</section>
 				<?php endif; ?>
 
+			<?php endif; ?>
+
+		<?php endif; ?>
+
+			<?php if ( afectivalab_es_del_equipo() ) : ?>
+				<p class="equipo-cambio">
+					<a href="<?php echo esc_url( home_url( '/panel' ) ); ?>">
+						<?php esc_html_e( 'Volver a mi panel de contenido', 'afectivalab' ); ?>
+					</a>
+				</p>
 			<?php endif; ?>
 
 		<?php endif; ?>

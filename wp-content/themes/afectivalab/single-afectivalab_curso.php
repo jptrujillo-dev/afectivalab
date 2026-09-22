@@ -105,6 +105,12 @@ get_header();
 
 	<div class="container">
 
+		<?php if ( has_post_thumbnail() ) : ?>
+			<div class="curso-portada">
+				<?php the_post_thumbnail( 'large' ); ?>
+			</div>
+		<?php endif; ?>
+
 		<?php if ( ! $afectivalab_nodos ) : ?>
 			<div class="curso-vacio">
 				<?php afectivalab_icon( 'juego-mapa-desbloqueable', 'curso-vacio__icon' ); ?>

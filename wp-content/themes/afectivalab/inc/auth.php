@@ -106,7 +106,78 @@ function afectivalab_handle_registration() {
 }
 
 /**
+ * Convierte el error de wp_signon() en un mensaje para la persona.
+ *
+ * Si el correo o la contraseña no coinciden, el mensaje es siempre el mismo:
+ * decir cuál de los dos falló revelaría qué correos tienen cuenta. Para
+ * cualquier otro motivo (demasiados intentos, cuenta bloqueada por un plugin
+ * de seguridad, cookies desactivadas) **sí se muestra el motivo real** — antes
+ * todo se resumía en "correo o contraseña incorrectos" y eso escondía la causa
+ * verdadera cuando algo se rompía.
+ *
+ * @param WP_Error $error
+ * @return string
+ */
+function afectivalab_login_error_message( $error ) {
+	$codigo = $error->get_error_code();
+
+	if ( in_array( $codigo, array( 'empty_username', 'empty_password' ), true ) ) {
+		return __( 'Escribe tu correo y tu contraseña.', 'afectivalab' );
+	}
+
+	if ( in_array( $codigo, array( 'invalid_username', 'invalid_email', 'incorrect_password' ), true ) ) {
+		return __( 'Correo o contraseña incorrectos.', 'afectivalab' );
+	}
+
+	$mensaje = wp_strip_all_tags( $error->get_error_message() );
+
+	return $mensaje ? $mensaje : __( 'No pudimos iniciar tu sesión, intenta de nuevo.', 'afectivalab' );
+}
+
+/**
+ * Intenta iniciar sesión.
+ *
+ * La identidad **no se pasa por sanitize_email()**: WordPress acepta tanto el
+ * correo como el nombre de usuario, y sanitize_email() convierte un nombre de
+ * usuario en cadena vacía. Eso hacía que entrar con el usuario (en vez del
+ * correo) fallara siempre con "correo o contraseña incorrectos", sin pista de
+ * por qué.
+ *
+ * @param string $identidad Correo o nombre de usuario.
+ * @param string $password
+ * @param bool   $remember
+ * @return WP_User|string El usuario, o el mensaje de error.
+ */
+function afectivalab_login_attempt( $identidad, $password, $remember ) {
+	$user = wp_signon(
+		array(
+			'user_login'    => $identidad,
+			'user_password' => $password,
+			'remember'      => $remember,
+		),
+		is_ssl()
+	);
+
+	if ( is_wp_error( $user ) ) {
+		return afectivalab_login_error_message( $user );
+	}
+
+	return $user;
+}
+
+/**
+ * A dónde va el padre después de entrar: a su panel, no a la home (que es la
+ * página de venta para quien todavía no tiene cuenta).
+ */
+function afectivalab_login_destino() {
+	return home_url( '/panel' );
+}
+
+/**
  * Procesa el formulario de /ingresar si fue enviado.
+ *
+ * Es el camino sin JavaScript: con JS, assets/js/auth.js envía el formulario
+ * por AJAX contra afectivalab_ajax_login() y la página no se recarga.
  *
  * @return array{errors: string[], values: array<string,string>}
  */
@@ -127,31 +198,50 @@ function afectivalab_handle_login() {
 		return $result;
 	}
 
-	$email    = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
-	$password = isset( $_POST['password'] ) ? (string) $_POST['password'] : '';
-	$remember = ! empty( $_POST['recordarme'] );
+	$identidad = isset( $_POST['email'] ) ? sanitize_text_field( wp_unslash( $_POST['email'] ) ) : '';
+	$password  = isset( $_POST['password'] ) ? (string) $_POST['password'] : '';
+	$remember  = ! empty( $_POST['recordarme'] );
 
-	$result['values']['email'] = $email;
+	$result['values']['email'] = $identidad;
 
-	$user = wp_signon(
-		array(
-			'user_login'    => $email,
-			'user_password' => $password,
-			'remember'      => $remember,
-		),
-		is_ssl()
-	);
+	$user = afectivalab_login_attempt( $identidad, $password, $remember );
 
-	if ( is_wp_error( $user ) ) {
-		$result['errors'][] = __( 'Correo o contraseña incorrectos.', 'afectivalab' );
+	if ( ! $user instanceof WP_User ) {
+		$result['errors'][] = $user;
 		return $result;
 	}
 
-	// Al entrar, el padre va a su panel (su ruta y su avance), no a la home,
-	// que es la página de venta para quien todavía no tiene cuenta.
-	wp_safe_redirect( home_url( '/panel' ) );
+	wp_safe_redirect( afectivalab_login_destino() );
 	exit;
 }
+
+/**
+ * Mismo inicio de sesión, respondiendo JSON.
+ *
+ * Existe para que un error de contraseña no recargue la página y le borre a
+ * la persona lo que ya había escrito. No es un camino aparte: usa la misma
+ * comprobación de nonce y la misma función de login que el formulario normal,
+ * que sigue funcionando si el JavaScript no carga.
+ */
+function afectivalab_ajax_login() {
+	if ( ! check_ajax_referer( 'afectivalab_login', 'afectivalab_login_nonce', false ) ) {
+		wp_send_json_error( array( 'message' => __( 'Tu sesión expiró, recarga la página e intenta de nuevo.', 'afectivalab' ) ) );
+	}
+
+	$identidad = isset( $_POST['email'] ) ? sanitize_text_field( wp_unslash( $_POST['email'] ) ) : '';
+	$password  = isset( $_POST['password'] ) ? (string) $_POST['password'] : '';
+	$remember  = ! empty( $_POST['recordarme'] );
+
+	$user = afectivalab_login_attempt( $identidad, $password, $remember );
+
+	if ( ! $user instanceof WP_User ) {
+		wp_send_json_error( array( 'message' => $user ) );
+	}
+
+	wp_send_json_success( array( 'redirect' => afectivalab_login_destino() ) );
+}
+add_action( 'wp_ajax_nopriv_afectivalab_login', 'afectivalab_ajax_login' );
+add_action( 'wp_ajax_afectivalab_login', 'afectivalab_ajax_login' );
 
 /**
  * Procesa el formulario de /recuperar (pedir el link de restablecimiento).

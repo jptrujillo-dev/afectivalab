@@ -40,6 +40,18 @@ function afectivalab_assets() {
 	if ( in_array( get_query_var( 'afectivalab_route' ), $afectivalab_auth_routes, true ) ) {
 		wp_enqueue_style( 'afectivalab-auth', get_theme_file_uri( 'assets/css/auth.css' ), array( 'afectivalab-base' ), afectivalab_asset_version( 'assets/css/auth.css' ) );
 		wp_enqueue_script( 'afectivalab-auth', get_theme_file_uri( 'assets/js/auth.js' ), array(), afectivalab_asset_version( 'assets/js/auth.js' ), true );
+
+		// Para el login por AJAX. Si esto no llega (por ejemplo si algo
+		// bloquea admin-ajax.php), auth.js no intercepta nada y el
+		// formulario se envía como siempre.
+		wp_localize_script(
+			'afectivalab-auth',
+			'afectivalabAuth',
+			array(
+				'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
+				'entrando' => __( 'Entrando…', 'afectivalab' ),
+			)
+		);
 	}
 
 	if ( 'mi-cuenta' === get_query_var( 'afectivalab_route' ) ) {
@@ -49,8 +61,22 @@ function afectivalab_assets() {
 
 	// El panel y las pantallas de curso/microclase comparten hoja: son la
 	// misma parte del producto, la que ve la familia.
-	if ( 'panel' === get_query_var( 'afectivalab_route' ) || is_singular( array( AFECTIVALAB_CPT_CURSO, AFECTIVALAB_CPT_CLASE ) ) ) {
+	// /mis-hijos también la carga: de ahí salen la guía de primeros pasos y
+	// la barra de progreso que esa guía usa.
+	if ( in_array( get_query_var( 'afectivalab_route' ), array( 'panel', 'mis-hijos' ), true ) || is_singular( array( AFECTIVALAB_CPT_CURSO, AFECTIVALAB_CPT_CLASE ) ) ) {
 		wp_enqueue_style( 'afectivalab-plataforma', get_theme_file_uri( 'assets/css/plataforma.css' ), array( 'afectivalab-base' ), afectivalab_asset_version( 'assets/css/plataforma.css' ) );
+	}
+
+	// Los formularios de curso y microclase del panel.
+	if ( 'panel' === get_query_var( 'afectivalab_route' ) ) {
+		wp_enqueue_script( 'afectivalab-panel', get_theme_file_uri( 'assets/js/panel.js' ), array(), afectivalab_asset_version( 'assets/js/panel.js' ), true );
+
+		// El editor con formato (negrita, cursiva, listas) de los campos de
+		// descripción. Se pide explícitamente porque wp_editor() está pensado
+		// para el escritorio: en el front no siempre carga sus scripts solo.
+		if ( afectivalab_es_del_equipo() ) {
+			wp_enqueue_editor();
+		}
 	}
 
 	if ( 'mis-hijos' === get_query_var( 'afectivalab_route' ) ) {
@@ -58,7 +84,6 @@ function afectivalab_assets() {
 		// envoltorio de fondo y padding que comparten las dos páginas.
 		wp_enqueue_style( 'afectivalab-cuenta', get_theme_file_uri( 'assets/css/cuenta.css' ), array( 'afectivalab-base' ), afectivalab_asset_version( 'assets/css/cuenta.css' ) );
 		wp_enqueue_style( 'afectivalab-hijos', get_theme_file_uri( 'assets/css/hijos.css' ), array( 'afectivalab-cuenta' ), afectivalab_asset_version( 'assets/css/hijos.css' ) );
-		wp_enqueue_script( 'afectivalab-hijos', get_theme_file_uri( 'assets/js/hijos.js' ), array(), afectivalab_asset_version( 'assets/js/hijos.js' ), true );
 	}
 
 	wp_enqueue_script( 'afectivalab-main', get_theme_file_uri( 'assets/js/main.js' ), array(), afectivalab_asset_version( 'assets/js/main.js' ), true );

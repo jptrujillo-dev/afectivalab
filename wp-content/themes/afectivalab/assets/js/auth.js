@@ -142,6 +142,87 @@
 		return true;
 	}
 
+	// Inicio de sesión sin recargar la página.
+	//
+	// Si el servidor tarda o la contraseña está mal, recargar significaba
+	// perder lo que la persona ya había escrito. Enviando por AJAX el
+	// formulario se queda como está y solo aparece el mensaje.
+	//
+	// Solo se activa si el tema pudo pasar la URL de AJAX; si no, el
+	// formulario se envía como siempre y PHP lo resuelve igual.
+	var loginForm = document.querySelector( 'form[data-ajax-login]' );
+	var ajaxUrl = window.afectivalabAuth && window.afectivalabAuth.ajaxUrl;
+
+	if ( loginForm && ajaxUrl && window.fetch ) {
+		var alertBox = document.querySelector( '[data-login-alert]' );
+		var submit = loginForm.querySelector( 'button[type="submit"]' );
+		var submitHtml = submit ? submit.innerHTML : '';
+
+		var mostrarError = function ( mensaje ) {
+			if ( ! alertBox ) {
+				return;
+			}
+
+			alertBox.textContent = mensaje;
+			alertBox.hidden = false;
+		};
+
+		var ocupado = function ( si ) {
+			if ( ! submit ) {
+				return;
+			}
+
+			submit.disabled = si;
+			submit.innerHTML = si ? ( window.afectivalabAuth.entrando || 'Entrando…' ) : submitHtml;
+		};
+
+		loginForm.addEventListener( 'submit', function ( event ) {
+			event.preventDefault();
+
+			if ( alertBox ) {
+				alertBox.hidden = true;
+			}
+
+			ocupado( true );
+
+			var datos = new FormData( loginForm );
+			datos.append( 'action', 'afectivalab_login' );
+
+			window.fetch( ajaxUrl, {
+				method: 'POST',
+				body: datos,
+				credentials: 'same-origin'
+			} )
+				.then( function ( response ) {
+					return response.json();
+				} )
+				.then( function ( payload ) {
+					if ( payload && payload.success && payload.data && payload.data.redirect ) {
+						window.location.assign( payload.data.redirect );
+						return;
+					}
+
+					ocupado( false );
+					mostrarError( ( payload && payload.data && payload.data.message ) || 'No pudimos iniciar tu sesión, intenta de nuevo.' );
+				} )
+				.catch( function () {
+					// Si la petición falló (sin red, o el servidor cortó),
+					// se envía el formulario a la antigua en vez de dejar a
+					// la persona mirando un botón que no hace nada.
+					//
+					// form.submit() no incluye el valor del botón, y PHP se
+					// apoya justamente en ese campo para saber que el
+					// formulario se envió: hay que agregarlo a mano.
+					var marca = document.createElement( 'input' );
+					marca.type = 'hidden';
+					marca.name = 'afectivalab_login_submit';
+					marca.value = '1';
+					loginForm.appendChild( marca );
+					loginForm.submit();
+				} );
+		} );
+	}
+
 	document.querySelectorAll( 'form[data-validate]' ).forEach( function ( form ) {
 		var fields = form.querySelectorAll( '[data-validate-field]' );
 

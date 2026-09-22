@@ -57,7 +57,10 @@ get_header();
 				</div>
 			<?php endif; ?>
 
-			<form method="post" novalidate data-validate>
+			<?php // Lo llena auth.js cuando el login por AJAX devuelve un error; sin JS queda vacío y no estorba. ?>
+			<div class="form-alert" role="alert" data-login-alert hidden></div>
+
+			<form method="post" novalidate data-validate data-ajax-login>
 				<?php wp_nonce_field( 'afectivalab_login', 'afectivalab_login_nonce' ); ?>
 
 				<div class="form-field">

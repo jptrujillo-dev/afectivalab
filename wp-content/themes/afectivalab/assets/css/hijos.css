@@ -132,43 +132,31 @@
 	color: var(--color-error);
 }
 
-/* --- Estado vacío --- */
-.hijos-empty {
-	background: var(--color-white);
-	border: 1.5px dashed var(--color-border);
-	border-radius: var(--radius-md);
-	padding: var(--space-6) var(--space-4);
-	margin-bottom: var(--space-5);
-	text-align: center;
-}
-
-.hijos-empty__icon {
-	width: 64px;
-	height: 64px;
-	margin-bottom: var(--space-3);
-}
-
-.hijos-empty h2 {
-	font-size: 1.2rem;
-	margin-bottom: var(--space-1);
-}
-
-.hijos-empty p {
-	color: var(--color-text-muted);
-	margin: 0;
-}
-
 /* --- Formulario --- */
+/* El margen inferior importa cuando el formulario va primero (familia sin
+   perfiles todavía): debajo viene la guía, y sin esto las dos tarjetas
+   quedan pegadas. */
 .hijos-form-card {
 	background: var(--color-white);
 	border-radius: var(--radius-lg);
 	box-shadow: var(--shadow-card);
 	padding: var(--space-5) var(--space-4);
+	margin-bottom: var(--space-5);
 }
 
 .hijos-form-card h2 {
 	font-size: 1.3rem;
 	margin-bottom: var(--space-4);
+}
+
+/* Cuando el título lleva bajada debajo, se le pega. */
+.hijos-form-card h2:has(+ .hijos-form-card__lead) {
+	margin-bottom: var(--space-2);
+}
+
+.hijos-form-card__lead {
+	color: var(--color-text-muted);
+	margin: 0 0 var(--space-4);
 }
 
 .form-fieldset {

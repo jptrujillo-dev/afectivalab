@@ -340,6 +340,62 @@ function afectivalab_etapa_para_edad( $edad ) {
 }
 
 /**
+ * URL de incrustación de un video de YouTube o Vimeo, con el reproductor lo
+ * más limpio posible.
+ *
+ * Se arma a mano en vez de usar wp_oembed_get() porque el oEmbed no deja
+ * elegir los parámetros, y aquí interesa quitarle al reproductor todo lo que
+ * distrae: videos sugeridos de otros canales, anotaciones, el título y el
+ * autor encima del video.
+ *
+ * **Límite real, que conviene saber:** YouTube no permite quitar botones
+ * sueltos. O se muestran todos los controles o ninguno (`controls=0`, que
+ * también quita play y volumen, y es peor). Así que quedan a la vista
+ * ajustes, subtítulos y compartir aunque no hagan falta. Vimeo sí permite un
+ * reproductor mucho más limpio: si eso importa, ese es el proveedor a usar.
+ *
+ * @param string $url
+ * @return string URL para el iframe, o cadena vacía si no se reconoce.
+ */
+function afectivalab_video_embed_url( $url ) {
+	$url = trim( (string) $url );
+
+	if ( '' === $url ) {
+		return '';
+	}
+
+	// youtu.be/ID, youtube.com/watch?v=ID, youtube.com/embed/ID, /shorts/ID
+	if ( preg_match( '~(?:youtube\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/)|youtu\.be/)([A-Za-z0-9_-]{6,})~i', $url, $m ) ) {
+		return add_query_arg(
+			array(
+				'rel'            => 0,
+				'modestbranding' => 1,
+				'iv_load_policy' => 3,
+				'playsinline'    => 1,
+				'fs'             => 1,
+			),
+			// nocookie: no deja cookies de seguimiento hasta que alguien le da play.
+			'https://www.youtube-nocookie.com/embed/' . $m[1]
+		);
+	}
+
+	if ( preg_match( '~vimeo\.com/(?:video/)?(\d+)~i', $url, $m ) ) {
+		return add_query_arg(
+			array(
+				'title'    => 0,
+				'byline'   => 0,
+				'portrait' => 0,
+				'badge'    => 0,
+				'dnt'      => 1,
+			),
+			'https://player.vimeo.com/video/' . $m[1]
+		);
+	}
+
+	return '';
+}
+
+/**
  * Microclases de un curso, en el orden que definió el instructor.
  *
  * @param int          $curso_id

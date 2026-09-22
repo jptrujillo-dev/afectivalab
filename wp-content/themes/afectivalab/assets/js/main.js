@@ -110,4 +110,20 @@
 			} );
 		} );
 	}
+
+	// Confirmación para cualquier botón que borre algo, en todo el sitio
+	// (perfiles de hijo, cursos, microclases). Es solo una red de seguridad:
+	// sin JS el botón sigue funcionando, y todo lo que borra va a la papelera,
+	// así que un clic de más se puede deshacer.
+	document.addEventListener( 'click', function ( event ) {
+		var button = event.target.closest( '[data-confirm]' );
+
+		if ( ! button ) {
+			return;
+		}
+
+		if ( ! window.confirm( button.getAttribute( 'data-confirm' ) ) ) {
+			event.preventDefault();
+		}
+	} );
 } )();

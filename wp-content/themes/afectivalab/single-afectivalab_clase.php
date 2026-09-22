@@ -26,12 +26,22 @@ if ( ! afectivalab_clase_desbloqueada( $afectivalab_hijo->ID, $afectivalab_clase
 	exit;
 }
 
-afectivalab_handle_clase_form( $afectivalab_clase_id, $afectivalab_hijo->ID );
+$afectivalab_mision = afectivalab_clase_mision( $afectivalab_clase_id );
 
-$afectivalab_hecha    = afectivalab_clase_completada( $afectivalab_hijo->ID, $afectivalab_clase_id );
-$afectivalab_duracion = (int) get_post_meta( $afectivalab_clase_id, '_afectivalab_duracion', true );
-$afectivalab_tipo     = get_post_meta( $afectivalab_clase_id, '_afectivalab_video_tipo', true );
-$afectivalab_nodos    = afectivalab_ruta_del_curso( $afectivalab_hijo->ID, $afectivalab_curso_id );
+// Si la clase lleva misión, resolverla es lo que la completa — no alcanza
+// con ver el video (decisión de producto, ver inc/misiones.php). Si no lleva
+// misión, sigue funcionando el botón de "marcar como vista" de siempre.
+if ( $afectivalab_mision ) {
+	afectivalab_handle_mision_form( $afectivalab_clase_id, $afectivalab_hijo->ID );
+} else {
+	afectivalab_handle_clase_form( $afectivalab_clase_id, $afectivalab_hijo->ID );
+}
+
+$afectivalab_hecha        = afectivalab_clase_completada( $afectivalab_hijo->ID, $afectivalab_clase_id );
+$afectivalab_mision_estado = $afectivalab_mision ? afectivalab_mision_estado( $afectivalab_hijo->ID, $afectivalab_clase_id ) : '';
+$afectivalab_duracion     = (int) get_post_meta( $afectivalab_clase_id, '_afectivalab_duracion', true );
+$afectivalab_tipo         = get_post_meta( $afectivalab_clase_id, '_afectivalab_video_tipo', true );
+$afectivalab_nodos        = afectivalab_ruta_del_curso( $afectivalab_hijo->ID, $afectivalab_curso_id );
 
 $afectivalab_numero = 0;
 foreach ( $afectivalab_nodos as $afectivalab_nodo ) {
@@ -81,31 +91,54 @@ get_header();
 		</header>
 
 		<?php if ( 'url' === $afectivalab_tipo ) : ?>
-			<?php $afectivalab_video_url = get_post_meta( $afectivalab_clase_id, '_afectivalab_video_url', true ); ?>
-			<?php if ( $afectivalab_video_url ) : ?>
+			<?php
+			$afectivalab_video_url = get_post_meta( $afectivalab_clase_id, '_afectivalab_video_url', true );
+			$afectivalab_embed     = afectivalab_video_embed_url( $afectivalab_video_url );
+			?>
+			<?php if ( $afectivalab_embed ) : ?>
 				<div class="clase-video">
-					<?php
-					$afectivalab_embed = wp_oembed_get( $afectivalab_video_url );
-
-					if ( $afectivalab_embed ) {
-						echo $afectivalab_embed; // phpcs:ignore WordPress.Security.EscapeOutput -- markup de oEmbed de WordPress.
-					} else {
-						printf(
-							'<a class="clase-video__enlace" href="%1$s" target="_blank" rel="noopener">%2$s</a>',
-							esc_url( $afectivalab_video_url ),
-							esc_html__( 'Ver el video', 'afectivalab' )
-						);
-					}
-					?>
+					<iframe
+						src="<?php echo esc_url( $afectivalab_embed ); ?>"
+						title="<?php the_title_attribute(); ?>"
+						loading="lazy"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+						allowfullscreen
+					></iframe>
+				</div>
+			<?php elseif ( $afectivalab_video_url ) : ?>
+				<?php // No es YouTube ni Vimeo: en vez de incrustar cualquier cosa, se enlaza. ?>
+				<div class="clase-video">
+					<a class="clase-video__enlace" href="<?php echo esc_url( $afectivalab_video_url ); ?>" target="_blank" rel="noopener">
+						<?php esc_html_e( 'Ver el video', 'afectivalab' ); ?>
+					</a>
 				</div>
 			<?php endif; ?>
 		<?php elseif ( 'media' === $afectivalab_tipo ) : ?>
 			<?php $afectivalab_video_id = (int) get_post_meta( $afectivalab_clase_id, '_afectivalab_video_id', true ); ?>
 			<?php if ( $afectivalab_video_id ) : ?>
+				<?php
+				// En un video propio sí se puede dejar el reproductor al
+				// mínimo: se quitan descarga, velocidad y miniatura flotante,
+				// y quedan play, volumen, barra y pantalla completa.
+				?>
 				<div class="clase-video">
-					<video controls preload="metadata" src="<?php echo esc_url( wp_get_attachment_url( $afectivalab_video_id ) ); ?>"></video>
+					<video
+						controls
+						controlsList="nodownload noplaybackrate noremoteplayback"
+						disablePictureInPicture
+						preload="metadata"
+						<?php if ( has_post_thumbnail( $afectivalab_clase_id ) ) : ?>
+							poster="<?php echo esc_url( get_the_post_thumbnail_url( $afectivalab_clase_id, 'large' ) ); ?>"
+						<?php endif; ?>
+						src="<?php echo esc_url( wp_get_attachment_url( $afectivalab_video_id ) ); ?>"
+					></video>
 				</div>
 			<?php endif; ?>
+		<?php elseif ( has_post_thumbnail( $afectivalab_clase_id ) ) : ?>
+			<?php // Sin video, la imagen destacada es lo que abre la clase. ?>
+			<div class="clase-portada">
+				<?php the_post_thumbnail( 'large' ); ?>
+			</div>
 		<?php endif; ?>
 
 		<?php if ( get_the_content() ) : ?>
@@ -116,7 +149,17 @@ get_header();
 			<?php if ( $afectivalab_hecha ) : ?>
 				<span class="clase-accion__sello">
 					<?php afectivalab_icon( 'check' ); ?>
-					<?php esc_html_e( 'Ya la vieron', 'afectivalab' ); ?>
+					<?php
+					if ( $afectivalab_mision ) {
+						printf(
+							/* translators: %d: monedas ganadas. */
+							esc_html__( '¡Misión cumplida! +%d monedas', 'afectivalab' ),
+							absint( $afectivalab_mision['recompensa'] )
+						);
+					} else {
+						esc_html_e( 'Ya la vieron', 'afectivalab' );
+					}
+					?>
 				</span>
 
 				<?php
@@ -135,6 +178,61 @@ get_header();
 						<?php afectivalab_icon( 'arrow-right' ); ?>
 					</a>
 				<?php endif; ?>
+			<?php elseif ( $afectivalab_mision ) : ?>
+
+				<?php // Clase con misión: resolverla es lo que la completa. Ver inc/misiones.php. ?>
+				<div class="mision-card <?php echo 'despues' === $afectivalab_mision_estado ? 'is-despues' : ''; ?>">
+					<span class="mision-card__icono">
+						<?php afectivalab_icon( $afectivalab_mision['icono'] ); ?>
+					</span>
+
+					<div class="mision-card__cuerpo">
+						<span class="mision-card__etiqueta"><?php echo esc_html( $afectivalab_mision['nombre'] ); ?></span>
+						<p class="mision-card__texto"><?php echo esc_html( $afectivalab_mision['texto'] ); ?></p>
+
+						<?php if ( 'despues' === $afectivalab_mision_estado ) : ?>
+							<p class="mision-card__aviso">
+								<?php esc_html_e( 'La dejaste pendiente. Cuando la hagan, márcala aquí para seguir avanzando.', 'afectivalab' ); ?>
+							</p>
+						<?php endif; ?>
+
+						<p class="mision-card__recompensa">
+							<?php afectivalab_icon( 'juego-monedas' ); ?>
+							<?php
+							printf(
+								/* translators: %d: monedas que otorga la misión. */
+								esc_html__( 'Vale %d monedas al completarla.', 'afectivalab' ),
+								absint( $afectivalab_mision['recompensa'] )
+							);
+							?>
+						</p>
+
+						<form method="post" class="mision-card__form" <?php echo $afectivalab_mision['requiere_evidencia'] ? 'enctype="multipart/form-data"' : ''; ?>>
+							<?php wp_nonce_field( 'afectivalab_mision_' . $afectivalab_clase_id, 'afectivalab_mision_nonce' ); ?>
+
+							<?php if ( $afectivalab_mision['requiere_evidencia'] ) : ?>
+								<label class="mision-card__subir">
+									<?php esc_html_e( 'Sube una foto como evidencia', 'afectivalab' ); ?>
+									<input type="file" name="evidencia" accept="image/jpeg,image/png,image/webp" required>
+								</label>
+							<?php endif; ?>
+
+							<div class="mision-card__botones">
+								<button type="submit" name="afectivalab_mision_accion" value="hecha" class="btn btn-primary">
+									<?php afectivalab_icon( 'check' ); ?>
+									<?php esc_html_e( 'Ya la hicimos', 'afectivalab' ); ?>
+								</button>
+
+								<?php if ( 'despues' !== $afectivalab_mision_estado ) : ?>
+									<button type="submit" name="afectivalab_mision_accion" value="despues" class="btn btn-ghost" formnovalidate>
+										<?php esc_html_e( 'La haremos después', 'afectivalab' ); ?>
+									</button>
+								<?php endif; ?>
+							</div>
+						</form>
+					</div>
+				</div>
+
 			<?php else : ?>
 				<div class="clase-accion__texto">
 					<strong><?php esc_html_e( '¿Ya vieron esta clase?', 'afectivalab' ); ?></strong>

@@ -46,7 +46,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 					</button>
 					<div class="user-menu__panel" data-user-menu-panel>
 						<a href="<?php echo esc_url( home_url( '/panel' ) ); ?>"><?php esc_html_e( 'Mi panel', 'afectivalab' ); ?></a>
-						<a href="<?php echo esc_url( home_url( '/mis-hijos' ) ); ?>"><?php esc_html_e( 'Mis hijos', 'afectivalab' ); ?></a>
+						<?php if ( afectivalab_es_del_equipo() ) : ?>
+							<a href="<?php echo esc_url( admin_url() ); ?>"><?php esc_html_e( 'Escritorio', 'afectivalab' ); ?></a>
+						<?php else : ?>
+							<a href="<?php echo esc_url( home_url( '/mis-hijos' ) ); ?>"><?php esc_html_e( 'Mis hijos', 'afectivalab' ); ?></a>
+						<?php endif; ?>
 						<a href="<?php echo esc_url( home_url( '/mi-cuenta' ) ); ?>"><?php esc_html_e( 'Mi cuenta', 'afectivalab' ); ?></a>
 						<a href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>"><?php esc_html_e( 'Salir', 'afectivalab' ); ?></a>
 					</div>
@@ -84,7 +88,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<span><?php echo esc_html( $afectivalab_mobile_user->display_name ); ?></span>
 			</div>
 			<a href="<?php echo esc_url( home_url( '/panel' ) ); ?>"><?php esc_html_e( 'Mi panel', 'afectivalab' ); ?></a>
-			<a href="<?php echo esc_url( home_url( '/mis-hijos' ) ); ?>"><?php esc_html_e( 'Mis hijos', 'afectivalab' ); ?></a>
+			<?php if ( afectivalab_es_del_equipo() ) : ?>
+				<a href="<?php echo esc_url( admin_url() ); ?>"><?php esc_html_e( 'Escritorio', 'afectivalab' ); ?></a>
+			<?php else : ?>
+				<a href="<?php echo esc_url( home_url( '/mis-hijos' ) ); ?>"><?php esc_html_e( 'Mis hijos', 'afectivalab' ); ?></a>
+			<?php endif; ?>
 			<a href="<?php echo esc_url( home_url( '/mi-cuenta' ) ); ?>"><?php esc_html_e( 'Mi cuenta', 'afectivalab' ); ?></a>
 			<a href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>"><?php esc_html_e( 'Salir', 'afectivalab' ); ?></a>
 		<?php elseif ( ! in_array( get_query_var( 'afectivalab_route' ), array( 'ingresar', 'recuperar', 'restablecer' ), true ) ) : ?>

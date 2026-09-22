@@ -22,11 +22,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</p>
 
 			<div class="hero__actions">
-				<a class="btn btn-primary" href="<?php echo esc_url( home_url( '/registro' ) ); ?>">
+				<a class="btn btn-primary btn-lg" href="<?php echo esc_url( home_url( '/registro' ) ); ?>">
 					<?php esc_html_e( 'Comenzar ahora', 'afectivalab' ); ?>
 					<?php afectivalab_icon( 'arrow-right' ); ?>
 				</a>
-				<a class="btn btn-secondary" href="#como-funciona">
+				<a class="btn btn-secondary btn-lg" href="#como-funciona">
 					<?php afectivalab_icon( 'feature-video' ); ?>
 					<?php esc_html_e( 'Ver cómo funciona', 'afectivalab' ); ?>
 				</a>

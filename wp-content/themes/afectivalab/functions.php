@@ -20,7 +20,11 @@ require get_theme_file_path( 'inc/content.php' );
 require get_theme_file_path( 'inc/roles.php' );
 require get_theme_file_path( 'inc/hijos.php' );
 require get_theme_file_path( 'inc/progreso.php' );
+require get_theme_file_path( 'inc/misiones.php' );
 require get_theme_file_path( 'inc/ruta.php' );
+require get_theme_file_path( 'inc/equipo.php' );
+require get_theme_file_path( 'inc/panel-admin.php' );
+require get_theme_file_path( 'inc/onboarding.php' );
 
 if ( is_admin() ) {
 	require get_theme_file_path( 'inc/content-admin.php' );
