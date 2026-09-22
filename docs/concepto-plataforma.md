@@ -163,22 +163,51 @@ Pendiente por parte del usuario:
 
 Da libertad de diseño/implementación dentro de lo técnicamente razonable.
 
-## Preguntas abiertas para la reunión (usuario mencionó reunión al día siguiente de este audio)
+## Decisiones confirmadas por el cliente (2026-09-22)
 
-Dudas que el propio usuario dejó explícitamente abiertas o que quedan ambiguas entre el documento y el audio:
+Respuestas a las preguntas que quedaban abiertas entre el documento y el audio. Estas ya no se discuten, son la base del desarrollo:
 
-1. **Rango de edad exacto del segundo grupo**: el documento dice 6–8 años ("Niñez inicial"), pero en el audio el usuario dice en un momento "de 6 hasta los 9 años" al dar el ejemplo de un hijo de 8 años. Confirmar si el corte real es 6–8 o 6–9 (esto afectaría los límites de las 5 etapas y el total de "40 rutas").
-2. **Mundos temáticos vs. rutas por edad**: confirmar si los "mundos" (sección 3) se implementan como filtro/vista adicional en el MVP, o quedan fuera del alcance inicial (el usuario se inclina por dejar el motor principal solo en rutas por edad + intereses, por simplicidad).
-3. **Asistente de IA ("Tengo una situación ahora")**: no es requisito bloqueante; queda pendiente investigar viabilidad (proveedor, costos, seguridad/derivación ante señales de riesgo real) antes de comprometerlo al alcance.
-4. **Certificación**: el audio menciona certificados por curso completado — falta definir si es un PDF descargable generado automáticamente, una insignia visual, o ambos.
-5. **Motor de contenido / plataforma base**: aún no definido si se construye sobre un LMS/plugin de WordPress (LearnDash, Tutor LMS, etc.) o a medida — el usuario no lo ha mencionado, es una decisión técnica pendiente de nuestro lado.
-6. **Modelo de negocio/acceso** (suscripción, pago por hijo, etc.): no mencionado aún en documento ni audio.
+1. **Rango del segundo grupo de edad**: **6–8 años**. Las 5 etapas de la sección 2 quedan tal como están escritas, y la matriz de 5 × 8 = **40 rutas** se mantiene.
+2. **Mundos temáticos vs. rutas por edad**: **ambos, con jerarquía clara**. La ruta que arma la plataforma según edad + intereses es lo primero que ve el padre y el motor principal; además puede explorar el resto del contenido libremente por mundo temático. Los mundos entran al alcance como navegación secundaria, no quedan fuera.
+3. **Asistente de IA ("Tengo una situación ahora")**: **en stand by**. No se desarrolla ni se investiga por ahora.
+4. **Certificación**: **ambos** — certificado en PDF descargable *y* insignia visual dentro de la plataforma.
+5. **Modelo de negocio/acceso**: **suscripción**. Falta definir el detalle (planes, precios, pasarela de pago).
+6. **Fecha de entrega**: no hay fecha comprometida, pero el cliente quiere tenerlo pronto.
+7. **Producción de contenido**: la sube el propio equipo del cliente. Requiere un **rol de instructor** con acceso a cargar cursos y clases. Los **videos pueden ser URL de YouTube o Vimeo, o archivos subidos a la web** — hay que soportar las dos formas.
+8. **Orden de desarrollo de los temas**: confirmado el orden ya propuesto en la sección 10 (autoestima → bullying → sexualidad → comunicación → emociones → pantallas → límites → amistades).
+9. **Verificación de correo al registrarse**: **no es obligatoria**. La cuenta queda activa de inmediato, como está hoy.
+10. **Envío de correos**: el **SMTP ya está configurado** en el hosting, así que el flujo de recuperar contraseña no necesita nada adicional.
+
+### Decisión técnica derivada
+
+- **Motor de contenido: desarrollo a medida**, no un plugin LMS (LearnDash, Tutor, etc.). Razón: el "alumno" aquí no es un usuario de WordPress sino un *perfil de hijo dentro de la cuenta del padre*, y ningún LMS modela eso — además de las rutas por edad, las misiones con evidencia y los casos ramificados, que habría que forzar en contra del plugin. Se implementa con tipos de contenido propios en el theme.
+
+### Equivalencia entre las dos listas de 8 temas
+
+El documento fuente nombra los 8 ejes de dos maneras distintas (sección 3 "mundos" y sección 10 "temas prioritarios"). Son los mismos 8, en este orden de prioridad de desarrollo:
+
+| # | Tema prioritario (sección 10) | Mundo (sección 3) |
+|---|---|---|
+| 1 | Autoestima y seguridad emocional | Crecer seguro |
+| 2 | Bullying y cyberbullying | Proteger |
+| 3 | Educación sexual y protección | Sexualidad y afectividad |
+| 4 | Comunicación padre-hijo | Conectar |
+| 5 | Manejo emocional | Emociones |
+| 6 | Pantallas, redes sociales y seguridad digital | Mundo digital |
+| 7 | Normas, disciplina y límites | Convivir |
+| 8 | Amistades y relaciones sociales | Vida escolar |
+
+Se usan los nombres de los **mundos** como nombre oficial de cada eje, porque son los que tienen ícono propio en el paquete de marca.
+
+## Pendiente de definir con el cliente
+
+- **Detalle de la suscripción**: planes, precio, si se cobra por cuenta o por hijo, pasarela de pago, y qué pasa con el contenido ya empezado si la suscripción vence.
+- **Qué incluye el certificado**: nombre del padre, nombre del curso, fecha, firma/sello de quién.
 
 ## Notas para el desarrollo (a definir más adelante, no ahora)
 
 - Modelo de datos: perfiles de padre + N perfiles de hijo, progreso por ruta/curso/clase por hijo, registro de misiones (con o sin evidencia subida).
 - ¿Multi-hijo implica que el padre alterna entre "vistas" de ruta por hijo?
-- Motor de contenido: ¿cursos como CPT de WordPress, o LMS externo/plugin versus solución a medida?
 - Sistema de gamificación (monedas, estrellas, XP, insignias/habilidades, certificados) — persistencia y lógica de reglas.
 - Sistema de subida de evidencia para misiones tipo "taller" (almacenamiento de imágenes, moderación/revisión si aplica).
 - Sistema de notificaciones/recordatorios (cursos pendientes + "GPS de crianza" por cumpleaños del hijo).

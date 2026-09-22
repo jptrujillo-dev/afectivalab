@@ -70,15 +70,15 @@ add_filter( 'document_title_parts', 'afectivalab_route_document_title' );
  * (after_switch_theme), pero este theme ya estaba activo cuando se agregaron
  * estas rutas. Se fuerza un único flush automático la primera vez que corre
  * este código; si más adelante se agregan más rutas, subir el número de la
- * clave de la opción para forzar otro flush (va en v3: se sumó /mi-cuenta
- * después del segundo flush, que a su vez había sumado /recuperar y
- * /restablecer).
+ * clave de la opción para forzar otro flush (va en v4: los tipos de contenido
+ * de cursos y microclases y sus taxonomías también traen reglas propias —
+ * antes, v3 sumó /mi-cuenta y v2 sumó /recuperar y /restablecer).
  */
 function afectivalab_maybe_flush_rewrites() {
-	if ( ! get_option( 'afectivalab_rewrites_flushed_v3' ) ) {
+	if ( ! get_option( 'afectivalab_rewrites_flushed_v4' ) ) {
 		afectivalab_register_rewrites();
 		flush_rewrite_rules();
-		update_option( 'afectivalab_rewrites_flushed_v3', 1 );
+		update_option( 'afectivalab_rewrites_flushed_v4', 1 );
 	}
 }
 add_action( 'init', 'afectivalab_maybe_flush_rewrites', 20 );

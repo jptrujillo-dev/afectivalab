@@ -1,0 +1,34 @@
+/*
+ * Campos propios de curso y microclase en el escritorio de WordPress.
+ * Deliberadamente sobrio: se apoya en los estilos nativos del admin
+ * (.button, .description) en vez de imponer la marca ahí adentro.
+ */
+
+.afectivalab-field {
+	margin-bottom: 20px;
+}
+
+.afectivalab-field:last-child {
+	margin-bottom: 0;
+}
+
+.afectivalab-field__label {
+	display: block;
+	margin-bottom: 6px;
+	font-weight: 600;
+}
+
+.afectivalab-field__radio {
+	display: block;
+	margin-bottom: 6px;
+}
+
+.afectivalab-field__sub {
+	margin: 0 0 12px 24px;
+	max-width: 520px;
+}
+
+.afectivalab-field__filename {
+	margin-left: 8px;
+	font-style: italic;
+}

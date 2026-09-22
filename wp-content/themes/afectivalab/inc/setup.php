@@ -21,24 +21,6 @@ function afectivalab_setup() {
 		)
 	);
 
-	/**
-	 * Rol propio para las cuentas de padres/madres que se registran en la
-	 * plataforma, en vez de dejarlos como "Suscriptor" genérico. add_role()
-	 * no hace nada si el rol ya existe, así que es seguro llamarlo siempre.
-	 */
-	add_role(
-		'afectivalab_padre',
-		__( 'Padre/Madre', 'afectivalab' ),
-		array( 'read' => true )
-	);
-
-	// add_role() no actualiza roles que ya existen en la base de datos, así
-	// que la capacidad de subir su foto de perfil se agrega aparte (idempotente:
-	// add_cap() no hace nada si el rol ya la tiene).
-	$afectivalab_padre_role = get_role( 'afectivalab_padre' );
-	if ( $afectivalab_padre_role && ! $afectivalab_padre_role->has_cap( 'upload_files' ) ) {
-		$afectivalab_padre_role->add_cap( 'upload_files' );
-	}
 }
 add_action( 'after_setup_theme', 'afectivalab_setup' );
 
