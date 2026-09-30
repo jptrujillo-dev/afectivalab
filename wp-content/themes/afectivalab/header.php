@@ -37,22 +37,42 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<div class="header-actions">
 			<?php if ( is_user_logged_in() ) : ?>
-				<?php $afectivalab_user = wp_get_current_user(); ?>
+				<?php
+				$afectivalab_user       = wp_get_current_user();
+				$afectivalab_menu_items = afectivalab_menu_cuenta_items();
+				?>
 				<div class="user-menu" data-user-menu>
-					<button type="button" class="user-menu__trigger" data-user-menu-trigger aria-haspopup="true" aria-expanded="false">
+					<button type="button" class="user-menu__trigger" data-user-menu-trigger aria-haspopup="true" aria-expanded="false" aria-controls="user-menu-panel" aria-label="<?php esc_attr_e( 'Abrir el menú de tu cuenta', 'afectivalab' ); ?>">
 						<?php echo afectivalab_get_avatar_html( $afectivalab_user, 32 ); // phpcs:ignore WordPress.Security.EscapeOutput -- ya escapado dentro del helper. ?>
 						<span class="user-menu__name"><?php echo esc_html( $afectivalab_user->display_name ); ?></span>
 						<?php afectivalab_icon( 'chevron-down', 'user-menu__chevron' ); ?>
 					</button>
-					<div class="user-menu__panel" data-user-menu-panel>
-						<a href="<?php echo esc_url( home_url( '/panel' ) ); ?>"><?php esc_html_e( 'Mi panel', 'afectivalab' ); ?></a>
-						<?php if ( afectivalab_es_del_equipo() ) : ?>
-							<a href="<?php echo esc_url( admin_url() ); ?>"><?php esc_html_e( 'Escritorio', 'afectivalab' ); ?></a>
-						<?php else : ?>
-							<a href="<?php echo esc_url( home_url( '/mis-hijos' ) ); ?>"><?php esc_html_e( 'Mis hijos', 'afectivalab' ); ?></a>
-						<?php endif; ?>
-						<a href="<?php echo esc_url( home_url( '/mi-cuenta' ) ); ?>"><?php esc_html_e( 'Mi cuenta', 'afectivalab' ); ?></a>
-						<a href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>"><?php esc_html_e( 'Salir', 'afectivalab' ); ?></a>
+					<div class="user-menu__panel" id="user-menu-panel" data-user-menu-panel>
+						<div class="user-menu__cabecera">
+							<?php echo afectivalab_get_avatar_html( $afectivalab_user, 44 ); // phpcs:ignore WordPress.Security.EscapeOutput -- ya escapado dentro del helper. ?>
+							<div class="user-menu__quien">
+								<strong><?php echo esc_html( $afectivalab_user->display_name ); ?></strong>
+								<span><?php echo esc_html( $afectivalab_user->user_email ); ?></span>
+							</div>
+						</div>
+						<nav class="user-menu__lista" aria-label="<?php esc_attr_e( 'Tu cuenta', 'afectivalab' ); ?>">
+							<?php foreach ( $afectivalab_menu_items as $afectivalab_item ) : ?>
+								<a class="user-menu__item<?php echo $afectivalab_item['activo'] ? ' is-activo' : ''; ?>" href="<?php echo esc_url( $afectivalab_item['url'] ); ?>"<?php echo $afectivalab_item['activo'] ? ' aria-current="page"' : ''; ?>>
+									<span class="user-menu__icono user-menu__icono--<?php echo esc_attr( $afectivalab_item['tono'] ); ?>"><?php afectivalab_icon( $afectivalab_item['icon'] ); ?></span>
+									<span class="user-menu__texto">
+										<strong><?php echo esc_html( $afectivalab_item['label'] ); ?></strong>
+										<small><?php echo esc_html( $afectivalab_item['desc'] ); ?></small>
+									</span>
+									<?php if ( $afectivalab_item['activo'] ) : ?>
+										<span class="user-menu__aqui"><?php esc_html_e( 'Estás aquí', 'afectivalab' ); ?></span>
+									<?php endif; ?>
+								</a>
+							<?php endforeach; ?>
+						</nav>
+						<a class="user-menu__salir" href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>">
+							<?php afectivalab_icon( 'menu-salir' ); ?>
+							<?php esc_html_e( 'Cerrar sesión', 'afectivalab' ); ?>
+						</a>
 					</div>
 				</div>
 			<?php else : ?>
@@ -87,14 +107,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php echo afectivalab_get_avatar_html( $afectivalab_mobile_user, 40 ); // phpcs:ignore WordPress.Security.EscapeOutput -- ya escapado dentro del helper. ?>
 				<span><?php echo esc_html( $afectivalab_mobile_user->display_name ); ?></span>
 			</div>
-			<a href="<?php echo esc_url( home_url( '/panel' ) ); ?>"><?php esc_html_e( 'Mi panel', 'afectivalab' ); ?></a>
-			<?php if ( afectivalab_es_del_equipo() ) : ?>
-				<a href="<?php echo esc_url( admin_url() ); ?>"><?php esc_html_e( 'Escritorio', 'afectivalab' ); ?></a>
-			<?php else : ?>
-				<a href="<?php echo esc_url( home_url( '/mis-hijos' ) ); ?>"><?php esc_html_e( 'Mis hijos', 'afectivalab' ); ?></a>
-			<?php endif; ?>
-			<a href="<?php echo esc_url( home_url( '/mi-cuenta' ) ); ?>"><?php esc_html_e( 'Mi cuenta', 'afectivalab' ); ?></a>
-			<a href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>"><?php esc_html_e( 'Salir', 'afectivalab' ); ?></a>
+			<?php foreach ( afectivalab_menu_cuenta_items() as $afectivalab_item ) : ?>
+				<a class="mobile-nav__cuenta<?php echo $afectivalab_item['activo'] ? ' is-activo' : ''; ?>" href="<?php echo esc_url( $afectivalab_item['url'] ); ?>"<?php echo $afectivalab_item['activo'] ? ' aria-current="page"' : ''; ?>>
+					<span class="user-menu__icono user-menu__icono--<?php echo esc_attr( $afectivalab_item['tono'] ); ?>"><?php afectivalab_icon( $afectivalab_item['icon'] ); ?></span>
+					<?php echo esc_html( $afectivalab_item['label'] ); ?>
+				</a>
+			<?php endforeach; ?>
+			<a class="mobile-nav__cuenta mobile-nav__salir" href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>">
+				<span class="user-menu__icono"><?php afectivalab_icon( 'menu-salir' ); ?></span>
+				<?php esc_html_e( 'Cerrar sesión', 'afectivalab' ); ?>
+			</a>
 		<?php elseif ( ! in_array( get_query_var( 'afectivalab_route' ), array( 'ingresar', 'recuperar', 'restablecer' ), true ) ) : ?>
 			<a href="<?php echo esc_url( home_url( '/ingresar' ) ); ?>"><?php esc_html_e( 'Ingresar', 'afectivalab' ); ?></a>
 		<?php endif; ?>

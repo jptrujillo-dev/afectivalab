@@ -1,0 +1,441 @@
+/* ===== Certificado de finalización =====
+   Página independiente (no usa header.php/footer.php): es un documento para
+   imprimir o guardar como PDF, no una página del sitio. Por eso el fondo, la
+   tipografía y el layout se definen desde cero aquí en vez de heredar el
+   body del sitio.
+
+   Pantalla 5 de la referencia Stitch (docs/rediseno-stitch.md): felicitación
+   arriba, el diploma con marco de colores de marca y las acciones abajo. Al
+   imprimir solo queda el diploma (todo lo demás lleva .no-imprimir). */
+
+body.certificado-body {
+	background:
+		radial-gradient(circle at 15% 0%, var(--color-purple-tint), transparent 45%),
+		radial-gradient(circle at 90% 10%, var(--color-green-tint), transparent 40%),
+		var(--color-bg-alt);
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: var(--space-5) var(--space-4) var(--space-7);
+}
+
+/* --- Barra superior (solo en pantalla) --- */
+.certificado-barra {
+	width: 100%;
+	max-width: 900px;
+	display: flex;
+	align-items: center;
+	margin-bottom: var(--space-4);
+}
+
+.certificado-volver {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: var(--color-text-muted);
+	transition: color 0.15s ease;
+}
+
+.certificado-volver:hover {
+	color: var(--color-purple);
+}
+
+.certificado-volver__flecha {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background: var(--color-white);
+	box-shadow: var(--shadow-soft);
+	transition: transform 0.15s ease;
+}
+
+.certificado-volver:hover .certificado-volver__flecha {
+	transform: translateX(-3px);
+}
+
+.certificado-volver__icon {
+	width: 14px;
+	height: 14px;
+	transform: rotate(180deg);
+}
+
+/* --- Felicitación --- */
+.certificado-celebra {
+	max-width: 640px;
+	text-align: center;
+	margin-bottom: var(--space-5);
+	animation: certificado-aparecer 0.4s ease both;
+}
+
+.certificado-celebra__pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: var(--color-yellow);
+	color: var(--color-ink);
+	border-radius: var(--radius-pill);
+	padding: 4px 16px 4px 8px;
+	font-size: 0.8rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	box-shadow: var(--shadow-tactile-yellow);
+	margin-bottom: var(--space-3);
+}
+
+.certificado-celebra__pill svg {
+	width: 22px;
+	height: 22px;
+}
+
+.certificado-celebra__titulo {
+	font-size: 2.3rem;
+	margin: 0 0 var(--space-2);
+}
+
+.certificado-celebra__texto {
+	color: var(--color-text-muted);
+	font-size: 1.02rem;
+	margin: 0;
+}
+
+/* --- La hoja del certificado --- */
+.certificado-hoja {
+	position: relative;
+	width: 100%;
+	max-width: 900px;
+	/* Marco degradado en los tres colores de marca: el padding deja ver el
+	   fondo degradado alrededor de la hoja blanca. */
+	padding: 8px;
+	border-radius: calc(var(--radius-lg) + 8px);
+	background: linear-gradient(135deg, var(--color-purple), var(--color-green) 55%, var(--color-yellow));
+	box-shadow: var(--shadow-card);
+	animation: certificado-aparecer 0.45s 0.1s ease both;
+}
+
+.certificado-marco {
+	position: relative;
+	overflow: hidden;
+	background: var(--color-white);
+	border-radius: var(--radius-lg);
+	padding: var(--space-7) var(--space-6) var(--space-6);
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+/* Un segundo borde interior, más fino, es lo que le da la sensación de
+   documento formal sin recurrir a un marco ornamental que no tenemos
+   dibujado. */
+.certificado-marco::before {
+	content: "";
+	position: absolute;
+	inset: 14px;
+	border: 1.5px dashed var(--color-border);
+	border-radius: calc(var(--radius-lg) - 10px);
+	pointer-events: none;
+}
+
+.certificado-doodle {
+	position: absolute;
+	width: 46px;
+	height: 56px;
+}
+
+.certificado-doodle--1 {
+	top: 7%;
+	left: 5%;
+	color: var(--color-green);
+	opacity: 0.35;
+	transform: rotate(-16deg);
+}
+
+.certificado-doodle--2 {
+	top: 9%;
+	right: 6%;
+	width: 38px;
+	height: 34px;
+	color: var(--color-purple);
+	opacity: 0.35;
+	transform: rotate(10deg);
+}
+
+.certificado-doodle--3 {
+	top: 42%;
+	left: 5%;
+	color: var(--color-green);
+	opacity: 0.3;
+	transform: rotate(20deg);
+}
+
+.certificado-logo {
+	width: 190px;
+	height: 38px;
+	margin-bottom: var(--space-3);
+}
+
+.certificado-etiqueta {
+	display: inline-block;
+	background: var(--color-purple-tint);
+	border-radius: var(--radius-pill);
+	padding: 4px 16px;
+	font-family: var(--font-display);
+	font-weight: 600;
+	font-size: 0.82rem;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--color-purple-dark);
+	margin-bottom: var(--space-4);
+}
+
+.certificado-otorga {
+	color: var(--color-text-muted);
+	font-size: 0.95rem;
+	margin: 0 0 var(--space-2);
+}
+
+.certificado-nombre {
+	font-size: 2.8rem;
+	color: var(--color-purple-dark);
+	margin: 0 0 var(--space-3);
+	padding-bottom: var(--space-2);
+	border-bottom: 3px solid var(--color-yellow);
+}
+
+.certificado-texto {
+	font-size: 1.05rem;
+	color: var(--color-text-muted);
+	max-width: 44ch;
+	margin: 0 0 var(--space-1);
+}
+
+.certificado-curso {
+	font-family: var(--font-display);
+	font-weight: 600;
+	font-size: 1.35rem;
+	color: var(--color-ink);
+	margin: 0 0 var(--space-4);
+}
+
+.certificado-insignia {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-3);
+	background: var(--color-green-tint);
+	border: 2px solid var(--color-green);
+	border-radius: var(--radius-pill);
+	padding: 8px 24px 8px 10px;
+	margin-bottom: var(--space-5);
+	text-align: left;
+}
+
+.certificado-insignia__icon {
+	width: 42px;
+	height: 42px;
+	flex: none;
+}
+
+.certificado-insignia span {
+	display: flex;
+	flex-direction: column;
+	font-family: var(--font-display);
+	font-weight: 600;
+	color: var(--color-green-dark);
+	font-size: 1rem;
+}
+
+.certificado-insignia small {
+	font-family: var(--font-body);
+	font-size: 0.7rem;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--color-text-muted);
+}
+
+/* Pie: acompañante a un lado, sello al centro, fecha al otro. */
+.certificado-pie {
+	width: 100%;
+	max-width: 640px;
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	align-items: end;
+	gap: var(--space-4);
+}
+
+.certificado-firma {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.certificado-firma__nombre {
+	width: 100%;
+	font-family: var(--font-display);
+	font-weight: 600;
+	font-size: 1rem;
+	color: var(--color-ink);
+	padding-bottom: var(--space-2);
+	border-bottom: 1.5px solid var(--color-border);
+}
+
+.certificado-acompanamiento,
+.certificado-fecha {
+	color: var(--color-text-muted);
+	font-size: 0.78rem;
+	margin: var(--space-2) 0 0;
+}
+
+.certificado-sello {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 72px;
+	height: 72px;
+	border-radius: 50%;
+	background: var(--color-yellow-tint);
+	border: 3px solid var(--color-yellow);
+	box-shadow: 0 0 0 5px var(--color-white), 0 0 0 7px var(--color-yellow-tint);
+}
+
+.certificado-sello__icon {
+	width: 40px;
+	height: 40px;
+}
+
+/* --- Acciones (solo en pantalla) --- */
+.certificado-acciones {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: var(--space-3);
+	max-width: 900px;
+	margin-top: var(--space-5);
+	animation: certificado-aparecer 0.45s 0.2s ease both;
+}
+
+.certificado-acciones .btn-primary {
+	box-shadow: var(--shadow-tactile-green);
+}
+
+.certificado-acciones .btn-primary:active {
+	transform: translateY(2px);
+	box-shadow: none;
+}
+
+.certificado-acciones .btn-primary svg {
+	width: 22px;
+	height: 22px;
+}
+
+.certificado-acciones__ayuda {
+	flex-basis: 100%;
+	text-align: center;
+	font-size: 0.82rem;
+	color: var(--color-text-muted);
+	margin: 0;
+}
+
+@keyframes certificado-aparecer {
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.certificado-celebra,
+	.certificado-hoja,
+	.certificado-acciones {
+		animation: none;
+	}
+}
+
+@media (max-width: 640px) {
+	.certificado-celebra__titulo {
+		font-size: 1.8rem;
+	}
+
+	.certificado-marco {
+		padding: var(--space-6) var(--space-4) var(--space-5);
+	}
+
+	/* En pantalla chica no hay margen libre para los adornos: se cruzarían
+	   con el texto. */
+	.certificado-doodle {
+		display: none;
+	}
+
+	.certificado-nombre {
+		font-size: 2rem;
+	}
+
+	.certificado-pie {
+		grid-template-columns: 1fr;
+		justify-items: center;
+	}
+
+	.certificado-sello {
+		order: -1;
+	}
+
+	.certificado-acciones .btn {
+		width: 100%;
+		justify-content: center;
+	}
+}
+
+/* --- Impresión / "Guardar como PDF" --- */
+@media print {
+	@page {
+		size: A4 landscape;
+		margin: 0;
+	}
+
+	.no-imprimir {
+		display: none !important;
+	}
+
+	body.certificado-body {
+		padding: 0;
+		background: var(--color-white);
+	}
+
+	/* Los navegadores no imprimen fondos por defecto: se les pide que sí,
+	   o el marco degradado desaparece. */
+	.certificado-hoja,
+	.certificado-marco,
+	.certificado-etiqueta,
+	.certificado-insignia,
+	.certificado-sello {
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+
+	.certificado-hoja {
+		max-width: none;
+		min-height: 100vh;
+		border-radius: 0;
+		box-shadow: none;
+		animation: none;
+		display: flex;
+	}
+
+	.certificado-marco {
+		flex: 1;
+		justify-content: center;
+		border-radius: 0;
+	}
+}

@@ -170,6 +170,38 @@ function afectivalab_hijo_preocupaciones( $hijo_id ) {
 }
 
 /**
+ * Lo que /mis-hijos muestra de cada perfil, todo calculado de datos reales:
+ * edad y etapa, estrellas (una por clase terminada), insignias (una por
+ * curso terminado) y el curso en el que va ahora.
+ *
+ * @param int $hijo_id
+ * @return array{edad: int|null, etapa: WP_Term|null, estrellas: int, insignias: int, cursos: int, actual: array|null}
+ */
+function afectivalab_hijo_resumen( $hijo_id ) {
+	$etapa  = afectivalab_hijo_etapa( $hijo_id );
+	$ruta   = $etapa ? afectivalab_ruta_del_hijo( $hijo_id ) : array();
+	$hechos = 0;
+	$actual = null;
+
+	foreach ( $ruta as $paso ) {
+		if ( $paso['progreso']['completo'] ) {
+			$hechos++;
+		} elseif ( null === $actual ) {
+			$actual = $paso;
+		}
+	}
+
+	return array(
+		'edad'      => afectivalab_hijo_edad( $hijo_id ),
+		'etapa'     => $etapa,
+		'estrellas' => afectivalab_hijo_estrellas( $hijo_id ),
+		'insignias' => $hechos,
+		'cursos'    => count( $ruta ),
+		'actual'    => $actual,
+	);
+}
+
+/**
  * Año de nacimiento más antiguo que se acepta: el de alguien que cumple 17
  * este año. Más arriba de los 17 la plataforma ya no tiene contenido.
  */
@@ -300,6 +332,13 @@ function afectivalab_handle_hijo_forms() {
 			$anio_minimo,
 			$anio_actual
 		);
+	}
+
+	// Máximo 5 perfiles por cuenta — solo al dar de alta uno nuevo, nunca al
+	// editar uno que ya existe. Independiente de todo lo demás (incluida la
+	// suscripción): es un límite de la cuenta, no un beneficio del plan.
+	if ( ! $hijo && count( afectivalab_get_hijos( $user_id ) ) >= 5 ) {
+		$result['errors'][] = __( 'Ya tienes 5 perfiles de hijo, el máximo por cuenta.', 'afectivalab' );
 	}
 
 	if ( $result['errors'] ) {

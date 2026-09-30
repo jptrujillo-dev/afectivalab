@@ -16,6 +16,10 @@ if ( ! is_user_logged_in() ) {
 	exit;
 }
 
+// Sin suscripción activa, a /suscribirse — el equipo de contenido queda
+// exento adentro de la propia función (no son clientes).
+afectivalab_requiere_suscripcion();
+
 // Quien produce el contenido no es una familia: mostrarle "agrega a tu hijo"
 // no tiene sentido. Ve su propio panel, salvo que pida expresamente la vista
 // de familia (útil para probar la plataforma como la usa el padre).
@@ -37,6 +41,7 @@ $afectivalab_etapa = $afectivalab_hijo ? afectivalab_hijo_etapa( $afectivalab_hi
 $afectivalab_ruta  = $afectivalab_hijo ? afectivalab_ruta_del_hijo( $afectivalab_hijo->ID ) : array();
 $afectivalab_actual = $afectivalab_hijo ? afectivalab_curso_actual( $afectivalab_hijo->ID ) : null;
 $afectivalab_habilidades = $afectivalab_hijo ? afectivalab_habilidades_del_hijo( $afectivalab_hijo->ID ) : array();
+$afectivalab_gps         = $afectivalab_hijo ? afectivalab_hijo_proximo_cambio_etapa( $afectivalab_hijo->ID ) : null;
 
 get_header();
 ?>
@@ -77,11 +82,21 @@ get_header();
 				<?php endif; ?>
 			</div>
 
-			<?php // Las monedas son de la cuenta, no del hijo: se ganan resolviendo misiones (ver inc/misiones.php). ?>
-			<span class="monedas-chip">
-				<?php afectivalab_icon( 'juego-monedas' ); ?>
-				<?php echo esc_html( afectivalab_padre_monedas( $afectivalab_user->ID ) ); ?>
-			</span>
+			<div class="panel-saludo__chips">
+				<?php if ( $afectivalab_hijo ) : ?>
+					<?php // Las estrellas son del hijo, no de la cuenta: una por cada microclase que terminó, lleve o no misión (ver inc/estrellas.php). ?>
+					<span class="estrellas-chip">
+						<?php afectivalab_icon( 'star' ); ?>
+						<?php echo esc_html( afectivalab_hijo_estrellas( $afectivalab_hijo->ID ) ); ?>
+					</span>
+				<?php endif; ?>
+
+				<?php // Las monedas son de la cuenta, no del hijo: se ganan resolviendo misiones (ver inc/misiones.php). ?>
+				<span class="monedas-chip">
+					<?php afectivalab_icon( 'juego-monedas' ); ?>
+					<?php echo esc_html( afectivalab_padre_monedas( $afectivalab_user->ID ) ); ?>
+				</span>
+			</div>
 		</header>
 
 		<?php if ( afectivalab_mostrar_onboarding() ) : ?>
@@ -118,6 +133,37 @@ get_header();
 						</a>
 					<?php endforeach; ?>
 				</nav>
+			<?php endif; ?>
+
+			<?php if ( $afectivalab_gps ) : ?>
+				<section class="panel-gps reveal">
+					<span class="panel-gps__icono">
+						<?php afectivalab_icon( 'juego-mapa-desbloqueable' ); ?>
+					</span>
+					<div class="panel-gps__texto">
+						<strong>
+							<?php
+							printf(
+								/* translators: 1: meses que faltan, 2: nombre del hijo, 3: nombre de la etapa nueva. */
+								esc_html(
+									_n(
+										'En %1$d mes, %2$s entra a la etapa de %3$s',
+										'En %1$d meses, %2$s entra a la etapa de %3$s',
+										$afectivalab_gps['meses'],
+										'afectivalab'
+									)
+								),
+								absint( $afectivalab_gps['meses'] ),
+								esc_html( $afectivalab_hijo->post_title ),
+								esc_html( mb_strtolower( $afectivalab_gps['etapa']->name ) )
+							);
+							?>
+						</strong>
+						<?php if ( $afectivalab_gps['enfoque'] ) : ?>
+							<p><?php echo esc_html( $afectivalab_gps['enfoque'] ); ?></p>
+						<?php endif; ?>
+					</div>
+				</section>
 			<?php endif; ?>
 
 			<?php if ( ! $afectivalab_etapa ) : ?>
@@ -160,13 +206,27 @@ get_header();
 					$afectivalab_eje     = $afectivalab_actual['eje'];
 					$afectivalab_avance  = $afectivalab_actual['progreso'];
 					$afectivalab_empezado = $afectivalab_avance['hechas'] > 0;
+
+					// Recordatorio de curso pendiente: solo tiene sentido si
+					// ya empezaron y hace rato que no vuelven — a un curso
+					// recién sugerido no hay nada que "recordarle".
+					$afectivalab_dias_inactivo = $afectivalab_empezado ? afectivalab_hijo_dias_inactivo( $afectivalab_hijo->ID ) : null;
+					$afectivalab_estancado     = null !== $afectivalab_dias_inactivo && $afectivalab_dias_inactivo >= afectivalab_dias_para_recordatorio();
 					?>
-					<section class="panel-destacado reveal">
-						<span class="panel-destacado__etiqueta">
+					<section class="panel-destacado reveal <?php echo $afectivalab_estancado ? 'panel-destacado--recordatorio' : ''; ?>">
+						<span class="panel-destacado__etiqueta <?php echo $afectivalab_estancado ? 'panel-destacado__etiqueta--recordatorio' : ''; ?>">
 							<?php
-							$afectivalab_empezado
-								? esc_html_e( 'Continúa donde lo dejaron', 'afectivalab' )
-								: esc_html_e( 'Te recomendamos empezar por aquí', 'afectivalab' );
+							if ( $afectivalab_estancado ) {
+								printf(
+									/* translators: %d: días sin continuar. */
+									esc_html__( 'Hace %d días que no continúan — no te olvides de culminar el curso', 'afectivalab' ),
+									absint( $afectivalab_dias_inactivo )
+								);
+							} else {
+								$afectivalab_empezado
+									? esc_html_e( 'Continúa donde lo dejaron', 'afectivalab' )
+									: esc_html_e( 'Te recomendamos empezar por aquí', 'afectivalab' );
+							}
 							?>
 						</span>
 
@@ -178,6 +238,20 @@ get_header();
 							<?php endif; ?>
 
 							<div class="panel-destacado__texto">
+								<span class="panel-destacado__etiqueta panel-destacado__etiqueta--razon">
+									<?php
+									if ( $afectivalab_actual['prioritario'] ) {
+										printf(
+											/* translators: %s: nombre del eje temático. */
+											esc_html__( 'Te preocupa: %s', 'afectivalab' ),
+											esc_html( $afectivalab_eje ? $afectivalab_eje->name : '' )
+										);
+									} elseif ( $afectivalab_etapa ) {
+										echo esc_html( $afectivalab_etapa->name );
+									}
+									?>
+								</span>
+
 								<h2><?php echo esc_html( $afectivalab_curso->post_title ); ?></h2>
 
 								<?php if ( $afectivalab_actual['prioritario'] ) : ?>
@@ -204,17 +278,49 @@ get_header();
 									</p>
 								<?php endif; ?>
 
+								<?php if ( has_excerpt( $afectivalab_curso ) ) : ?>
+									<p class="panel-destacado__resumen"><?php echo esc_html( get_the_excerpt( $afectivalab_curso ) ); ?></p>
+								<?php endif; ?>
+
 								<?php if ( $afectivalab_avance['total'] ) : ?>
 									<div class="progreso-bar">
 										<span class="progreso-bar__fill" style="width: <?php echo esc_attr( $afectivalab_avance['porcentaje'] ); ?>%"></span>
 									</div>
 									<span class="panel-destacado__avance">
 										<?php
+										if ( $afectivalab_avance['siguiente'] ) {
+											$afectivalab_duracion = (int) get_post_meta( $afectivalab_avance['siguiente']->ID, '_afectivalab_duracion', true );
+											printf(
+												/* translators: 1: número de clase, 2: total de clases, 3: título de la clase, 4: duración en minutos. */
+												esc_html__( 'Clase %1$d de %2$d: %3$s%4$s', 'afectivalab' ),
+												absint( $afectivalab_avance['hechas'] + 1 ),
+												absint( $afectivalab_avance['total'] ),
+												esc_html( $afectivalab_avance['siguiente']->post_title ),
+												$afectivalab_duracion ? ' · ' . absint( $afectivalab_duracion ) . ' min' : ''
+											);
+										} else {
+											printf(
+												/* translators: 1: clases hechas, 2: total de clases. */
+												esc_html__( '%1$d de %2$d clases', 'afectivalab' ),
+												absint( $afectivalab_avance['hechas'] ),
+												absint( $afectivalab_avance['total'] )
+											);
+										}
+										?>
+									</span>
+								<?php endif; ?>
+
+								<?php
+								$afectivalab_habilidad_curso = get_post_meta( $afectivalab_curso->ID, '_afectivalab_habilidad', true );
+								if ( $afectivalab_habilidad_curso ) :
+									?>
+									<span class="panel-destacado__insignia">
+										<?php afectivalab_icon( 'juego-insignia' ); ?>
+										<?php
 										printf(
-											/* translators: 1: clases hechas, 2: total de clases. */
-											esc_html__( '%1$d de %2$d clases', 'afectivalab' ),
-											absint( $afectivalab_avance['hechas'] ),
-											absint( $afectivalab_avance['total'] )
+											/* translators: %s: nombre de la habilidad/insignia. */
+											esc_html__( 'Desbloquea la insignia "%s" al terminar este curso', 'afectivalab' ),
+											esc_html( $afectivalab_habilidad_curso )
 										);
 										?>
 									</span>
@@ -229,6 +335,12 @@ get_header();
 									<?php afectivalab_icon( 'arrow-right' ); ?>
 								</a>
 							</div>
+
+							<?php if ( has_post_thumbnail( $afectivalab_curso ) ) : ?>
+								<div class="panel-destacado__imagen">
+									<?php echo get_the_post_thumbnail( $afectivalab_curso, 'medium', array( 'alt' => esc_attr( $afectivalab_curso->post_title ) ) ); ?>
+								</div>
+							<?php endif; ?>
 						</div>
 					</section>
 				<?php else : ?>
@@ -249,15 +361,22 @@ get_header();
 				<?php endif; ?>
 
 				<section class="panel-ruta">
-					<h2 class="panel-seccion__titulo">
-						<?php
-						printf(
-							/* translators: %s: nombre del hijo. */
-							esc_html__( 'La ruta de %s', 'afectivalab' ),
-							esc_html( $afectivalab_hijo->post_title )
-						);
-						?>
-					</h2>
+					<div class="panel-seccion__head">
+						<h2 class="panel-seccion__titulo">
+							<?php
+							printf(
+								/* translators: %s: nombre del hijo. */
+								esc_html__( 'La ruta de %s', 'afectivalab' ),
+								esc_html( $afectivalab_hijo->post_title )
+							);
+							?>
+						</h2>
+
+						<a class="panel-ruta__mundos" href="<?php echo esc_url( home_url( '/mundos' ) ); ?>">
+							<?php esc_html_e( 'Explorar todos los mundos', 'afectivalab' ); ?>
+							<?php afectivalab_icon( 'arrow-right' ); ?>
+						</a>
+					</div>
 
 					<ul class="ruta-cursos reveal-stagger">
 						<?php foreach ( $afectivalab_ruta as $afectivalab_paso ) : ?>
@@ -279,6 +398,10 @@ get_header();
 										?>
 									</span>
 
+									<?php if ( $afectivalab_paso['prioritario'] ) : ?>
+										<span class="ruta-curso__chip"><?php esc_html_e( 'Te preocupa', 'afectivalab' ); ?></span>
+									<?php endif; ?>
+
 									<span class="ruta-curso__texto">
 										<strong><?php echo esc_html( $afectivalab_paso['curso']->post_title ); ?></strong>
 										<span class="ruta-curso__meta">
@@ -295,11 +418,13 @@ get_header();
 												<?php esc_html_e( 'En preparación', 'afectivalab' ); ?>
 											<?php endif; ?>
 										</span>
-									</span>
 
-									<?php if ( $afectivalab_paso['prioritario'] ) : ?>
-										<span class="ruta-curso__chip"><?php esc_html_e( 'Te preocupa', 'afectivalab' ); ?></span>
-									<?php endif; ?>
+										<?php if ( $afectivalab_p['total'] && ! $afectivalab_p['completo'] ) : ?>
+											<span class="progreso-bar progreso-bar--mini">
+												<span class="progreso-bar__fill" style="width: <?php echo esc_attr( $afectivalab_p['porcentaje'] ); ?>%"></span>
+											</span>
+										<?php endif; ?>
+									</span>
 								</a>
 							</li>
 						<?php endforeach; ?>
@@ -316,6 +441,9 @@ get_header();
 									<?php afectivalab_icon( 'juego-insignia', 'habilidad-card__icon' ); ?>
 									<strong><?php echo esc_html( $afectivalab_h['habilidad'] ); ?></strong>
 									<span><?php echo esc_html( $afectivalab_h['curso']->post_title ); ?></span>
+									<a class="habilidad-card__certificado" href="<?php echo esc_url( afectivalab_certificado_url( $afectivalab_hijo->ID, $afectivalab_h['curso']->ID ) ); ?>">
+										<?php esc_html_e( 'Ver certificado', 'afectivalab' ); ?>
+									</a>
 								</li>
 							<?php endforeach; ?>
 						</ul>

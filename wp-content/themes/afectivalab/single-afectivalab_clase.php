@@ -4,6 +4,10 @@
  *
  * Las clases se abren en orden. Si alguien llega a una que todavía no le
  * toca, se lo devuelve al curso en vez de mostrarle el contenido.
+ *
+ * Diseño: pantalla 3 de la referencia Stitch (docs/rediseno-stitch.md). De
+ * esa referencia solo se toma la forma; todo lo que muestra sale de datos
+ * reales de la clase, del curso y del hijo.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -21,6 +25,11 @@ if ( ! $afectivalab_hijo ) {
 	exit;
 }
 
+// Recién acá, con sesión y un hijo real, tiene sentido pedir suscripción: el
+// contenido de la microclase (video, misión, caso) es lo que de verdad se
+// paga — el curso-vitrina sigue viéndose sin pagar (ver single-afectivalab_curso.php).
+afectivalab_requiere_suscripcion();
+
 if ( ! afectivalab_clase_desbloqueada( $afectivalab_hijo->ID, $afectivalab_clase_id ) ) {
 	wp_safe_redirect( $afectivalab_curso_id ? get_permalink( $afectivalab_curso_id ) : home_url( '/' ) );
 	exit;
@@ -37,11 +46,14 @@ if ( $afectivalab_mision ) {
 	afectivalab_handle_clase_form( $afectivalab_clase_id, $afectivalab_hijo->ID );
 }
 
-$afectivalab_hecha        = afectivalab_clase_completada( $afectivalab_hijo->ID, $afectivalab_clase_id );
-$afectivalab_mision_estado = $afectivalab_mision ? afectivalab_mision_estado( $afectivalab_hijo->ID, $afectivalab_clase_id ) : '';
-$afectivalab_duracion     = (int) get_post_meta( $afectivalab_clase_id, '_afectivalab_duracion', true );
-$afectivalab_tipo         = get_post_meta( $afectivalab_clase_id, '_afectivalab_video_tipo', true );
-$afectivalab_nodos        = afectivalab_ruta_del_curso( $afectivalab_hijo->ID, $afectivalab_curso_id );
+// El caso interactivo es independiente de lo anterior: nunca redirige y
+// nunca completa la clase por su cuenta (ver inc/casos.php), así que se
+// procesa siempre, sin importar si la clase lleva misión o no.
+afectivalab_handle_caso_form( $afectivalab_clase_id, $afectivalab_hijo->ID );
+
+$afectivalab_duracion = (int) get_post_meta( $afectivalab_clase_id, '_afectivalab_duracion', true );
+$afectivalab_tipo     = get_post_meta( $afectivalab_clase_id, '_afectivalab_video_tipo', true );
+$afectivalab_nodos    = afectivalab_ruta_del_curso( $afectivalab_hijo->ID, $afectivalab_curso_id );
 
 $afectivalab_numero = 0;
 foreach ( $afectivalab_nodos as $afectivalab_nodo ) {
@@ -51,43 +63,79 @@ foreach ( $afectivalab_nodos as $afectivalab_nodo ) {
 	}
 }
 
+// El caso, el progreso y el cierre (misión / "marcar como vista") viven en
+// template-parts/clase/: los mismos bloques los devuelven las respuestas
+// AJAX de inc/clase-ajax.php, así que se responde sin recargar la página.
+
 get_header();
 ?>
 
 <main class="clase-page">
 	<div class="container clase-page__inner">
 
-		<a class="clase-volver" href="<?php echo esc_url( get_permalink( $afectivalab_curso_id ) ); ?>">
-			<?php afectivalab_icon( 'arrow-right', 'clase-volver__icon' ); ?>
-			<?php echo esc_html( get_the_title( $afectivalab_curso_id ) ); ?>
-		</a>
+		<div class="clase-top">
+			<a class="clase-volver" href="<?php echo esc_url( get_permalink( $afectivalab_curso_id ) ); ?>">
+				<span class="clase-volver__flecha" aria-hidden="true"><?php afectivalab_icon( 'arrow-right', 'clase-volver__icon' ); ?></span>
+				<?php esc_html_e( 'Volver al mapa del curso', 'afectivalab' ); ?>
+			</a>
+
+			<nav class="clase-migas" aria-label="<?php esc_attr_e( 'Dónde estás', 'afectivalab' ); ?>">
+				<a href="<?php echo esc_url( home_url( '/panel' ) ); ?>">
+					<?php
+					printf(
+						/* translators: %s: nombre del hijo. */
+						esc_html__( 'Ruta de %s', 'afectivalab' ),
+						esc_html( $afectivalab_hijo->post_title )
+					);
+					?>
+				</a>
+				<span aria-hidden="true">›</span>
+				<a href="<?php echo esc_url( get_permalink( $afectivalab_curso_id ) ); ?>"><?php echo esc_html( get_the_title( $afectivalab_curso_id ) ); ?></a>
+			</nav>
+		</div>
 
 		<header class="clase-head">
-			<span class="clase-head__numero">
-				<?php
-				printf(
-					/* translators: 1: número de clase, 2: total de clases. */
-					esc_html__( 'Clase %1$d de %2$d', 'afectivalab' ),
-					absint( $afectivalab_numero ),
-					count( $afectivalab_nodos )
-				);
-				?>
-			</span>
+			<ul class="clase-head__chips">
+				<li class="clase-chip clase-chip--numero">
+					<?php afectivalab_icon( 'juego-mapa-desbloqueable' ); ?>
+					<?php
+					printf(
+						/* translators: 1: número de clase, 2: total de clases. */
+						esc_html__( 'Clase %1$d de %2$d', 'afectivalab' ),
+						absint( $afectivalab_numero ),
+						count( $afectivalab_nodos )
+					);
+					?>
+				</li>
+				<?php if ( $afectivalab_duracion ) : ?>
+					<li class="clase-chip">
+						<?php afectivalab_icon( 'leccion-video-principal' ); ?>
+						<?php
+						printf(
+							/* translators: %d: duración en minutos. */
+							esc_html__( '%d min', 'afectivalab' ),
+							absint( $afectivalab_duracion )
+						);
+						?>
+					</li>
+				<?php endif; ?>
+				<?php if ( $afectivalab_mision ) : ?>
+					<li class="clase-chip clase-chip--monedas">
+						<?php afectivalab_icon( 'juego-monedas' ); ?>
+						<?php
+						printf(
+							/* translators: %d: monedas de la misión. */
+							esc_html__( '+%d monedas al completar la misión', 'afectivalab' ),
+							absint( $afectivalab_mision['recompensa'] )
+						);
+						?>
+					</li>
+				<?php endif; ?>
+			</ul>
 
 			<h1 class="clase-head__title"><?php the_title(); ?></h1>
 
-			<?php if ( $afectivalab_duracion ) : ?>
-				<span class="clase-head__meta">
-					<?php afectivalab_icon( 'leccion-video-principal' ); ?>
-					<?php
-					printf(
-						/* translators: %d: duración en minutos. */
-						esc_html__( '%d min', 'afectivalab' ),
-						absint( $afectivalab_duracion )
-					);
-					?>
-				</span>
-			<?php endif; ?>
+			<?php get_template_part( 'template-parts/clase/progreso', null, array( 'clase_id' => $afectivalab_clase_id, 'hijo_id' => $afectivalab_hijo->ID ) ); ?>
 		</header>
 
 		<?php if ( 'url' === $afectivalab_tipo ) : ?>
@@ -109,6 +157,7 @@ get_header();
 				<?php // No es YouTube ni Vimeo: en vez de incrustar cualquier cosa, se enlaza. ?>
 				<div class="clase-video">
 					<a class="clase-video__enlace" href="<?php echo esc_url( $afectivalab_video_url ); ?>" target="_blank" rel="noopener">
+						<span class="clase-video__play" aria-hidden="true"></span>
 						<?php esc_html_e( 'Ver el video', 'afectivalab' ); ?>
 					</a>
 				</div>
@@ -142,120 +191,29 @@ get_header();
 		<?php endif; ?>
 
 		<?php if ( get_the_content() ) : ?>
-			<div class="clase-contenido"><?php the_content(); ?></div>
-		<?php endif; ?>
-
-		<div class="clase-accion <?php echo $afectivalab_hecha ? 'is-hecha' : ''; ?>">
-			<?php if ( $afectivalab_hecha ) : ?>
-				<span class="clase-accion__sello">
-					<?php afectivalab_icon( 'check' ); ?>
-					<?php
-					if ( $afectivalab_mision ) {
-						printf(
-							/* translators: %d: monedas ganadas. */
-							esc_html__( '¡Misión cumplida! +%d monedas', 'afectivalab' ),
-							absint( $afectivalab_mision['recompensa'] )
-						);
-					} else {
-						esc_html_e( 'Ya la vieron', 'afectivalab' );
-					}
-					?>
-				</span>
-
-				<?php
-				$afectivalab_progreso = afectivalab_progreso_curso( $afectivalab_hijo->ID, $afectivalab_curso_id );
-				$afectivalab_siguiente = $afectivalab_progreso['siguiente'];
-				?>
-
-				<?php if ( $afectivalab_siguiente ) : ?>
-					<a class="btn btn-primary" href="<?php echo esc_url( get_permalink( $afectivalab_siguiente ) ); ?>">
-						<?php esc_html_e( 'Siguiente clase', 'afectivalab' ); ?>
-						<?php afectivalab_icon( 'arrow-right' ); ?>
-					</a>
-				<?php else : ?>
-					<a class="btn btn-primary" href="<?php echo esc_url( get_permalink( $afectivalab_curso_id ) ); ?>">
-						<?php esc_html_e( 'Volver al curso', 'afectivalab' ); ?>
-						<?php afectivalab_icon( 'arrow-right' ); ?>
-					</a>
-				<?php endif; ?>
-			<?php elseif ( $afectivalab_mision ) : ?>
-
-				<?php // Clase con misión: resolverla es lo que la completa. Ver inc/misiones.php. ?>
-				<div class="mision-card <?php echo 'despues' === $afectivalab_mision_estado ? 'is-despues' : ''; ?>">
-					<span class="mision-card__icono">
-						<?php afectivalab_icon( $afectivalab_mision['icono'] ); ?>
-					</span>
-
-					<div class="mision-card__cuerpo">
-						<span class="mision-card__etiqueta"><?php echo esc_html( $afectivalab_mision['nombre'] ); ?></span>
-						<p class="mision-card__texto"><?php echo esc_html( $afectivalab_mision['texto'] ); ?></p>
-
-						<?php if ( 'despues' === $afectivalab_mision_estado ) : ?>
-							<p class="mision-card__aviso">
-								<?php esc_html_e( 'La dejaste pendiente. Cuando la hagan, márcala aquí para seguir avanzando.', 'afectivalab' ); ?>
-							</p>
-						<?php endif; ?>
-
-						<p class="mision-card__recompensa">
-							<?php afectivalab_icon( 'juego-monedas' ); ?>
+			<section class="clase-bloque clase-contenido">
+				<div class="clase-bloque__cabecera">
+					<span class="clase-bloque__icono"><?php afectivalab_icon( 'paso-aplica-casa' ); ?></span>
+					<div>
+						<h2><?php esc_html_e( 'Lo esencial de esta clase', 'afectivalab' ); ?></h2>
+						<p>
 							<?php
 							printf(
-								/* translators: %d: monedas que otorga la misión. */
-								esc_html__( 'Vale %d monedas al completarla.', 'afectivalab' ),
-								absint( $afectivalab_mision['recompensa'] )
+								/* translators: %s: nombre del hijo. */
+								esc_html__( 'Para aplicar hoy en casa con %s', 'afectivalab' ),
+								esc_html( $afectivalab_hijo->post_title )
 							);
 							?>
 						</p>
-
-						<form method="post" class="mision-card__form" <?php echo $afectivalab_mision['requiere_evidencia'] ? 'enctype="multipart/form-data"' : ''; ?>>
-							<?php wp_nonce_field( 'afectivalab_mision_' . $afectivalab_clase_id, 'afectivalab_mision_nonce' ); ?>
-
-							<?php if ( $afectivalab_mision['requiere_evidencia'] ) : ?>
-								<label class="mision-card__subir">
-									<?php esc_html_e( 'Sube una foto como evidencia', 'afectivalab' ); ?>
-									<input type="file" name="evidencia" accept="image/jpeg,image/png,image/webp" required>
-								</label>
-							<?php endif; ?>
-
-							<div class="mision-card__botones">
-								<button type="submit" name="afectivalab_mision_accion" value="hecha" class="btn btn-primary">
-									<?php afectivalab_icon( 'check' ); ?>
-									<?php esc_html_e( 'Ya la hicimos', 'afectivalab' ); ?>
-								</button>
-
-								<?php if ( 'despues' !== $afectivalab_mision_estado ) : ?>
-									<button type="submit" name="afectivalab_mision_accion" value="despues" class="btn btn-ghost" formnovalidate>
-										<?php esc_html_e( 'La haremos después', 'afectivalab' ); ?>
-									</button>
-								<?php endif; ?>
-							</div>
-						</form>
 					</div>
 				</div>
+				<div class="clase-contenido__texto"><?php the_content(); ?></div>
+			</section>
+		<?php endif; ?>
 
-			<?php else : ?>
-				<div class="clase-accion__texto">
-					<strong><?php esc_html_e( '¿Ya vieron esta clase?', 'afectivalab' ); ?></strong>
-					<p>
-						<?php
-						printf(
-							/* translators: %s: nombre del hijo. */
-							esc_html__( 'Al marcarla avanza la ruta de %s y se desbloquea la siguiente.', 'afectivalab' ),
-							esc_html( $afectivalab_hijo->post_title )
-						);
-						?>
-					</p>
-				</div>
+		<?php get_template_part( 'template-parts/clase/caso', null, array( 'clase_id' => $afectivalab_clase_id, 'hijo_id' => $afectivalab_hijo->ID ) ); ?>
 
-				<form method="post">
-					<?php wp_nonce_field( 'afectivalab_clase_' . $afectivalab_clase_id, 'afectivalab_clase_nonce' ); ?>
-					<button type="submit" name="afectivalab_clase_hecha" value="1" class="btn btn-primary">
-						<?php afectivalab_icon( 'check' ); ?>
-						<?php esc_html_e( 'Marcar como vista', 'afectivalab' ); ?>
-					</button>
-				</form>
-			<?php endif; ?>
-		</div>
+		<?php get_template_part( 'template-parts/clase/accion', null, array( 'clase_id' => $afectivalab_clase_id, 'hijo_id' => $afectivalab_hijo->ID ) ); ?>
 
 	</div>
 </main>

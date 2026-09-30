@@ -141,6 +141,51 @@ function afectivalab_otorgar_recompensa( $user_id, $cantidad ) {
 }
 
 /**
+ * Resumen para la tarjeta "Impacto en familia" de /mi-cuenta: monedas y xp
+ * reales del padre, más lo agregado de todos sus hijos (microclases
+ * completadas y las insignias que ya expone
+ * afectivalab_habilidades_del_hijo() en inc/progreso.php — el comentario
+ * de esa función ya las llama explícitamente "las insignias del padre").
+ * Nada de esto inventa datos nuevos, solo junta lo que ya se guarda por
+ * hijo en un solo resumen a nivel de cuenta.
+ *
+ * @param int $user_id
+ * @return array{monedas:int, xp:int, microclases:int, hijos:array, insignias:array}
+ */
+function afectivalab_padre_resumen_impacto( $user_id ) {
+	$microclases = 0;
+	$hijos       = array();
+	$insignias   = array();
+
+	foreach ( afectivalab_get_hijos( $user_id ) as $hijo ) {
+		$microclases += count( afectivalab_clases_completadas( $hijo->ID ) );
+
+		$etapa = afectivalab_hijo_etapa( $hijo->ID );
+
+		$hijos[] = array(
+			'nombre' => $hijo->post_title,
+			'edad'   => afectivalab_hijo_edad( $hijo->ID ),
+			'ruta'   => $etapa ? $etapa->name : '',
+		);
+
+		foreach ( afectivalab_habilidades_del_hijo( $hijo->ID ) as $habilidad ) {
+			$insignias[] = array(
+				'nombre' => $habilidad['habilidad'],
+				'hijo'   => $hijo->post_title,
+			);
+		}
+	}
+
+	return array(
+		'monedas'     => afectivalab_padre_monedas( $user_id ),
+		'xp'          => afectivalab_padre_xp( $user_id ),
+		'microclases' => $microclases,
+		'hijos'       => $hijos,
+		'insignias'   => $insignias,
+	);
+}
+
+/**
  * Marca la misión de un hijo como "la haremos después". No completa la
  * clase ni da recompensa — solo dice que la familia vio la misión y todavía
  * no la hizo. Se puede volver a marcar como hecha más adelante.
@@ -255,8 +300,14 @@ function afectivalab_handle_mision_form( $clase_id, $hijo_id ) {
 		// Sin evidencia no hay "ya la hicimos" en una misión de taller: es
 		// justamente lo que la distingue de una misión de casa. Se deja la
 		// clase como estaba (el padre sigue viendo el error abajo, en vez
-		// de una clase completada sin foto).
+		// de una clase completada sin foto). El mensaje queda en
+		// afectivalab_mision_error() para que la plantilla lo muestre.
 		if ( is_wp_error( $subida ) || ! $subida ) {
+			afectivalab_mision_error(
+				is_wp_error( $subida )
+					? $subida->get_error_message()
+					: __( 'Sube una foto para completar esta misión.', 'afectivalab' )
+			);
 			return;
 		}
 
@@ -267,6 +318,23 @@ function afectivalab_handle_mision_form( $clase_id, $hijo_id ) {
 
 	wp_safe_redirect( afectivalab_mision_redirect_destino( $hijo_id, $clase_id ) );
 	exit;
+}
+
+/**
+ * El error de la última misión enviada en esta petición (foto que faltó o no
+ * pasó las reglas). Con argumento lo guarda; sin argumento lo devuelve.
+ *
+ * @param string|null $mensaje
+ * @return string '' si no hubo error.
+ */
+function afectivalab_mision_error( $mensaje = null ) {
+	static $error = '';
+
+	if ( null !== $mensaje ) {
+		$error = (string) $mensaje;
+	}
+
+	return $error;
 }
 
 /**

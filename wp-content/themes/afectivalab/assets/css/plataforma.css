@@ -10,8 +10,7 @@
 .panel-vacio__icon,
 .panel-destacado__icono-grande,
 .curso-vacio__icon,
-.curso-logro__icon,
-.equipo-vacio__icon {
+.curso-logro__icon {
 	margin-inline: auto;
 }
 
@@ -83,13 +82,30 @@
 	margin: 0;
 	padding: 0;
 	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 	gap: var(--space-3);
 }
 
 .guia__paso {
 	display: flex;
+	flex-direction: column;
 	align-items: flex-start;
-	gap: var(--space-3);
+	gap: var(--space-2);
+	background: var(--color-bg-alt);
+	border: 1.5px solid var(--color-border);
+	border-radius: var(--radius-md);
+	padding: var(--space-3);
+}
+
+.guia__paso.is-hecho {
+	background: var(--color-green-tint);
+	border-color: transparent;
+}
+
+.guia__paso.is-actual {
+	background: var(--color-white);
+	border-color: var(--color-purple);
+	box-shadow: var(--shadow-soft);
 }
 
 .guia__marca {
@@ -115,6 +131,21 @@
 .guia__paso.is-hecho .guia__marca {
 	background: var(--color-green);
 	color: var(--color-white);
+}
+
+/* check.svg trae su círculo en currentColor (blanco aquí) y tapaba la
+   palomita: se deja solo la palomita sobre el círculo verde. */
+.guia__paso.is-hecho .guia__marca svg {
+	width: 26px;
+	height: 26px;
+}
+
+.guia__paso.is-hecho .guia__marca circle {
+	fill: transparent;
+}
+
+.guia__paso.is-hecho .guia__marca path {
+	stroke-width: 2.6;
 }
 
 .guia__paso.is-actual .guia__marca {
@@ -174,13 +205,22 @@
 	min-height: calc(100vh - 73px);
 }
 
+/* base.css le da mucho aire a todo <section> (pensado para la home). En el
+   panel las secciones van una debajo de otra con el espacio que marca cada
+   bloque; con :where() la regla pesa como "section" a secas (gana a base.css
+   por ir después) pero no pisa el relleno propio
+   de tarjetas como .panel-destacado o .panel-gps. */
+:where(.panel-page) section {
+	padding-block: 0;
+}
+
 .panel-saludo {
 	display: flex;
 	align-items: flex-start;
 	justify-content: space-between;
 	flex-wrap: wrap;
 	gap: var(--space-3);
-	margin-bottom: var(--space-5);
+	margin-bottom: var(--space-4);
 }
 
 .panel-saludo h1 {
@@ -194,6 +234,37 @@
 	font-size: 1.05rem;
 }
 
+.panel-saludo__chips {
+	flex: none;
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
+}
+
+/* Estrellas del hijo activo: una por cada microclase terminada, lleve o no
+   misión (ver inc/estrellas.php). Mismo lenguaje visual que .monedas-chip,
+   pero en morado para no competir con el amarillo de las monedas. */
+.estrellas-chip {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: var(--color-purple-tint);
+	border: 1.5px solid var(--color-purple);
+	border-radius: var(--radius-pill);
+	padding: 8px 16px;
+	font-family: var(--font-display);
+	font-weight: 700;
+	font-size: 1rem;
+	color: var(--color-purple-dark);
+	box-shadow: var(--shadow-tactile-purple);
+}
+
+.estrellas-chip svg {
+	width: 22px;
+	height: 22px;
+}
+
 /* Monedas del padre, ganadas resolviendo misiones. Mismo lenguaje visual que
    .guia__contador: una píldora suave, no una medalla que grite. */
 .monedas-chip {
@@ -201,15 +272,15 @@
 	display: inline-flex;
 	align-items: center;
 	gap: 6px;
-	background: var(--color-white);
-	border: 1.5px solid var(--color-border);
+	background: var(--color-yellow-tint);
+	border: 1.5px solid var(--color-yellow);
 	border-radius: var(--radius-pill);
 	padding: 8px 16px;
 	font-family: var(--font-display);
 	font-weight: 700;
 	font-size: 1rem;
-	color: var(--color-text);
-	box-shadow: var(--shadow-card);
+	color: var(--color-yellow-dark);
+	box-shadow: var(--shadow-tactile-yellow);
 }
 
 .monedas-chip svg {
@@ -227,7 +298,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--space-2);
-	margin-bottom: var(--space-5);
+	margin-bottom: var(--space-4);
 }
 
 .hijo-switch__item {
@@ -261,14 +332,61 @@
 	font-size: 0.9rem;
 }
 
+/* --- "GPS de crianza": aviso de cambio de etapa por cumpleaños --- */
+.panel-gps {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--space-3);
+	background: var(--color-purple-tint);
+	border-radius: var(--radius-md);
+	padding: var(--space-3) var(--space-4);
+	margin-bottom: var(--space-5);
+}
+
+.panel-gps__icono {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	background: var(--color-white);
+	border-radius: 50%;
+}
+
+.panel-gps__icono svg {
+	width: 24px;
+	height: 24px;
+}
+
+.panel-gps__texto strong {
+	display: block;
+	font-family: var(--font-display);
+	color: var(--color-purple-dark);
+	margin-bottom: 2px;
+}
+
+.panel-gps__texto p {
+	margin: 0;
+	font-size: 0.9rem;
+	color: var(--color-text-muted);
+}
+
 /* --- Tarjeta destacada: qué le toca ahora --- */
 .panel-destacado {
-	background: var(--color-white);
+	background: linear-gradient(135deg, var(--color-white) 55%, var(--color-purple-tint) 150%);
 	border-radius: var(--radius-lg);
 	box-shadow: var(--shadow-card);
 	padding: var(--space-5) var(--space-4);
-	margin-bottom: var(--space-6);
+	margin-bottom: var(--space-5);
 	border: 2px solid var(--color-purple-tint);
+}
+
+/* Recordatorio de curso pendiente: mismo lugar, borde y etiqueta cambian a
+   amarillo para que se note que este mensaje es distinto del habitual "qué
+   toca ahora" — ver afectivalab_dias_para_recordatorio() en inc/notificaciones.php. */
+.panel-destacado--recordatorio {
+	border-color: var(--color-yellow);
 }
 
 .panel-destacado__etiqueta {
@@ -283,10 +401,39 @@
 	margin-bottom: var(--space-3);
 }
 
+.panel-destacado__etiqueta--recordatorio {
+	background: var(--color-yellow-tint);
+	color: var(--color-yellow-dark);
+}
+
 .panel-destacado__cuerpo {
 	display: flex;
 	align-items: flex-start;
 	gap: var(--space-4);
+}
+
+/* La imagen del curso es lo último en el markup (por si no hay foto
+   destacada) pero visualmente va a la derecha en pantallas anchas. */
+.panel-destacado__imagen {
+	flex: none;
+	order: 3;
+	width: 160px;
+	border-radius: var(--radius-md);
+	overflow: hidden;
+	box-shadow: var(--shadow-soft);
+}
+
+.panel-destacado__imagen img {
+	display: block;
+	width: 100%;
+	height: 120px;
+	object-fit: cover;
+}
+
+@media (max-width: 640px) {
+	.panel-destacado__imagen {
+		display: none;
+	}
 }
 
 /* Los íconos de eje son insignias a todo color: van sobre fondo claro, no
@@ -312,6 +459,12 @@
 	min-width: 0;
 }
 
+.panel-destacado__etiqueta--razon {
+	background: var(--color-purple-tint);
+	color: var(--color-purple-dark);
+	margin-bottom: var(--space-2);
+}
+
 .panel-destacado__texto h2 {
 	font-size: 1.35rem;
 	margin-bottom: var(--space-2);
@@ -321,6 +474,31 @@
 	color: var(--color-text-muted);
 	font-size: 0.92rem;
 	margin-bottom: var(--space-3);
+}
+
+.panel-destacado__resumen {
+	color: var(--color-text-muted);
+	font-size: 0.92rem;
+	margin: 0 0 var(--space-3);
+}
+
+.panel-destacado__insignia {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	background: var(--color-yellow-tint);
+	color: var(--color-yellow-dark);
+	border-radius: var(--radius-sm);
+	padding: 8px 12px;
+	font-size: 0.82rem;
+	font-weight: 600;
+	margin: var(--space-2) 0 var(--space-3);
+}
+
+.panel-destacado__insignia svg {
+	flex: none;
+	width: 20px;
+	height: 20px;
 }
 
 .panel-destacado__avance {
@@ -383,7 +561,7 @@
 /* --- Lista de cursos de la ruta --- */
 .panel-ruta,
 .panel-habilidades {
-	margin-bottom: var(--space-6);
+	margin-bottom: var(--space-5);
 }
 
 .ruta-cursos {
@@ -391,24 +569,29 @@
 	margin: 0;
 	padding: 0;
 	display: grid;
-	gap: var(--space-2);
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	gap: var(--space-3);
 }
 
 .ruta-curso > a {
+	position: relative;
 	display: flex;
-	align-items: center;
-	gap: var(--space-3);
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--space-2);
+	height: 100%;
 	background: var(--color-white);
 	border: 1.5px solid var(--color-border);
 	border-radius: var(--radius-md);
 	padding: var(--space-3);
 	color: var(--color-text);
-	transition: border-color 0.15s ease, transform 0.15s ease;
+	transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .ruta-curso > a:hover {
 	border-color: var(--color-purple);
-	transform: translateX(3px);
+	box-shadow: var(--shadow-soft);
+	transform: translateY(-2px);
 }
 
 .ruta-curso__icono {
@@ -433,8 +616,18 @@
 }
 
 .ruta-curso.is-hecho .ruta-curso__icono svg {
-	width: 24px;
-	height: 24px;
+	width: 28px;
+	height: 28px;
+}
+
+/* El círculo del check toma currentColor (blanco aquí) y taparía el trazo:
+   se deja transparente para que se vea solo el ✓ sobre el verde. */
+.ruta-curso.is-hecho .ruta-curso__icono circle {
+	fill: transparent;
+}
+
+.ruta-curso.is-empezado > a {
+	border-color: var(--color-purple);
 }
 
 .ruta-curso__texto {
@@ -442,7 +635,8 @@
 	min-width: 0;
 	display: flex;
 	flex-direction: column;
-	gap: 2px;
+	gap: 4px;
+	width: 100%;
 }
 
 .ruta-curso__meta {
@@ -450,7 +644,21 @@
 	color: var(--color-text-muted);
 }
 
+.ruta-curso.is-hecho .ruta-curso__meta {
+	color: var(--color-green-dark);
+	font-weight: 600;
+}
+
+.ruta-curso__texto .progreso-bar--mini {
+	display: block;
+	height: 6px;
+	margin-top: 2px;
+}
+
 .ruta-curso__chip {
+	position: absolute;
+	top: var(--space-3);
+	right: var(--space-3);
 	flex: none;
 	background: var(--color-purple-tint);
 	color: var(--color-purple-dark);
@@ -470,6 +678,10 @@
 	gap: var(--space-3);
 }
 
+.habilidades-list {
+	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+
 .habilidad-card {
 	display: flex;
 	flex-direction: column;
@@ -477,6 +689,7 @@
 	gap: var(--space-1);
 	text-align: center;
 	background: var(--color-white);
+	border-top: 3px solid var(--color-yellow);
 	border-radius: var(--radius-md);
 	box-shadow: var(--shadow-card);
 	padding: var(--space-4) var(--space-3);
@@ -497,253 +710,20 @@
 	color: var(--color-text-muted);
 }
 
-/* ===== Panel del equipo de contenido =====
-   Más sobrio que el de la familia a propósito: es una herramienta de trabajo,
-   no la experiencia del producto. Comparte el fondo y los títulos del panel,
-   pero sin nodos ni colores de juego. */
-.equipo-cifras {
-	list-style: none;
-	margin: 0 0 var(--space-5);
-	padding: 0;
-	display: grid;
-	gap: var(--space-3);
-}
-
-.cifra {
-	background: var(--color-white);
-	border-radius: var(--radius-md);
-	box-shadow: var(--shadow-card);
-	padding: var(--space-4);
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
-}
-
-.cifra__numero {
-	font-family: var(--font-display);
-	font-weight: 700;
-	font-size: 2rem;
-	line-height: 1;
-	color: var(--color-purple);
-}
-
-.cifra__etiqueta {
-	font-weight: 600;
-	font-size: 0.9rem;
-}
-
-.cifra__extra {
-	font-size: 0.8rem;
-	color: var(--color-text-muted);
-}
-
-.equipo-aviso {
-	background: var(--color-error-tint);
-	border: 1px solid var(--color-error);
-	border-radius: var(--radius-md);
-	padding: var(--space-4);
-	margin-bottom: var(--space-5);
-}
-
-.equipo-aviso p {
-	color: var(--color-text-muted);
-	font-size: 0.9rem;
-	margin: var(--space-1) 0 var(--space-2);
-}
-
-.equipo-aviso ul {
-	margin: 0;
-	padding-left: var(--space-4);
-}
-
-.equipo-nota {
-	color: var(--color-text-muted);
-	font-size: 0.88rem;
-	margin: calc(-1 * var(--space-2)) 0 var(--space-3);
-}
-
-.equipo-etapas {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	display: grid;
-	gap: var(--space-2);
-}
-
-.equipo-etapa {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: var(--space-3);
-	background: var(--color-white);
-	border: 1.5px solid var(--color-border);
-	border-radius: var(--radius-sm);
-	padding: var(--space-3);
-}
-
-.equipo-etapa__nombre {
-	font-weight: 600;
-	font-size: 0.92rem;
-}
-
-.equipo-etapa__total {
-	font-family: var(--font-display);
-	font-weight: 700;
-	color: var(--color-purple);
-}
-
-.equipo-cursos {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	display: grid;
-	gap: var(--space-2);
-}
-
-.equipo-curso {
-	display: flex;
-	align-items: center;
-	flex-wrap: wrap;
-	gap: var(--space-3);
-	background: var(--color-white);
-	border: 1.5px solid var(--color-border);
-	border-radius: var(--radius-md);
-	padding: var(--space-3);
-}
-
-.equipo-curso__texto {
-	flex: 1;
-	min-width: 180px;
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
-}
-
-.equipo-curso__texto a {
-	font-family: var(--font-display);
-	font-weight: 600;
-	color: var(--color-text);
-}
-
-.equipo-curso__texto a:hover {
-	color: var(--color-purple);
-}
-
-.equipo-curso__meta {
-	font-size: 0.8rem;
-	color: var(--color-text-muted);
-}
-
-.equipo-curso__cifras {
-	display: flex;
-	gap: var(--space-4);
-}
-
-.equipo-curso__cifras span {
-	display: flex;
-	flex-direction: column;
-	font-size: 0.75rem;
-	color: var(--color-text-muted);
-	text-align: center;
-}
-
-.equipo-curso__cifras strong {
-	font-family: var(--font-display);
-	font-size: 1.15rem;
-	color: var(--color-text);
-}
-
-.equipo-curso__editar {
-	font-size: 0.85rem;
+.habilidad-card__certificado {
+	margin-top: var(--space-2);
+	font-size: 0.78rem;
 	font-weight: 600;
 	color: var(--color-purple);
 }
 
-.equipo-enlaces {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	display: flex;
-	flex-wrap: wrap;
-	gap: var(--space-2);
-}
-
-.equipo-enlaces a {
-	display: inline-block;
-	background: var(--color-white);
-	border: 1.5px solid var(--color-border);
-	border-radius: var(--radius-pill);
-	padding: 8px 18px;
-	font-family: var(--font-display);
-	font-weight: 600;
-	font-size: 0.88rem;
-	color: var(--color-text);
-	transition: border-color 0.15s ease, color 0.15s ease;
-}
-
-.equipo-enlaces a:hover {
-	border-color: var(--color-purple);
-	color: var(--color-purple);
-}
-
-.equipo-vacio {
-	background: var(--color-white);
-	border: 2px dashed var(--color-border);
-	border-radius: var(--radius-md);
-	padding: var(--space-6) var(--space-4);
-	text-align: center;
-}
-
-.equipo-vacio__icon {
-	width: 64px;
-	height: 64px;
-	margin-bottom: var(--space-3);
-}
-
-.equipo-vacio h3 {
-	font-size: 1.1rem;
-	margin-bottom: var(--space-1);
-}
-
-.equipo-vacio p {
-	color: var(--color-text-muted);
-	margin: 0;
-}
-
+/* --- Cabecera de sección y enlaces del panel de la familia ---
+   (El panel del equipo tiene su propia hoja: assets/css/equipo.css.) */
 .equipo-cambio {
 	margin-top: var(--space-6);
 	padding-top: var(--space-4);
 	border-top: 1px solid var(--color-border);
 	font-size: 0.9rem;
-}
-
-/* --- Navegación entre secciones del panel --- */
-.panel-tabs {
-	display: flex;
-	flex-wrap: wrap;
-	gap: var(--space-1);
-	border-bottom: 2px solid var(--color-border);
-	margin-bottom: var(--space-5);
-}
-
-.panel-tab {
-	padding: 10px 18px;
-	font-family: var(--font-display);
-	font-weight: 600;
-	font-size: 0.92rem;
-	color: var(--color-text-muted);
-	border-bottom: 3px solid transparent;
-	margin-bottom: -2px;
-	transition: color 0.15s ease, border-color 0.15s ease;
-}
-
-.panel-tab:hover {
-	color: var(--color-purple);
-}
-
-.panel-tab.is-activa {
-	color: var(--color-purple-dark);
-	border-bottom-color: var(--color-purple);
 }
 
 .panel-seccion__head {
@@ -759,191 +739,22 @@
 	margin-bottom: 0;
 }
 
-.panel-subseccion {
-	margin-top: var(--space-6);
-}
-
-/* --- Listados --- */
-.tabla {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	display: grid;
-	gap: var(--space-2);
-}
-
-.tabla__fila {
-	display: flex;
+.panel-ruta__mundos {
+	display: inline-flex;
 	align-items: center;
-	flex-wrap: wrap;
-	gap: var(--space-3);
-	background: var(--color-white);
-	border: 1.5px solid var(--color-border);
-	border-radius: var(--radius-md);
-	padding: var(--space-3);
-}
-
-.tabla__principal {
-	flex: 1;
-	min-width: 200px;
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
-}
-
-.tabla__meta {
-	font-size: 0.8rem;
-	color: var(--color-text-muted);
-}
-
-.tabla__acciones {
-	display: flex;
-	align-items: center;
-	gap: var(--space-3);
-	flex-wrap: wrap;
-	font-size: 0.85rem;
+	gap: 6px;
+	font-size: 0.88rem;
 	font-weight: 600;
-}
-
-.tabla__acciones a {
 	color: var(--color-purple);
 }
 
-.tabla__eliminar,
-.tabla__rol {
-	margin: 0;
-	display: flex;
-	align-items: center;
-	gap: var(--space-2);
-}
-
-.tabla__eliminar-boton {
-	background: none;
-	border: none;
-	padding: 0;
-	font-family: inherit;
-	font-size: 0.85rem;
-	font-weight: 600;
-	color: var(--color-text-muted);
-	cursor: pointer;
-}
-
-.tabla__eliminar-boton:hover {
-	color: var(--color-error);
-}
-
-.tabla__rol select {
-	border: 1.5px solid var(--color-border);
-	border-radius: var(--radius-sm);
-	padding: 6px 10px;
-	font-family: var(--font-body);
-	font-size: 0.85rem;
-	background: var(--color-white);
-}
-
-.tabla__rol-boton {
-	background: var(--color-purple-tint);
-	border: none;
-	border-radius: var(--radius-pill);
-	padding: 6px 14px;
-	font-family: var(--font-display);
-	font-weight: 600;
-	font-size: 0.8rem;
-	color: var(--color-purple-dark);
-	cursor: pointer;
-}
-
-.estado {
-	flex: none;
-	border-radius: var(--radius-pill);
-	padding: 4px 12px;
-	font-size: 0.74rem;
-	font-weight: 700;
-	font-family: var(--font-display);
-	background: var(--color-bg-alt);
-	color: var(--color-text-muted);
-}
-
-.estado--publish {
-	background: var(--color-green-tint);
-	color: var(--color-green-dark);
-}
-
-.estado--admin {
-	background: var(--color-purple-tint);
+.panel-ruta__mundos:hover {
 	color: var(--color-purple-dark);
 }
 
-/* --- Formularios del panel --- */
-.panel-form {
-	background: var(--color-white);
-	border-radius: var(--radius-lg);
-	box-shadow: var(--shadow-card);
-	padding: var(--space-5) var(--space-4);
-}
-
-.panel-form .form-input textarea {
-	flex: 1;
-	min-width: 0;
-	border: none;
-	outline: none;
-	background: transparent;
-	padding: 12px var(--space-3);
-	font-family: var(--font-body);
-	font-size: 1rem;
-	color: var(--color-text);
-	resize: vertical;
-}
-
-.panel-form__acciones {
-	display: flex;
-	align-items: center;
-	gap: var(--space-3);
-	flex-wrap: wrap;
-	margin-top: var(--space-5);
-}
-
-.form-field__radio {
-	display: block;
-	margin-bottom: var(--space-2);
-	font-size: 0.92rem;
-}
-
-.form-hint-inline {
-	color: var(--color-text-muted);
-	font-size: 0.85rem;
-}
-
-.form-field__sub {
-	margin: 0 0 var(--space-3) var(--space-4);
-}
-
-/* El editor con formato de WordPress dentro del formulario del panel: hereda
-   nuestro borde redondeado en vez del cuadrado del escritorio. */
-.panel-form .wp-editor-container {
-	border: 1.5px solid var(--color-border);
-	border-radius: var(--radius-sm);
-	overflow: hidden;
-}
-
-.panel-form .wp-editor-tabs {
-	margin-bottom: var(--space-1);
-}
-
-.panel-form .mce-panel,
-.panel-form .quicktags-toolbar {
-	border-color: var(--color-border);
-}
-
-.imagen-actual {
-	margin-bottom: var(--space-3);
-}
-
-.imagen-actual img {
-	max-width: 260px;
-	height: auto;
-	border-radius: var(--radius-sm);
-	margin-bottom: var(--space-2);
+.panel-ruta__mundos svg {
+	width: 16px;
+	height: 16px;
 }
 
 /* --- Imagen destacada en curso y microclase --- */
@@ -974,39 +785,142 @@
 	border: 0;
 }
 
-/* ===== Curso ===== */
+/* ===== Curso =====
+   Pantalla 2 de la referencia Stitch (docs/rediseno-stitch.md): barra de
+   arriba con "volver" y el hijo activo, tarjeta de presentación con el
+   progreso a la derecha, y debajo el mapa del curso junto a una columna con
+   las recompensas y la descripción. */
 .curso-page {
-	padding-bottom: var(--space-8);
+	padding-block: var(--space-5) var(--space-8);
 	background: var(--color-bg-alt);
 }
 
-.curso-hero {
-	background: linear-gradient(180deg, var(--color-purple-tint), var(--color-bg-alt));
-	padding-block: var(--space-6) var(--space-5);
+.curso-top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: var(--space-3);
 	margin-bottom: var(--space-4);
 }
 
-.curso-hero__inner {
-	max-width: 720px;
+.curso-top__volver {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: var(--color-text-muted);
+	transition: color 0.15s ease;
 }
 
-.curso-hero__eje {
+.curso-top__volver:hover {
+	color: var(--color-purple);
+}
+
+.curso-top__flecha {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background: var(--color-white);
+	box-shadow: var(--shadow-soft);
+	transition: transform 0.15s ease;
+}
+
+.curso-top__flecha svg {
+	width: 14px;
+	height: 14px;
+	transform: rotate(180deg);
+}
+
+.curso-top__volver:hover .curso-top__flecha {
+	transform: translateX(-3px);
+}
+
+.curso-top__hijo {
 	display: inline-flex;
 	align-items: center;
 	gap: var(--space-2);
 	background: var(--color-white);
+	border: 2px solid var(--color-green-tint);
 	border-radius: var(--radius-pill);
 	padding: 5px 16px 5px 5px;
-	font-family: var(--font-display);
-	font-weight: 600;
-	font-size: 0.85rem;
-	color: var(--color-purple-dark);
-	margin-bottom: var(--space-3);
+	font-size: 0.88rem;
+	color: var(--color-text);
 }
 
-.curso-hero__eje svg {
+.curso-top__hijo strong {
+	color: var(--color-purple);
+}
+
+.curso-top__inicial {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 	width: 28px;
 	height: 28px;
+	border-radius: 50%;
+	background: var(--color-green-tint);
+	color: var(--color-green-dark);
+	font-family: var(--font-display);
+	font-weight: 700;
+	font-size: 0.85rem;
+}
+
+/* --- Tarjeta de presentación --- */
+.curso-hero {
+	display: flex;
+	align-items: center;
+	gap: var(--space-5);
+	background: linear-gradient(135deg, var(--color-white) 55%, var(--color-purple-tint));
+	border: 2px solid var(--color-purple-tint);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-card);
+	padding: var(--space-5);
+	margin-bottom: var(--space-5);
+	animation: curso-aparecer 0.35s ease both;
+}
+
+.curso-hero__texto {
+	flex: 1;
+	min-width: 0;
+}
+
+.curso-hero__chips {
+	list-style: none;
+	margin: 0 0 var(--space-3);
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-2);
+}
+
+.curso-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: var(--color-white);
+	border: 1.5px solid var(--color-border);
+	border-radius: var(--radius-pill);
+	padding: 3px 12px 3px 6px;
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: var(--color-text-muted);
+}
+
+.curso-chip svg {
+	width: 20px;
+	height: 20px;
+	flex: none;
+}
+
+.curso-chip--eje {
+	background: var(--color-green-tint);
+	border-color: var(--color-green-tint);
+	color: var(--color-green-dark);
 }
 
 .curso-hero__title {
@@ -1016,42 +930,40 @@
 
 .curso-hero__lead {
 	color: var(--color-text-muted);
-	font-size: 1.05rem;
-	margin-bottom: var(--space-4);
-}
-
-.curso-hero__facts {
-	list-style: none;
+	font-size: 1.02rem;
 	margin: 0;
-	padding: 0;
-	display: flex;
-	flex-wrap: wrap;
-	gap: var(--space-3);
-}
-
-.curso-hero__facts li {
-	display: inline-flex;
-	align-items: center;
-	gap: var(--space-2);
-	font-size: 0.88rem;
-	color: var(--color-text-muted);
-}
-
-.curso-hero__facts svg {
-	width: 26px;
-	height: 26px;
-	flex: none;
 }
 
 .curso-hero__progreso {
-	margin-top: var(--space-4);
-	max-width: 420px;
+	flex: none;
+	width: 320px;
+	background: var(--color-white);
+	border: 2px solid var(--color-purple-tint);
+	border-radius: var(--radius-md);
+	box-shadow: var(--shadow-soft);
+	padding: var(--space-4);
+}
+
+.curso-hero__progreso-fila {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: var(--space-2);
+	margin-bottom: var(--space-3);
 }
 
 .curso-hero__progreso-texto {
-	margin: var(--space-2) 0 0;
-	font-size: 0.85rem;
-	color: var(--color-text-muted);
+	margin: 0;
+	font-size: 0.88rem;
+	font-weight: 600;
+	color: var(--color-text);
+}
+
+.curso-hero__porcentaje {
+	flex: none;
+	font-family: var(--font-display);
+	font-size: 0.88rem;
+	color: var(--color-green-dark);
 }
 
 /* --- Invitación a registrarse --- */
@@ -1064,7 +976,7 @@
 	border: 2px solid var(--color-green-tint);
 	border-radius: var(--radius-lg);
 	padding: var(--space-4);
-	margin-bottom: var(--space-4);
+	margin-bottom: var(--space-5);
 }
 
 .curso-invitacion__icon {
@@ -1084,150 +996,610 @@
 	font-size: 0.9rem;
 }
 
-/* --- El camino --- */
-.camino {
-	position: relative;
-	list-style: none;
-	margin: 0 auto var(--space-6);
-	padding: var(--space-5) 0;
-	max-width: 480px;
+/* --- Mapa + columna lateral --- */
+.curso-layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 320px;
+	gap: var(--space-5);
+	align-items: start;
+}
+
+.curso-layout--solo {
+	grid-template-columns: minmax(0, 1fr);
+}
+
+.curso-mapa {
+	background: var(--color-white);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-card);
+	padding: var(--space-5) var(--space-4) var(--space-6);
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	animation: curso-aparecer 0.35s 0.05s ease both;
+}
+
+.curso-mapa__pill {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	margin: 0 0 var(--space-5);
+	background: var(--color-purple-tint);
+	border: 2px solid var(--color-purple-tint);
+	border-radius: var(--radius-pill);
+	padding: 6px 18px 6px 10px;
+	font-size: 0.78rem;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--color-purple-dark);
+}
+
+.curso-mapa__pill svg {
+	width: 22px;
+	height: 22px;
+}
+
+/* --- El camino ---
+   Cada paso es nodo + tarjeta; los pasos alternan el nodo a la izquierda y a
+   la derecha. La línea punteada va centrada por detrás y las tarjetas la
+   tapan con su fondo, así queda el recorrido "entre" las paradas. */
+.camino {
+	position: relative;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	max-width: 520px;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
 	gap: var(--space-5);
 }
 
-/* La línea punteada detrás de los nodos es lo que convierte la lista en un
-   camino. Va centrada y los nodos serpentean a su alrededor. */
 .camino::before {
 	content: "";
 	position: absolute;
-	top: 0;
-	bottom: 0;
+	top: 20px;
+	bottom: 120px;
 	left: 50%;
-	border-left: 3px dashed var(--color-border);
+	border-left: 5px dashed var(--color-purple-tint);
 	transform: translateX(-50%);
 }
 
 .camino__paso {
 	position: relative;
 	display: flex;
-	flex-direction: column;
 	align-items: center;
-	gap: var(--space-2);
-	width: 190px;
-	text-align: center;
+	gap: var(--space-4);
+	animation: curso-aparecer 0.35s ease both;
 }
 
-/* Serpenteo: una onda de 8 pasos que se repite. */
-.camino__paso:nth-child(8n + 2) { transform: translateX(34px); }
-.camino__paso:nth-child(8n + 3) { transform: translateX(52px); }
-.camino__paso:nth-child(8n + 4) { transform: translateX(34px); }
-.camino__paso:nth-child(8n + 6) { transform: translateX(-34px); }
-.camino__paso:nth-child(8n + 7) { transform: translateX(-52px); }
-.camino__paso:nth-child(8n + 8) { transform: translateX(-34px); }
+.camino__paso:nth-child(even) {
+	flex-direction: row-reverse;
+}
+
+.camino__paso:nth-child(2) { animation-delay: 0.05s; }
+.camino__paso:nth-child(3) { animation-delay: 0.1s; }
+.camino__paso:nth-child(4) { animation-delay: 0.15s; }
+.camino__paso:nth-child(n + 5) { animation-delay: 0.2s; }
 
 .camino__nodo {
+	position: relative;
+	flex: none;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	width: 76px;
-	height: 76px;
+	width: 72px;
+	height: 72px;
 	border-radius: 50%;
-	background: var(--color-border);
+	background: var(--color-bg-alt);
+	border: 2px solid var(--color-border);
 	color: var(--color-text-muted);
-	box-shadow: var(--shadow-soft);
+	box-shadow: 0 5px 0 0 var(--color-border);
 	transition: transform 0.15s ease;
 }
 
 .camino__marca {
-	width: 32px;
-	height: 32px;
+	width: 30px;
+	height: 30px;
 }
 
 .camino__paso.is-hecha .camino__nodo {
 	background: var(--color-green);
+	border-color: var(--color-green);
 	color: var(--color-white);
+	box-shadow: 0 5px 0 0 var(--color-green-dark);
 }
 
-.camino__paso.is-actual .camino__nodo {
-	background: var(--color-purple);
-	color: var(--color-white);
-	width: 88px;
-	height: 88px;
+/* check.svg trae su propio círculo relleno: sobre el nodo verde sobra, se
+   deja solo la palomita blanca y más gruesa. */
+.camino__paso.is-hecha .camino__marca {
+	width: 40px;
+	height: 40px;
+}
+
+.camino__paso.is-hecha .camino__marca circle {
+	fill: transparent;
+}
+
+.camino__paso.is-hecha .camino__marca path {
+	stroke-width: 2.8;
 }
 
 a.camino__nodo:hover {
-	transform: scale(1.06);
+	transform: translateY(-2px) scale(1.04);
 }
 
-/* Los tres textos del nodo van uno debajo del otro. Sin esto son un span,
-   un strong y otro span sueltos: el navegador los pone en línea y quedan
-   "Clase 1 Título de la clase 10 min" pegados en un mismo párrafo.
+/* Los textos del paso van uno debajo del otro. Sin esto son spans y strongs
+   sueltos que el navegador pone en línea, pegados en un mismo párrafo.
 
    El fondo no es decorativo: tapa la línea punteada del camino, que pasa
    por detrás y si no se ve cruzando el texto. */
 .camino__info {
+	flex: 1;
+	min-width: 0;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	gap: 3px;
-	padding: 2px var(--space-2) var(--space-1);
-	background: var(--color-bg-alt);
-	border-radius: var(--radius-sm);
+	align-items: flex-start;
+	gap: 4px;
+	padding: var(--space-3) var(--space-4);
+	background: var(--color-white);
+	border: 2px solid var(--color-border);
+	border-radius: var(--radius-md);
+	box-shadow: var(--shadow-soft);
 }
 
-.camino__numero {
-	font-size: 0.72rem;
+.camino__paso:nth-child(even) .camino__info {
+	align-items: flex-end;
+	text-align: right;
+}
+
+.camino__paso.is-hecha .camino__info {
+	border-color: var(--color-green-tint);
+}
+
+.camino__paso.is-bloqueada .camino__info {
+	background: var(--color-bg-alt);
+}
+
+.camino__cabecera {
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
+}
+
+.camino__estado {
+	border-radius: var(--radius-pill);
+	padding: 1px 10px;
+	font-size: 0.7rem;
+	font-weight: 700;
+	background: var(--color-border);
+	color: var(--color-text-muted);
+}
+
+.camino__paso.is-hecha .camino__estado {
+	background: var(--color-green);
+	color: var(--color-white);
+}
+
+.camino__meta {
+	font-size: 0.78rem;
 	font-weight: 600;
-	letter-spacing: 0.06em;
-	text-transform: uppercase;
 	color: var(--color-text-muted);
 }
 
 /* Peso 600 y no el bold que trae <strong> por defecto: en Fredoka, con
-   mayúsculas encima y textos cortos, el 700 se ve pesado de más. */
+   textos cortos, el 700 se ve pesado de más. */
 .camino__titulo {
 	font-family: var(--font-display);
 	font-weight: 600;
-	font-size: 0.95rem;
+	font-size: 0.98rem;
 	line-height: 1.35;
 }
 
 .camino__titulo a {
 	color: var(--color-text);
+	transition: color 0.15s ease;
 }
 
 .camino__titulo a:hover {
 	color: var(--color-purple);
 }
 
-.camino__paso.is-bloqueada .camino__titulo,
-.camino__paso.is-bloqueada .camino__meta {
+.camino__paso.is-bloqueada .camino__titulo {
 	color: var(--color-text-muted);
 }
 
-.camino__meta {
-	font-size: 0.8rem;
+.camino__resumen {
+	margin: 0;
+	font-size: 0.84rem;
+	line-height: 1.45;
 	color: var(--color-text-muted);
 }
 
-/* El nodo de meta lleva el ícono de certificado, que es a todo color: va
-   sobre blanco para que no pelee con el fondo. */
-.camino__nodo--meta {
+.camino__mision {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin-top: 4px;
+	background: var(--color-yellow-tint);
+	border-radius: var(--radius-pill);
+	padding: 2px 12px 2px 4px;
+	font-size: 0.76rem;
+	font-weight: 600;
+	color: var(--color-text);
+}
+
+.camino__mision svg {
+	width: 20px;
+	height: 20px;
+}
+
+.camino__mision em {
+	font-style: normal;
+	white-space: nowrap;
+	color: var(--color-yellow-dark);
+}
+
+/* La clase que toca ahora: nodo grande arriba y la tarjeta desplegada
+   debajo, centrada sobre el camino. */
+.camino__paso.is-actual,
+.camino__paso.is-actual:nth-child(even) {
+	flex-direction: column;
+	gap: var(--space-3);
+	align-self: center;
+	width: min(100%, 400px);
+}
+
+.camino__paso.is-actual .camino__nodo {
+	width: 92px;
+	height: 92px;
+	background: var(--color-purple);
+	border: 6px solid var(--color-purple-tint);
+	color: var(--color-white);
+	box-shadow: 0 6px 0 0 var(--color-purple-dark);
+	animation: camino-latido 2.4s ease-in-out infinite;
+}
+
+/* star.svg es verde de fábrica; sobre el morado se pinta blanca con los
+   destellos en amarillo. */
+.camino__paso.is-actual .camino__marca {
+	width: 44px;
+	height: 44px;
+}
+
+.camino__paso.is-actual .camino__marca path {
+	fill: var(--color-white);
+}
+
+.camino__paso.is-actual .camino__marca g path {
+	fill: var(--color-purple-dark);
+}
+
+.camino__paso.is-actual .camino__marca path[stroke] {
+	fill: none;
+	stroke: var(--color-yellow);
+}
+
+.camino__ahora {
+	position: absolute;
+	top: -14px;
+	left: 50%;
+	transform: translateX(-50%);
+	background: var(--color-yellow);
+	color: var(--color-ink);
+	border-radius: var(--radius-pill);
+	padding: 1px 10px;
+	font-size: 0.68rem;
+	font-weight: 700;
+	white-space: nowrap;
+	text-transform: uppercase;
+}
+
+.camino__paso.is-actual .camino__info,
+.camino__paso.is-actual:nth-child(even) .camino__info {
+	width: 100%;
+	align-items: stretch;
+	text-align: left;
+	border-color: var(--color-purple);
+	box-shadow: var(--shadow-card);
+	padding: var(--space-4);
+}
+
+.camino__paso.is-actual .camino__cabecera {
+	justify-content: space-between;
+}
+
+.camino__turno {
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--color-purple);
+}
+
+.camino__paso.is-actual .camino__titulo {
+	font-size: 1.15rem;
+}
+
+.camino__comenzar {
+	justify-content: center;
+	margin-top: var(--space-3);
+	box-shadow: var(--shadow-tactile-green);
+}
+
+.camino__comenzar:active {
+	transform: translateY(2px);
+	box-shadow: none;
+}
+
+.camino__comenzar:hover svg {
+	transform: translateX(3px);
+}
+
+.camino__comenzar svg {
+	transition: transform 0.15s ease;
+}
+
+/* --- Meta final --- */
+.camino__paso--meta,
+.camino__paso--meta:nth-child(even) {
+	flex-direction: column;
+	align-self: center;
+	width: min(100%, 400px);
+}
+
+.camino__info--meta,
+.camino__paso--meta:nth-child(even) .camino__info--meta {
+	width: 100%;
+	align-items: center;
+	text-align: center;
+	gap: var(--space-2);
+	padding: var(--space-4) var(--space-4) var(--space-4);
+	border-color: var(--color-purple-tint);
+}
+
+.camino__paso--meta.is-bloqueada .camino__info--meta {
 	background: var(--color-white);
-	border: 3px solid var(--color-purple-tint);
+}
+
+.camino__paso--meta.is-hecha .camino__info--meta {
+	border-color: var(--color-green);
+}
+
+.camino__meta-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	margin-top: calc(-1 * var(--space-4) - 13px);
+	margin-bottom: var(--space-2);
+	background: var(--color-yellow);
+	color: var(--color-ink);
+	border-radius: var(--radius-pill);
+	padding: 3px 14px 3px 10px;
+	font-size: 0.7rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.camino__meta-pill svg {
+	width: 13px;
+	height: 13px;
+}
+
+.camino__nodo--meta,
+.camino__paso--meta.is-hecha .camino__nodo--meta {
 	width: 88px;
 	height: 88px;
-}
-
-.camino__paso--meta.is-hecha .camino__nodo--meta {
-	border-color: var(--color-green);
+	background: var(--color-yellow-tint);
+	border: 3px solid var(--color-yellow);
+	box-shadow: 0 5px 0 0 var(--color-yellow-dark);
 }
 
 .camino__nodo--meta .camino__marca {
 	width: 46px;
 	height: 46px;
+}
+
+.camino__paso--meta .camino__titulo {
+	font-size: 1.1rem;
+	color: var(--color-text);
+}
+
+.camino__certificado {
+	display: flex;
+	align-items: center;
+	gap: var(--space-3);
+	width: 100%;
+	margin-top: var(--space-2);
+	border: 2px dashed var(--color-border);
+	border-radius: var(--radius-sm);
+	padding: var(--space-2) var(--space-3);
+	text-align: left;
+}
+
+.camino__certificado > svg {
+	width: 30px;
+	height: 30px;
+	flex: none;
+}
+
+.camino__certificado > span:not(.camino__certificado-estado) {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.camino__certificado strong {
+	font-size: 0.84rem;
+}
+
+.camino__certificado small {
+	font-size: 0.74rem;
+	color: var(--color-text-muted);
+}
+
+.camino__certificado-estado {
+	flex: none;
+	border-radius: var(--radius-pill);
+	padding: 2px 12px;
+	font-size: 0.74rem;
+	font-weight: 700;
+	background: var(--color-purple-tint);
+	color: var(--color-purple-dark);
+}
+
+.camino__certificado-estado--listo {
+	background: var(--color-green);
+	color: var(--color-white);
+	transition: background 0.15s ease;
+}
+
+.camino__certificado-estado--listo:hover {
+	background: var(--color-green-dark);
+}
+
+/* --- Columna lateral --- */
+.curso-aside {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-4);
+	animation: curso-aparecer 0.35s 0.1s ease both;
+}
+
+.curso-card {
+	background: var(--color-white);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-card);
+	padding: var(--space-4);
+}
+
+.curso-card__cabecera {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--space-2);
+	padding-bottom: var(--space-3);
+	margin-bottom: var(--space-3);
+	border-bottom: 1.5px solid var(--color-border);
+}
+
+.curso-card__cabecera h2 {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	margin: 0;
+	font-size: 1rem;
+}
+
+.curso-card__cabecera h2 svg {
+	width: 26px;
+	height: 26px;
+	flex: none;
+}
+
+.curso-card__cuenta {
+	flex: none;
+	background: var(--color-green-tint);
+	color: var(--color-green-dark);
+	border-radius: var(--radius-pill);
+	padding: 1px 10px;
+	font-size: 0.74rem;
+	font-weight: 700;
+}
+
+.curso-recompensas {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-2);
+}
+
+.curso-recompensa {
+	display: flex;
+	align-items: center;
+	gap: var(--space-3);
+	border: 2px solid var(--color-border);
+	border-radius: var(--radius-sm);
+	padding: var(--space-2) var(--space-3);
+}
+
+.curso-recompensa.is-lista {
+	background: var(--color-green-tint);
+	border-color: var(--color-green-tint);
+}
+
+.curso-recompensa__icono {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 38px;
+	height: 38px;
+	border-radius: var(--radius-sm);
+	background: var(--color-yellow-tint);
+}
+
+.curso-recompensa__icono svg {
+	width: 28px;
+	height: 28px;
+}
+
+.curso-recompensa__texto {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.curso-recompensa__texto strong {
+	font-size: 0.84rem;
+}
+
+.curso-recompensa__texto small {
+	font-size: 0.74rem;
+	color: var(--color-text-muted);
+}
+
+.curso-recompensa__estado {
+	flex: none;
+	font-size: 0.74rem;
+	color: var(--color-text-muted);
+}
+
+.curso-recompensa__estado svg {
+	width: 18px;
+	height: 18px;
+	color: var(--color-green-dark);
+}
+
+.curso-portada {
+	margin: calc(-1 * var(--space-4)) calc(-1 * var(--space-4)) var(--space-4);
+	border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+	overflow: hidden;
+}
+
+.curso-portada img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.curso-detalle__texto {
+	font-size: 0.9rem;
+	color: var(--color-text-muted);
+}
+
+.curso-detalle__texto > * {
+	margin: 0;
+}
+
+.curso-detalle__texto > * + * {
+	margin-top: var(--space-3);
 }
 
 /* --- Curso completo --- */
@@ -1236,7 +1608,8 @@ a.camino__nodo:hover {
 	border-radius: var(--radius-lg);
 	padding: var(--space-6) var(--space-4);
 	text-align: center;
-	margin-bottom: var(--space-6);
+	margin-bottom: var(--space-5);
+	animation: curso-aparecer 0.35s ease both;
 }
 
 .curso-logro__icon {
@@ -1255,13 +1628,25 @@ a.camino__nodo:hover {
 	margin-bottom: var(--space-4);
 }
 
+.curso-logro__acciones {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: var(--space-3);
+}
+
+.curso-logro .btn-primary {
+	box-shadow: var(--shadow-tactile-green);
+}
+
 .curso-vacio {
 	background: var(--color-white);
 	border: 2px dashed var(--color-border);
 	border-radius: var(--radius-lg);
 	padding: var(--space-7) var(--space-4);
 	text-align: center;
-	margin-bottom: var(--space-6);
+	margin-bottom: var(--space-5);
 }
 
 .curso-vacio__icon {
@@ -1280,25 +1665,78 @@ a.camino__nodo:hover {
 	margin: 0;
 }
 
-.curso-detalle {
-	max-width: 680px;
-	margin-inline: auto;
-	background: var(--color-white);
-	border-radius: var(--radius-lg);
-	box-shadow: var(--shadow-card);
-	padding: var(--space-5) var(--space-4);
+@keyframes curso-aparecer {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
 }
 
-.curso-detalle h2 {
-	font-size: 1.25rem;
-	margin-bottom: var(--space-3);
+@keyframes camino-latido {
+	0%, 100% { outline: 0 solid rgba(108, 79, 214, 0.25); }
+	50% { outline: 10px solid rgba(108, 79, 214, 0); }
 }
 
-.curso-detalle__texto > * + * {
-	margin-top: var(--space-3);
+@media (prefers-reduced-motion: reduce) {
+	.curso-hero,
+	.curso-mapa,
+	.curso-aside,
+	.curso-logro,
+	.camino__paso,
+	.camino__paso.is-actual .camino__nodo {
+		animation: none;
+	}
 }
 
-/* ===== Microclase ===== */
+@media (max-width: 960px) {
+	.curso-layout {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+@media (max-width: 720px) {
+	.curso-hero {
+		flex-direction: column;
+		align-items: stretch;
+		padding: var(--space-4);
+	}
+
+	.curso-hero__progreso {
+		width: auto;
+	}
+
+	.curso-hero__title {
+		font-size: 1.6rem;
+	}
+
+	.curso-mapa {
+		padding-inline: var(--space-3);
+	}
+
+	.camino__nodo {
+		width: 56px;
+		height: 56px;
+	}
+
+	.camino__marca {
+		width: 24px;
+		height: 24px;
+	}
+
+	.camino__paso {
+		gap: var(--space-3);
+	}
+}
+
+/* ===== Microclase =====
+   Pantalla 3 de la referencia Stitch (docs/rediseno-stitch.md): migas de
+   pan, tarjeta con los datos de la clase y el avance del curso, el video en
+   un marco, bloques de contenido/caso, la misión como tarjeta destacada y al
+   final "qué desbloqueas a continuación". */
 .clase-page {
 	padding-block: var(--space-5) var(--space-8);
 	background: var(--color-bg-alt);
@@ -1306,67 +1744,173 @@ a.camino__nodo:hover {
 }
 
 .clase-page__inner {
-	max-width: 760px;
+	max-width: 860px;
+}
+
+.clase-top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: var(--space-2) var(--space-4);
+	margin-bottom: var(--space-4);
 }
 
 .clase-volver {
 	display: inline-flex;
 	align-items: center;
 	gap: var(--space-2);
-	font-size: 0.88rem;
+	font-size: 0.9rem;
 	font-weight: 600;
+	color: var(--color-text-muted);
+	transition: color 0.15s ease;
+}
+
+.clase-volver:hover {
 	color: var(--color-purple);
-	margin-bottom: var(--space-4);
+}
+
+.clase-volver__flecha {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background: var(--color-white);
+	box-shadow: var(--shadow-soft);
+	transition: transform 0.15s ease;
+}
+
+.clase-volver:hover .clase-volver__flecha {
+	transform: translateX(-3px);
 }
 
 .clase-volver__icon {
-	width: 18px;
-	height: 18px;
+	width: 14px;
+	height: 14px;
 	transform: rotate(180deg);
 }
 
-.clase-head {
-	margin-bottom: var(--space-4);
-}
-
-.clase-head__numero {
-	display: inline-block;
-	background: var(--color-purple-tint);
-	color: var(--color-purple-dark);
-	border-radius: var(--radius-pill);
-	padding: 4px 14px;
-	font-family: var(--font-display);
-	font-weight: 600;
-	font-size: 0.78rem;
-	margin-bottom: var(--space-2);
-}
-
-.clase-head__title {
-	font-size: 1.8rem;
-	margin-bottom: var(--space-2);
-}
-
-.clase-head__meta {
-	display: inline-flex;
+.clase-migas {
+	display: flex;
 	align-items: center;
+	flex-wrap: wrap;
 	gap: var(--space-2);
-	font-size: 0.88rem;
+	font-size: 0.82rem;
 	color: var(--color-text-muted);
 }
 
-.clase-head__meta svg {
-	width: 26px;
-	height: 26px;
+.clase-migas a {
+	color: var(--color-text-muted);
+	transition: color 0.15s ease;
 }
 
+.clase-migas a:first-child {
+	color: var(--color-purple);
+	font-weight: 600;
+}
+
+.clase-migas a:hover {
+	color: var(--color-purple-dark);
+}
+
+/* --- Tarjeta de la clase --- */
+.clase-head {
+	background: linear-gradient(135deg, var(--color-white) 60%, var(--color-purple-tint));
+	border: 2px solid var(--color-purple-tint);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-card);
+	padding: var(--space-5);
+	margin-bottom: var(--space-5);
+	animation: clase-aparecer 0.35s ease both;
+}
+
+.clase-head__chips {
+	list-style: none;
+	margin: 0 0 var(--space-3);
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-2);
+}
+
+.clase-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: var(--color-white);
+	border: 1.5px solid var(--color-border);
+	border-radius: var(--radius-pill);
+	padding: 3px 12px 3px 6px;
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: var(--color-text-muted);
+}
+
+.clase-chip svg {
+	width: 20px;
+	height: 20px;
+	flex: none;
+}
+
+.clase-chip--numero {
+	background: var(--color-purple-tint);
+	border-color: var(--color-purple-tint);
+	color: var(--color-purple-dark);
+}
+
+.clase-chip--monedas {
+	background: var(--color-yellow-tint);
+	border-color: var(--color-yellow-tint);
+	color: var(--color-yellow-dark);
+}
+
+.clase-head__title {
+	font-size: 1.9rem;
+	margin-bottom: var(--space-4);
+}
+
+.clase-head__progreso {
+	background: var(--color-white);
+	border: 2px solid var(--color-purple-tint);
+	border-radius: var(--radius-md);
+	padding: var(--space-3) var(--space-4);
+}
+
+.clase-head__progreso-fila {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: var(--space-2);
+	margin-bottom: var(--space-2);
+	font-size: 0.88rem;
+}
+
+.clase-head__porcentaje {
+	font-family: var(--font-display);
+	font-weight: 700;
+	color: var(--color-green-dark);
+}
+
+.clase-head__pista {
+	margin: var(--space-2) 0 0;
+	font-size: 0.82rem;
+	font-weight: 600;
+	color: var(--color-purple);
+}
+
+/* --- Video --- */
 .clase-video {
 	position: relative;
 	border-radius: var(--radius-lg);
 	overflow: hidden;
 	background: var(--color-ink);
-	box-shadow: var(--shadow-card);
+	border: 4px solid var(--color-white);
+	box-shadow: var(--shadow-card), 0 0 0 2px var(--color-purple-tint);
 	margin-bottom: var(--space-5);
 	aspect-ratio: 16 / 9;
+	animation: clase-aparecer 0.35s 0.05s ease both;
 }
 
 .clase-video iframe,
@@ -1383,26 +1927,272 @@ a.camino__nodo:hover {
 	position: absolute;
 	inset: 0;
 	display: flex;
+	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+	gap: var(--space-3);
 	color: var(--color-white);
 	font-family: var(--font-display);
 	font-weight: 600;
+	background: linear-gradient(135deg, var(--color-purple-dark), var(--color-ink));
 }
 
-.clase-contenido {
+/* Botón de play "táctil" dibujado solo con CSS: círculo verde y triángulo. */
+.clase-video__play {
+	position: relative;
+	width: 76px;
+	height: 76px;
+	border-radius: 50%;
+	background: var(--color-green);
+	box-shadow: var(--shadow-tactile-green);
+	transition: transform 0.15s ease;
+}
+
+.clase-video__play::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 54%;
+	transform: translate(-50%, -50%);
+	border-style: solid;
+	border-width: 13px 0 13px 21px;
+	border-color: transparent transparent transparent var(--color-white);
+}
+
+.clase-video__enlace:hover .clase-video__play {
+	transform: scale(1.06);
+}
+
+.clase-portada {
+	border-radius: var(--radius-lg);
+	overflow: hidden;
+	margin-bottom: var(--space-5);
+	box-shadow: var(--shadow-card);
+}
+
+.clase-portada img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+/* --- Bloques de contenido (lo esencial y el caso) --- */
+.clase-bloque {
 	background: var(--color-white);
 	border-radius: var(--radius-lg);
 	box-shadow: var(--shadow-card);
-	padding: var(--space-5) var(--space-4);
+	padding: var(--space-5);
 	margin-bottom: var(--space-5);
+	animation: clase-aparecer 0.35s 0.1s ease both;
 }
 
-.clase-contenido > * + * {
+.clase-bloque__cabecera {
+	display: flex;
+	align-items: center;
+	gap: var(--space-3);
+	padding-bottom: var(--space-3);
+	margin-bottom: var(--space-4);
+	border-bottom: 1.5px solid var(--color-border);
+}
+
+.clase-bloque__icono {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 48px;
+	height: 48px;
+	border-radius: var(--radius-sm);
+	background: var(--color-purple-tint);
+}
+
+.clase-bloque__icono svg {
+	width: 32px;
+	height: 32px;
+}
+
+.clase-bloque__cabecera h2 {
+	font-size: 1.2rem;
+	margin: 0;
+}
+
+.clase-bloque__cabecera p {
+	margin: 2px 0 0;
+	font-size: 0.85rem;
+	color: var(--color-text-muted);
+}
+
+.clase-contenido__texto > * {
+	margin: 0;
+}
+
+.clase-contenido__texto > * + * {
 	margin-top: var(--space-3);
 }
 
-/* --- Marcar como vista --- */
+/* Las clases traen secciones con subtítulo ("Ideas clave", "Frases que
+   ayudan", "Para practicar esta semana"): cada una se separa bien de la
+   anterior y sus listas llevan viñetas de color de marca. */
+.clase-contenido__texto h3,
+.curso-detalle__texto h3 {
+	font-size: 1.05rem;
+	color: var(--color-purple-dark);
+}
+
+.clase-contenido__texto > h3 {
+	margin-top: var(--space-5);
+	padding-top: var(--space-4);
+	border-top: 1.5px dashed var(--color-border);
+}
+
+.clase-contenido__texto ul,
+.curso-detalle__texto ul {
+	list-style: none;
+	padding: 0;
+	display: grid;
+	gap: var(--space-2);
+}
+
+.clase-contenido__texto li,
+.curso-detalle__texto li {
+	position: relative;
+	padding-left: var(--space-5);
+	line-height: 1.5;
+}
+
+.clase-contenido__texto li::before,
+.curso-detalle__texto li::before {
+	content: "";
+	position: absolute;
+	left: 6px;
+	top: 0.55em;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: var(--color-green);
+}
+
+.curso-detalle__texto h3 {
+	font-size: 0.95rem;
+	margin-top: var(--space-4);
+}
+
+.curso-detalle__texto li {
+	padding-left: var(--space-4);
+	font-size: 0.88rem;
+}
+
+.curso-detalle__texto li::before {
+	left: 2px;
+}
+
+/* --- Caso interactivo ---
+   Mismo lenguaje de color que la demo de la home (.case-demo__feedback):
+   verde para la opción recomendada, morado como "guía" para las demás — la
+   idea del concepto es que cada opción tenga una explicación razonada, no
+   un simple correcto/incorrecto en rojo. */
+.caso-paso-card + .caso-paso-card {
+	margin-top: var(--space-4);
+	padding-top: var(--space-4);
+	border-top: 1.5px dashed var(--color-border);
+}
+
+.caso-paso-card__situacion {
+	font-weight: 600;
+	background: var(--color-bg-alt);
+	border-left: 4px solid var(--color-purple);
+	border-radius: var(--radius-sm);
+	padding: var(--space-3) var(--space-4);
+	margin-bottom: var(--space-3);
+}
+
+.caso-opciones {
+	display: grid;
+	gap: var(--space-2);
+	margin: 0;
+}
+
+.caso-opcion-boton {
+	display: flex;
+	align-items: center;
+	gap: var(--space-3);
+	text-align: left;
+	background: var(--color-white);
+	border: 2px solid var(--color-border);
+	border-radius: var(--radius-sm);
+	padding: var(--space-3);
+	font-family: var(--font-body);
+	font-size: 0.95rem;
+	color: var(--color-text);
+	cursor: pointer;
+	transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+
+.caso-opcion-boton:hover {
+	border-color: var(--color-purple);
+	background: var(--color-purple-tint);
+	transform: translateY(-1px);
+}
+
+.caso-opcion-boton__letra {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background: var(--color-purple-tint);
+	color: var(--color-purple-dark);
+	font-family: var(--font-display);
+	font-weight: 700;
+	font-size: 0.85rem;
+	transition: background 0.15s ease, color 0.15s ease;
+}
+
+.caso-opcion-boton:hover .caso-opcion-boton__letra {
+	background: var(--color-purple);
+	color: var(--color-white);
+}
+
+.caso-feedback {
+	display: flex;
+	gap: var(--space-3);
+	border-radius: var(--radius-sm);
+	padding: var(--space-4);
+	background: var(--color-green-tint);
+	border: 2px solid var(--color-green);
+	animation: clase-aparecer 0.3s ease both;
+}
+
+.caso-feedback.is-guia {
+	background: var(--color-purple-tint);
+	border-color: var(--color-purple);
+}
+
+.caso-feedback svg {
+	flex: none;
+	width: 24px;
+	height: 24px;
+	color: var(--color-green);
+}
+
+.caso-feedback.is-guia svg {
+	color: var(--color-purple);
+}
+
+.caso-feedback strong {
+	display: block;
+	margin-bottom: 2px;
+}
+
+.caso-feedback p {
+	margin: 0;
+	font-size: 0.9rem;
+	color: var(--color-text-muted);
+}
+
+/* --- Marcar como vista / ya completada --- */
 .clase-accion {
 	display: flex;
 	align-items: center;
@@ -1412,12 +2202,15 @@ a.camino__nodo:hover {
 	background: var(--color-white);
 	border: 2px solid var(--color-purple-tint);
 	border-radius: var(--radius-lg);
-	padding: var(--space-4);
+	box-shadow: var(--shadow-card);
+	padding: var(--space-4) var(--space-5);
+	margin-bottom: var(--space-5);
 }
 
 .clase-accion.is-hecha {
 	border-color: var(--color-green-tint);
 	background: var(--color-green-tint);
+	animation: clase-aparecer 0.35s ease both;
 }
 
 .clase-accion__texto {
@@ -1437,27 +2230,86 @@ a.camino__nodo:hover {
 	gap: var(--space-2);
 	font-family: var(--font-display);
 	font-weight: 600;
+	font-size: 1.05rem;
 	color: var(--color-green-dark);
 }
 
 .clase-accion__sello svg {
-	width: 24px;
-	height: 24px;
+	width: 28px;
+	height: 28px;
 }
 
 .clase-accion form {
 	margin: 0;
 }
 
+/* Botones rellenos de la microclase con la sombra táctil de la referencia
+   (solo en botones, ver "Fundamentos compartidos" en el doc). */
+.clase-page .btn-primary {
+	box-shadow: var(--shadow-tactile-green);
+}
+
+.clase-page .btn-primary:active {
+	transform: translateY(2px);
+	box-shadow: none;
+}
+
+/* check.svg trae un círculo en currentColor: dentro de un botón verde con
+   texto blanco queda un punto blanco que tapa la palomita. Se deja solo la
+   palomita. */
+.clase-page .btn-primary svg[aria-label="Completado"] circle {
+	fill: transparent;
+}
+
+.clase-page .btn-primary svg[aria-label="Completado"] path {
+	stroke-width: 3;
+}
+
+.clase-page .btn:disabled {
+	opacity: 0.75;
+	cursor: default;
+	transform: none;
+}
+
+.clase-page .btn__spinner {
+	display: inline-block;
+	width: 15px;
+	height: 15px;
+	border: 2px solid currentColor;
+	border-top-color: transparent;
+	border-radius: 50%;
+	opacity: 0.85;
+	animation: clase-girar 0.6s linear infinite;
+}
+
 /* --- Misión ---
-   Vive dentro de .clase-accion (mismo lugar que "marcar como vista"), pero
-   es un bloque más rico — icono, texto, a veces una foto que subir — así que
-   ocupa toda la fila en vez de compartirla con nada más. */
+   Tarjeta destacada: es lo que completa la clase cuando la clase la trae. */
 .mision-card {
-	flex: 1 1 100%;
+	position: relative;
+	background: var(--color-white);
+	border: 3px solid var(--color-yellow);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-card);
+	padding: var(--space-5);
+	margin-bottom: var(--space-5);
+	overflow: hidden;
+	animation: clase-aparecer 0.35s 0.15s ease both;
+}
+
+.mision-card::before {
+	content: "";
+	position: absolute;
+	inset: 0 0 auto;
+	height: 6px;
+	background: linear-gradient(90deg, var(--color-yellow), var(--color-green), var(--color-purple));
+}
+
+.mision-card__cabecera {
 	display: flex;
-	align-items: flex-start;
-	gap: var(--space-4);
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--space-3);
+	margin-bottom: var(--space-4);
 }
 
 .mision-card__icono {
@@ -1465,88 +2317,352 @@ a.camino__nodo:hover {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	width: 56px;
-	height: 56px;
+	width: 60px;
+	height: 60px;
 	border-radius: var(--radius-md);
-	background: var(--color-bg-alt);
+	background: var(--color-yellow-tint);
 }
 
 .mision-card__icono svg {
-	width: 34px;
-	height: 34px;
+	width: 38px;
+	height: 38px;
 }
 
-.mision-card__cuerpo {
+.mision-card__titulos {
 	flex: 1;
-	min-width: 0;
+	min-width: 160px;
 }
 
 .mision-card__etiqueta {
 	display: inline-block;
 	font-family: var(--font-display);
 	font-weight: 600;
-	font-size: 0.78rem;
+	font-size: 0.74rem;
 	text-transform: uppercase;
-	letter-spacing: 0.04em;
-	color: var(--color-purple);
-	margin-bottom: 4px;
+	letter-spacing: 0.06em;
+	color: var(--color-yellow-dark);
+}
+
+.mision-card__titulo {
+	font-size: 1.3rem;
+	margin: 0;
+}
+
+.mision-card__recompensa {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: var(--color-yellow-tint);
+	border: 2px solid var(--color-yellow);
+	border-radius: var(--radius-pill);
+	padding: 4px 14px 4px 6px;
+	font-family: var(--font-display);
+	font-weight: 700;
+	font-size: 0.9rem;
+	color: var(--color-yellow-dark);
+}
+
+.mision-card__recompensa svg {
+	width: 24px;
+	height: 24px;
 }
 
 .mision-card__texto {
-	font-size: 1rem;
-	margin: 0 0 var(--space-2);
+	font-size: 1.02rem;
+	line-height: 1.55;
+	background: var(--color-bg-alt);
+	border-radius: var(--radius-md);
+	padding: var(--space-4);
+	margin: 0 0 var(--space-4);
 }
 
 .mision-card__aviso {
 	font-size: 0.85rem;
-	color: var(--color-text-muted);
-	background: var(--color-bg-alt);
+	color: var(--color-purple-dark);
+	background: var(--color-purple-tint);
 	border-radius: var(--radius-sm);
 	padding: var(--space-2) var(--space-3);
-	margin: 0 0 var(--space-3);
-}
-
-.mision-card__recompensa {
-	display: inline-flex;
-	align-items: center;
-	gap: var(--space-1);
-	font-size: 0.85rem;
-	color: var(--color-text-muted);
-	margin: 0 0 var(--space-3);
-}
-
-.mision-card__recompensa svg {
-	width: 20px;
-	height: 20px;
+	margin: 0 0 var(--space-4);
 }
 
 .mision-card__form {
 	margin: 0;
 }
 
+/* El input real queda invisible encima de toda la zona: al tocar cualquier
+   parte se abre el selector de archivos, y sigue siendo accesible. */
 .mision-card__subir {
-	display: block;
-	font-size: 0.88rem;
-	font-weight: 600;
-	margin-bottom: var(--space-3);
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: var(--space-3);
+	border: 2px dashed var(--color-border);
+	border-radius: var(--radius-md);
+	padding: var(--space-4);
+	margin-bottom: var(--space-4);
+	cursor: pointer;
+	transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.mision-card__subir:hover,
+.mision-card__subir:focus-within {
+	border-color: var(--color-purple);
+	background: var(--color-purple-tint);
+}
+
+.mision-card__subir.is-elegida {
+	border-style: solid;
+	border-color: var(--color-green);
+	background: var(--color-green-tint);
 }
 
 .mision-card__subir input {
-	display: block;
-	margin-top: var(--space-2);
-	font-size: 0.88rem;
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	cursor: pointer;
 }
 
-.mision-card__botones {
+.mision-card__subir-icono {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	background: var(--color-white);
+	color: var(--color-purple);
+	box-shadow: var(--shadow-soft);
+}
+
+.mision-card__subir-icono svg {
+	width: 22px;
+	height: 22px;
+}
+
+.mision-card__subir-texto {
 	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.mision-card__subir-texto strong {
+	font-size: 0.92rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.mision-card__subir-texto small {
+	font-size: 0.78rem;
+	color: var(--color-text-muted);
+}
+
+/* Vista previa de la foto elegida: reemplaza al ícono de la cámara. */
+.mision-card__subir-preview {
+	flex: none;
+	width: 64px;
+	height: 64px;
+	object-fit: cover;
+	border-radius: var(--radius-sm);
+	border: 2px solid var(--color-white);
+	box-shadow: var(--shadow-soft);
+	animation: clase-aparecer 0.25s ease both;
+}
+
+.mision-card__subir.is-elegida .mision-card__subir-icono {
+	display: none;
+}
+
+.mision-card__subir.is-error {
+	border-color: var(--color-error);
+	background: var(--color-error-tint);
+}
+
+/* --- Interacciones por AJAX (assets/js/clase.js) --- */
+
+/* El aviso de error "sacude" un poco al aparecer, para que se note aunque
+   sea el mismo texto que antes. */
+.clase-page .form-alert {
+	margin: var(--space-3) 0 0;
+}
+
+.mision-card__form > .form-alert {
+	margin: 0 0 var(--space-4);
+}
+
+.clase-page .form-alert.is-sacude {
+	animation: clase-sacude 0.35s ease;
+}
+
+/* La opción elegida queda marcada mientras se guarda. */
+.caso-opcion-boton.is-elegida {
+	border-color: var(--color-purple);
+	background: var(--color-purple-tint);
+}
+
+.caso-opciones.is-enviando .caso-opcion-boton:not(.is-elegida) {
+	opacity: 0.55;
+}
+
+.caso-opcion-boton:disabled {
+	cursor: default;
+	transform: none;
+}
+
+/* Bloque que acaba de llegar por AJAX. */
+.is-entrando {
+	animation: clase-aparecer 0.35s ease both;
+}
+
+.clase-accion__botones {
+	display: flex;
+	align-items: center;
 	flex-wrap: wrap;
 	gap: var(--space-2);
 }
 
+.clase-head__pista--logro {
+	color: var(--color-green-dark);
+}
+
+@keyframes clase-sacude {
+	0%, 100% { transform: translateX(0); }
+	25% { transform: translateX(-5px); }
+	75% { transform: translateX(5px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.is-entrando,
+	.mision-card__subir-preview,
+	.clase-page .form-alert.is-sacude {
+		animation: none;
+	}
+}
+
+.mision-card__botones {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	flex-wrap: wrap;
+	gap: var(--space-3);
+}
+
 /* La misión pospuesta se ve, pero atenuada: sigue siendo lo que toca hacer,
    solo que la familia ya dijo que no es ahora. */
+.mision-card.is-despues {
+	border-color: var(--color-purple-tint);
+}
+
 .mision-card.is-despues .mision-card__icono {
 	opacity: 0.6;
+}
+
+/* --- Qué sigue --- */
+.clase-siguiente {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--space-3) var(--space-4);
+	background: var(--color-white);
+	border: 2px dashed var(--color-purple-tint);
+	border-radius: var(--radius-lg);
+	padding: var(--space-4) var(--space-5);
+}
+
+.clase-siguiente__icono {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 52px;
+	height: 52px;
+	border-radius: 50%;
+	background: var(--color-purple-tint);
+	color: var(--color-purple);
+}
+
+.clase-siguiente__icono svg {
+	width: 28px;
+	height: 28px;
+}
+
+.clase-siguiente__texto {
+	flex: 1;
+	min-width: 180px;
+	display: flex;
+	flex-direction: column;
+}
+
+.clase-siguiente__texto span {
+	font-size: 0.74rem;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--color-purple);
+}
+
+.clase-siguiente__texto strong {
+	font-family: var(--font-display);
+	font-weight: 600;
+	font-size: 1.02rem;
+}
+
+.clase-siguiente__texto small {
+	font-size: 0.8rem;
+	color: var(--color-yellow-dark);
+	font-weight: 600;
+}
+
+@keyframes clase-aparecer {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes clase-girar {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.clase-head,
+	.clase-video,
+	.clase-bloque,
+	.caso-feedback,
+	.clase-accion.is-hecha,
+	.mision-card,
+	.clase-page .btn__spinner {
+		animation: none;
+	}
+}
+
+@media (max-width: 720px) {
+	.clase-head,
+	.clase-bloque,
+	.mision-card {
+		padding: var(--space-4);
+	}
+
+	.clase-head__title {
+		font-size: 1.5rem;
+	}
+
+	.mision-card__botones .btn {
+		width: 100%;
+		justify-content: center;
+		white-space: normal;
+	}
 }
 
 @media (min-width: 560px) {
@@ -1560,39 +2676,5 @@ a.camino__nodo:hover {
 
 	.equipo-etapas {
 		grid-template-columns: 1fr 1fr;
-	}
-}
-
-@media (min-width: 720px) {
-	.camino {
-		max-width: 560px;
-	}
-
-	.camino__paso {
-		width: 220px;
-	}
-
-	.camino__paso:nth-child(8n + 2) { transform: translateX(60px); }
-	.camino__paso:nth-child(8n + 3) { transform: translateX(96px); }
-	.camino__paso:nth-child(8n + 4) { transform: translateX(60px); }
-	.camino__paso:nth-child(8n + 6) { transform: translateX(-60px); }
-	.camino__paso:nth-child(8n + 7) { transform: translateX(-96px); }
-	.camino__paso:nth-child(8n + 8) { transform: translateX(-60px); }
-}
-
-/* El nodo que toca late suavemente para que el ojo lo encuentre solo. Como
-   toda la animación del sitio, se apaga si el sistema pide menos movimiento. */
-@media (prefers-reduced-motion: no-preference) {
-	.camino__paso.is-actual .camino__nodo {
-		animation: afectivalab-latido 2.4s ease-in-out infinite;
-	}
-
-	@keyframes afectivalab-latido {
-		0%, 100% {
-			box-shadow: 0 0 0 0 rgba(108, 79, 214, 0.45);
-		}
-		50% {
-			box-shadow: 0 0 0 14px rgba(108, 79, 214, 0);
-		}
 	}
 }

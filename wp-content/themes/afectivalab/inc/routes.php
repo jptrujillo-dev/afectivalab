@@ -19,6 +19,13 @@ function afectivalab_routes() {
 		'mi-cuenta'   => 'page-templates/mi-cuenta.php',
 		'mis-hijos'   => 'page-templates/mis-hijos.php',
 		'panel'       => 'page-templates/panel.php',
+		'certificado' => 'page-templates/certificado.php',
+		'mundos'      => 'page-templates/mundos.php',
+		'nosotros'    => 'page-templates/nosotros.php',
+		'privacidad'  => 'page-templates/privacidad.php',
+		'terminos'    => 'page-templates/terminos.php',
+		'contacto'    => 'page-templates/contacto.php',
+		'suscribirse' => 'page-templates/suscribirse.php',
 	);
 }
 
@@ -64,6 +71,20 @@ function afectivalab_route_document_title( $title ) {
 		$title['title'] = __( 'Mis hijos', 'afectivalab' );
 	} elseif ( 'panel' === $route ) {
 		$title['title'] = __( 'Mi panel', 'afectivalab' );
+	} elseif ( 'certificado' === $route ) {
+		$title['title'] = __( 'Certificado', 'afectivalab' );
+	} elseif ( 'mundos' === $route ) {
+		$title['title'] = __( 'Explora por mundo temático', 'afectivalab' );
+	} elseif ( 'nosotros' === $route ) {
+		$title['title'] = __( 'Nosotros', 'afectivalab' );
+	} elseif ( 'privacidad' === $route ) {
+		$title['title'] = __( 'Política de privacidad', 'afectivalab' );
+	} elseif ( 'terminos' === $route ) {
+		$title['title'] = __( 'Términos de uso', 'afectivalab' );
+	} elseif ( 'contacto' === $route ) {
+		$title['title'] = __( 'Escríbenos', 'afectivalab' );
+	} elseif ( 'suscribirse' === $route ) {
+		$title['title'] = __( 'Suscríbete', 'afectivalab' );
 	}
 
 	return $title;
@@ -76,16 +97,19 @@ add_filter( 'document_title_parts', 'afectivalab_route_document_title' );
  * (after_switch_theme), pero este theme ya estaba activo cuando se agregaron
  * estas rutas. Se fuerza un único flush automático la primera vez que corre
  * este código; si más adelante se agregan más rutas, subir el número de la
- * clave de la opción para forzar otro flush (va en v6: se sumó /panel —
- * antes, v5 sumó /mis-hijos, v4 los tipos de contenido de cursos y
- * microclases con sus taxonomías, v3 /mi-cuenta y v2 /recuperar y
- * /restablecer).
+ * clave de la opción para forzar otro flush (v11 sumó /renovar — ya no
+ * existe, se quitó al migrar el cobro a Paid Memberships Pro + PayPal, que
+ * maneja la renovación solo; no hace falta un flush nuevo solo por sacar
+ * una ruta. Antes, v10 sumó /suscribirse, v9 /nosotros, /privacidad,
+ * /terminos y /contacto, v8 /mundos, v7 /certificado, v6 /panel, v5
+ * /mis-hijos, v4 los tipos de contenido de cursos y microclases con sus
+ * taxonomías, v3 /mi-cuenta y v2 /recuperar y /restablecer).
  */
 function afectivalab_maybe_flush_rewrites() {
-	if ( ! get_option( 'afectivalab_rewrites_flushed_v6' ) ) {
+	if ( ! get_option( 'afectivalab_rewrites_flushed_v11' ) ) {
 		afectivalab_register_rewrites();
 		flush_rewrite_rules();
-		update_option( 'afectivalab_rewrites_flushed_v6', 1 );
+		update_option( 'afectivalab_rewrites_flushed_v11', 1 );
 	}
 }
 add_action( 'init', 'afectivalab_maybe_flush_rewrites', 20 );

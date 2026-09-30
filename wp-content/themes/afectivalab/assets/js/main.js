@@ -66,8 +66,9 @@
 		} );
 
 		document.addEventListener( 'keydown', function ( event ) {
-			if ( 'Escape' === event.key ) {
+			if ( 'Escape' === event.key && userMenu.classList.contains( 'is-open' ) ) {
 				closeUserMenu();
+				userMenuTrigger.focus();
 			}
 		} );
 	}
@@ -115,6 +116,75 @@
 	// (perfiles de hijo, cursos, microclases). Es solo una red de seguridad:
 	// sin JS el botón sigue funcionando, y todo lo que borra va a la papelera,
 	// así que un clic de más se puede deshacer.
+	//
+	// En vez del confirm() del navegador se abre un modal propio con
+	// animación (.confirmar-modal en base.css). Al aceptar se vuelve a hacer
+	// clic en el mismo botón con una marca para dejarlo pasar: así el
+	// formulario se envía con el name/value de ese botón, igual que antes.
+	var modalConfirmar = null;
+
+	function crearModalConfirmar() {
+		var modal = document.createElement( 'div' );
+		modal.className = 'confirmar-modal';
+		modal.hidden = true;
+		modal.innerHTML =
+			'<div class="confirmar-modal__fondo" data-confirmar-cancelar></div>' +
+			'<div class="confirmar-modal__caja" role="alertdialog" aria-modal="true" aria-labelledby="confirmar-modal-texto">' +
+				'<span class="confirmar-modal__icono" aria-hidden="true">!</span>' +
+				'<p class="confirmar-modal__texto" id="confirmar-modal-texto"></p>' +
+				'<div class="confirmar-modal__botones">' +
+					'<button type="button" class="btn btn-secondary" data-confirmar-cancelar>Cancelar</button>' +
+					'<button type="button" class="btn confirmar-modal__aceptar" data-confirmar-aceptar></button>' +
+				'</div>' +
+			'</div>';
+		document.body.appendChild( modal );
+		return modal;
+	}
+
+	function cerrarModalConfirmar() {
+		modalConfirmar.classList.remove( 'is-open' );
+		document.removeEventListener( 'keydown', escConfirmar );
+
+		window.setTimeout( function () {
+			modalConfirmar.hidden = true;
+		}, 200 );
+	}
+
+	function escConfirmar( event ) {
+		if ( 'Escape' === event.key ) {
+			cerrarModalConfirmar();
+		}
+	}
+
+	function abrirModalConfirmar( button ) {
+		if ( ! modalConfirmar ) {
+			modalConfirmar = crearModalConfirmar();
+		}
+
+		var aceptar = modalConfirmar.querySelector( '[data-confirmar-aceptar]' );
+
+		modalConfirmar.querySelector( '.confirmar-modal__texto' ).textContent = button.getAttribute( 'data-confirm' );
+		aceptar.textContent = button.getAttribute( 'data-confirm-boton' ) || 'Sí, continuar';
+
+		aceptar.onclick = function () {
+			cerrarModalConfirmar();
+			button.setAttribute( 'data-confirmado', '1' );
+			button.click();
+		};
+
+		Array.prototype.forEach.call( modalConfirmar.querySelectorAll( '[data-confirmar-cancelar]' ), function ( el ) {
+			el.onclick = cerrarModalConfirmar;
+		} );
+
+		modalConfirmar.hidden = false;
+		// Un frame después, para que la transición de entrada sí se vea.
+		window.requestAnimationFrame( function () {
+			modalConfirmar.classList.add( 'is-open' );
+			aceptar.focus();
+		} );
+		document.addEventListener( 'keydown', escConfirmar );
+	}
+
 	document.addEventListener( 'click', function ( event ) {
 		var button = event.target.closest( '[data-confirm]' );
 
@@ -122,8 +192,12 @@
 			return;
 		}
 
-		if ( ! window.confirm( button.getAttribute( 'data-confirm' ) ) ) {
-			event.preventDefault();
+		if ( button.hasAttribute( 'data-confirmado' ) ) {
+			button.removeAttribute( 'data-confirmado' );
+			return;
 		}
+
+		event.preventDefault();
+		abrirModalConfirmar( button );
 	} );
 } )();

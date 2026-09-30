@@ -1,0 +1,139 @@
+/* ===== Páginas de contenido estático: nosotros, privacidad, términos, contacto =====
+   No comparten hoja con /panel (esas viven de estados de progreso, esto es
+   texto corrido y un formulario). Tipografía de lectura, ancho angosto. */
+
+.legal-page {
+	padding-block: var(--space-6) var(--space-8);
+	background: var(--color-bg-alt);
+	min-height: calc(100vh - 73px);
+}
+
+.legal-page__narrow {
+	max-width: 760px;
+}
+
+.legal-hero {
+	margin-bottom: var(--space-5);
+}
+
+.legal-hero h1 {
+	font-size: 1.9rem;
+	margin-bottom: var(--space-2);
+}
+
+.legal-hero p {
+	color: var(--color-text-muted);
+	margin: 0;
+}
+
+.legal-card {
+	background: var(--color-white);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-card);
+	padding: var(--space-5) var(--space-4);
+	margin-bottom: var(--space-4);
+}
+
+.legal-card--cta {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: var(--space-3);
+	background: var(--color-purple-tint);
+	box-shadow: none;
+}
+
+.legal-card--cta h2 {
+	font-size: 1.15rem;
+	margin-bottom: 4px;
+}
+
+.legal-card--cta p {
+	margin: 0;
+	color: var(--color-text-muted);
+}
+
+/* --- Aviso de borrador, en privacidad/términos --- */
+.legal-borrador {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	background: var(--color-yellow-tint);
+	border: 1.5px solid var(--color-yellow);
+	border-radius: var(--radius-md);
+	padding: var(--space-3) var(--space-4);
+	margin-bottom: var(--space-4);
+}
+
+.legal-borrador strong {
+	font-family: var(--font-display);
+	color: var(--color-yellow-dark);
+}
+
+.legal-borrador p {
+	margin: 0;
+	font-size: 0.9rem;
+	color: var(--color-text);
+}
+
+/* --- Texto corrido --- */
+.legal-content h2 {
+	font-size: 1.15rem;
+	margin: var(--space-4) 0 var(--space-2);
+}
+
+.legal-content h2:first-child {
+	margin-top: 0;
+}
+
+.legal-content p {
+	color: var(--color-text);
+	line-height: 1.6;
+	margin: 0 0 var(--space-3);
+}
+
+.legal-content ul {
+	margin: 0 0 var(--space-3);
+	padding-left: 1.2em;
+	color: var(--color-text);
+	line-height: 1.6;
+}
+
+.legal-content li {
+	margin-bottom: 4px;
+}
+
+.legal-content a {
+	color: var(--color-purple);
+	font-weight: 600;
+}
+
+/* --- Formulario de contacto --- */
+.legal-card .form-input textarea {
+	flex: 1;
+	min-width: 0;
+	border: none;
+	outline: none;
+	background: transparent;
+	padding: 12px var(--space-3);
+	font-family: var(--font-body);
+	font-size: 1rem;
+	color: var(--color-text);
+	resize: vertical;
+}
+
+.legal-card .form-submit {
+	margin-top: var(--space-2);
+}
+
+/* Campo trampa anti-spam: existe en el HTML para que los bots lo llenen,
+   pero ningún visitante humano debe verlo ni pasarle el foco con Tab. */
+.legal-form__trampa {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}

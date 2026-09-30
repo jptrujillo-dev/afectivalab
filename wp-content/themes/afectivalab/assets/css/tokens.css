@@ -10,6 +10,9 @@
 	--color-green: #38B36B;
 	--color-green-dark: #279250;
 	--color-green-tint: #E5F6EC;
+	--color-yellow: #F6B819;
+	--color-yellow-dark: #D89906;
+	--color-yellow-tint: #FEF7DF;
 	--color-ink: #2B2140;
 	--color-surface: #FBFAFF;
 
@@ -42,6 +45,13 @@
 	--radius-pill: 999px;
 	--shadow-card: 0 12px 30px -12px rgba(43, 33, 64, 0.18);
 	--shadow-soft: 0 6px 16px -8px rgba(43, 33, 64, 0.12);
+
+	/* Sombra "táctil" — solo para botones/CTA con sensación de tarjeta que se
+	   presiona (referencia Stitch). No usar en el isotipo ni en iconos de
+	   categoría: docs/brand.md fija esos como silueta plana sin sombra. */
+	--shadow-tactile-purple: 0 4px 0 0 var(--color-purple-dark);
+	--shadow-tactile-green: 0 4px 0 0 var(--color-green-dark);
+	--shadow-tactile-yellow: 0 4px 0 0 var(--color-yellow-dark);
 
 	/* Layout */
 	--container-max: 1200px;

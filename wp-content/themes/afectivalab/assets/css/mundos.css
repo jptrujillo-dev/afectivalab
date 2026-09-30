@@ -1,0 +1,541 @@
+/* ===== Exploración libre por mundo temático (/mundos) =====
+   Navegación secundaria a la ruta personalizada: mismo lenguaje visual de
+   tarjetas redondeadas que el panel. Es un catálogo libre, así que el único
+   "estado" que se muestra es el avance del hijo activo si ya empezó un curso. */
+
+.mundos-page {
+	padding-block: var(--space-6) var(--space-8);
+	background: var(--color-bg-alt);
+	min-height: calc(100vh - 73px);
+}
+
+/* La regla general de base.css le da mucho aire a todo <section>; acá las
+   secciones son grupos dentro de la misma página, no bloques de la home. */
+:where(.mundos-page) section {
+	padding-block: 0;
+}
+
+.mundos-hub__head {
+	max-width: 62ch;
+	margin-bottom: var(--space-5);
+}
+
+.mundos-hub__chip,
+.mundo-detalle__chip {
+	display: inline-block;
+	background: var(--color-purple-tint);
+	color: var(--color-purple-dark);
+	border-radius: var(--radius-pill);
+	padding: 4px 12px;
+	font-family: var(--font-display);
+	font-size: 0.75rem;
+	font-weight: 700;
+	margin-bottom: var(--space-2);
+}
+
+.mundos-hub__head h1 {
+	font-size: 1.9rem;
+	margin-bottom: var(--space-2);
+}
+
+.mundos-hub__head p {
+	color: var(--color-text-muted);
+	margin: 0;
+}
+
+/* --- Mapa de los 8 mundos --- */
+.mundos-grid {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+	gap: var(--space-3);
+}
+
+.mundo-card {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--space-2);
+	height: 100%;
+	background: var(--color-white);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-card);
+	padding: var(--space-4);
+	color: var(--color-text);
+	border: 2px solid transparent;
+	transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mundo-card:hover,
+.mundo-card:focus-visible {
+	border-color: var(--color-purple);
+	transform: translateY(-3px);
+	outline: none;
+}
+
+.mundo-card__top {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	width: 100%;
+	margin-bottom: var(--space-1);
+}
+
+.mundo-card__icono {
+	display: inline-flex;
+	width: 56px;
+	height: 56px;
+	transition: transform 0.25s ease;
+}
+
+.mundo-card__icono svg {
+	width: 56px;
+	height: 56px;
+}
+
+.mundo-card:hover .mundo-card__icono {
+	transform: scale(1.06) rotate(-4deg);
+}
+
+.mundo-card strong {
+	font-family: var(--font-display);
+	font-size: 1.08rem;
+}
+
+.mundo-card p {
+	color: var(--color-text-muted);
+	font-size: 0.88rem;
+	margin: 0;
+}
+
+.mundo-card__cantidad {
+	background: var(--color-green-tint);
+	color: var(--color-green-dark);
+	border-radius: var(--radius-pill);
+	padding: 4px 10px;
+	font-size: 0.75rem;
+	font-weight: 700;
+	font-family: var(--font-display);
+}
+
+.mundo-card.is-vacio .mundo-card__cantidad {
+	background: var(--color-bg-alt);
+	color: var(--color-text-muted);
+}
+
+.mundo-card__ir {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin-top: auto;
+	padding-top: var(--space-2);
+	font-size: 0.85rem;
+	font-weight: 700;
+	color: var(--color-purple);
+}
+
+.mundo-card__ir svg {
+	width: 16px;
+	height: 16px;
+	transition: transform 0.2s ease;
+}
+
+.mundo-card:hover .mundo-card__ir svg {
+	transform: translateX(4px);
+}
+
+/* --- Volver al mapa --- */
+.mundos-volver {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	color: var(--color-text-muted);
+	font-size: 0.9rem;
+	font-weight: 600;
+	margin-bottom: var(--space-3);
+	transition: color 0.15s ease;
+}
+
+.mundos-volver:hover {
+	color: var(--color-purple);
+}
+
+.mundos-volver__icono {
+	width: 16px;
+	height: 16px;
+	transform: rotate(180deg);
+}
+
+/* --- Detalle de un mundo --- */
+.mundo-detalle__head {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--space-4);
+	background: var(--color-white);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-card);
+	padding: var(--space-4) var(--space-5);
+	margin-bottom: var(--space-4);
+}
+
+.mundo-detalle__icono {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 84px;
+	height: 84px;
+	background: var(--color-bg-alt);
+	border-radius: var(--radius-md);
+}
+
+.mundo-detalle__icono svg {
+	width: 60px;
+	height: 60px;
+}
+
+.mundo-detalle__texto {
+	flex: 1;
+	min-width: 220px;
+}
+
+.mundo-detalle__texto h1 {
+	font-size: 1.7rem;
+	margin-bottom: 2px;
+}
+
+.mundo-detalle__texto p {
+	color: var(--color-text-muted);
+	margin: 0;
+}
+
+.mundo-detalle__cifras {
+	display: flex;
+	gap: var(--space-2);
+}
+
+.mundo-detalle__cifras span {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-width: 78px;
+	background: var(--color-bg-alt);
+	border-radius: var(--radius-md);
+	padding: var(--space-2) var(--space-3);
+	font-size: 0.78rem;
+	color: var(--color-text-muted);
+}
+
+.mundo-detalle__cifras strong {
+	font-family: var(--font-display);
+	font-size: 1.4rem;
+	line-height: 1.2;
+	color: var(--color-purple-dark);
+}
+
+/* Filtro por edad (lo muestra mundos.js). */
+.mundo-filtro {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-2);
+	margin-bottom: var(--space-4);
+}
+
+.mundo-filtro[hidden] {
+	display: none;
+}
+
+.mundo-filtro__chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: var(--color-white);
+	border: 1.5px solid var(--color-border);
+	border-radius: var(--radius-pill);
+	padding: 7px 14px;
+	font-family: var(--font-display);
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: var(--color-text);
+	cursor: pointer;
+	transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.mundo-filtro__chip:hover {
+	border-color: var(--color-purple);
+}
+
+.mundo-filtro__chip.is-activo {
+	border-color: var(--color-purple);
+	background: var(--color-purple);
+	color: var(--color-white);
+}
+
+.mundo-filtro__num {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 20px;
+	height: 20px;
+	padding-inline: 5px;
+	border-radius: var(--radius-pill);
+	background: var(--color-purple-tint);
+	color: var(--color-purple-dark);
+	font-size: 0.72rem;
+}
+
+.mundo-filtro__chip.is-activo .mundo-filtro__num {
+	background: rgba(255, 255, 255, 0.25);
+	color: var(--color-white);
+}
+
+/* Cada etapa: su nombre y rango de edad arriba, los cursos debajo. */
+.mundo-grupo + .mundo-grupo {
+	margin-top: var(--space-5);
+}
+
+.mundo-grupo[hidden] {
+	display: none;
+}
+
+.mundo-grupo.is-entrando {
+	animation: mundo-entrar 0.3s ease both;
+}
+
+@keyframes mundo-entrar {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+}
+
+.mundo-grupo__head {
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
+	margin-bottom: var(--space-3);
+}
+
+.mundo-grupo__titulo {
+	font-size: 1.15rem;
+	margin: 0;
+}
+
+.mundo-grupo__edad {
+	background: var(--color-yellow-tint);
+	color: var(--color-yellow-dark);
+	border-radius: var(--radius-pill);
+	padding: 3px 10px;
+	font-size: 0.75rem;
+	font-weight: 700;
+	font-family: var(--font-display);
+}
+
+.mundos-vacio {
+	background: var(--color-white);
+	border: 2px dashed var(--color-border);
+	border-radius: var(--radius-lg);
+	padding: var(--space-7) var(--space-4);
+	text-align: center;
+}
+
+.mundos-vacio__icon {
+	width: 80px;
+	height: 80px;
+	margin-inline: auto;
+	margin-bottom: var(--space-3);
+}
+
+.mundos-vacio h2 {
+	font-size: 1.3rem;
+	margin-bottom: var(--space-2);
+}
+
+.mundos-vacio p {
+	color: var(--color-text-muted);
+	max-width: 46ch;
+	margin: 0 auto;
+}
+
+.mundo-cursos {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+	gap: var(--space-3);
+}
+
+.mundo-curso-card > a {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	background: var(--color-white);
+	border-radius: var(--radius-md);
+	box-shadow: var(--shadow-card);
+	overflow: hidden;
+	color: var(--color-text);
+	border: 2px solid transparent;
+	transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.mundo-curso-card > a:hover,
+.mundo-curso-card > a:focus-visible {
+	border-color: var(--color-purple);
+	transform: translateY(-3px);
+	outline: none;
+}
+
+.mundo-curso-card__imagen {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 150px;
+	background: var(--color-purple-tint);
+	overflow: hidden;
+}
+
+.mundo-curso-card__imagen img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.4s ease;
+}
+
+.mundo-curso-card > a:hover .mundo-curso-card__imagen img {
+	transform: scale(1.04);
+}
+
+.mundo-curso-card__sin-foto {
+	width: 64px;
+	height: 64px;
+}
+
+.mundo-curso-card__estado {
+	position: absolute;
+	top: var(--space-2);
+	left: var(--space-2);
+	background: var(--color-white);
+	color: var(--color-purple-dark);
+	border-radius: var(--radius-pill);
+	padding: 4px 10px;
+	font-size: 0.72rem;
+	font-weight: 700;
+	font-family: var(--font-display);
+}
+
+.mundo-curso-card__estado.is-hecho {
+	background: var(--color-green);
+	color: var(--color-white);
+}
+
+.mundo-curso-card__texto {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding: var(--space-3);
+}
+
+.mundo-curso-card__texto strong {
+	font-family: var(--font-display);
+	font-size: 1rem;
+	line-height: 1.3;
+}
+
+.mundo-curso-card__texto p {
+	color: var(--color-text-muted);
+	font-size: 0.85rem;
+	margin: 0;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.mundo-curso-card__avance {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	font-size: 0.78rem;
+	font-weight: 600;
+	color: var(--color-purple-dark);
+}
+
+.mundo-curso-card__avance .progreso-bar--mini {
+	display: block;
+	height: 6px;
+}
+
+.mundo-curso-card__pie {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: auto;
+	padding-top: var(--space-2);
+	border-top: 1px solid var(--color-border);
+}
+
+.mundo-curso-card__meta {
+	font-size: 0.8rem;
+	color: var(--color-text-muted);
+	font-weight: 600;
+}
+
+.mundo-curso-card__ir {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background: var(--color-purple-tint);
+	color: var(--color-purple);
+	transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.mundo-curso-card__ir svg {
+	width: 16px;
+	height: 16px;
+}
+
+.mundo-curso-card > a:hover .mundo-curso-card__ir {
+	background: var(--color-purple);
+	color: var(--color-white);
+	transform: translateX(2px);
+}
+
+@media (max-width: 600px) {
+	.mundo-detalle__head {
+		padding: var(--space-4);
+	}
+
+	.mundo-detalle__icono {
+		width: 64px;
+		height: 64px;
+	}
+
+	.mundo-detalle__icono svg {
+		width: 46px;
+		height: 46px;
+	}
+
+	.mundo-detalle__cifras {
+		width: 100%;
+	}
+
+	.mundo-detalle__cifras span {
+		flex: 1;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.mundo-grupo.is-entrando {
+		animation: none;
+	}
+}

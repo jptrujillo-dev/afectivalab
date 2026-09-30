@@ -78,7 +78,17 @@ function afectivalab_panel_mensajes() {
 		'clase-guardada'   => __( 'Cambios guardados.', 'afectivalab' ),
 		'clase-eliminada'  => __( 'Microclase enviada a la papelera.', 'afectivalab' ),
 		'rol-cambiado'     => __( 'Rol actualizado.', 'afectivalab' ),
+		'publicado'        => __( 'Publicado: ya lo ven las familias.', 'afectivalab' ),
+		'borrador'         => __( 'Pasado a borrador: las familias ya no lo ven.', 'afectivalab' ),
+		'orden-guardado'   => __( 'Orden de las microclases actualizado.', 'afectivalab' ),
 	);
+}
+
+/**
+ * Estados de post que ve el equipo en los listados (todo menos la papelera).
+ */
+function afectivalab_panel_estados_visibles() {
+	return array( 'publish', 'draft', 'pending', 'private' );
 }
 
 /**
@@ -144,18 +154,64 @@ function afectivalab_panel_handle() {
 		if ( 'cambiar_rol' === $accion ) {
 			afectivalab_panel_cambiar_rol();
 		}
+
+		if ( 'cambiar_estado' === $accion ) {
+			$res = afectivalab_panel_procesar_estado();
+
+			if ( is_wp_error( $res ) ) {
+				$estado['errors'][] = $res->get_error_message();
+				return $estado;
+			}
+
+			wp_safe_redirect( afectivalab_panel_url( array( 'seccion' => $res['seccion'], 'msg' => 'publish' === $res['estado'] ? 'publicado' : 'borrador' ) ) );
+			exit;
+		}
+
+		if ( 'mover_clase' === $accion ) {
+			$res = afectivalab_panel_procesar_mover();
+
+			if ( is_wp_error( $res ) ) {
+				$estado['errors'][] = $res->get_error_message();
+				return $estado;
+			}
+
+			wp_safe_redirect( afectivalab_panel_url( array( 'seccion' => 'cursos', 'accion' => 'editar', 'id' => $res['curso'], 'msg' => 'orden-guardado' ) ) );
+			exit;
+		}
 	}
 
 	return $estado;
 }
 
 /**
- * Alta y edición de un curso.
+ * Guardar curso sin JavaScript: procesa y, si salió bien, redirige a su
+ * edición (así recargar no lo vuelve a crear). Con JavaScript el mismo
+ * procesamiento lo usa inc/panel-ajax.php, que responde sin recargar.
  *
  * @return array{errors: string[], valores: array}
  */
 function afectivalab_panel_guardar_curso() {
-	$estado = array( 'errors' => array(), 'valores' => array() );
+	$estado = afectivalab_panel_procesar_curso();
+
+	if ( $estado['errors'] ) {
+		return $estado;
+	}
+
+	wp_safe_redirect( afectivalab_panel_url( array( 'seccion' => 'cursos', 'accion' => 'editar', 'id' => $estado['id'], 'msg' => $estado['mensaje'] ) ) );
+	exit;
+}
+
+/**
+ * Alta y edición de un curso: nonce, permiso, validación y guardado.
+ *
+ * Si el curso llega a guardarse pero falla la imagen, vuelve con el error
+ * **y con el id**, para que el siguiente envío edite ese curso en vez de
+ * crear otro igual.
+ *
+ * @return array{errors: string[], valores: array, id: int, mensaje: string}
+ */
+function afectivalab_panel_procesar_curso() {
+	$estado = array( 'errors' => array(), 'valores' => array(), 'id' => 0, 'mensaje' => '' );
 
 	if ( ! isset( $_POST['afectivalab_panel_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['afectivalab_panel_nonce'] ) ), 'afectivalab_panel_curso' ) ) {
 		$estado['errors'][] = __( 'Tu sesión expiró, vuelve a intentarlo.', 'afectivalab' );
@@ -236,17 +292,18 @@ function afectivalab_panel_guardar_curso() {
 
 	update_post_meta( $curso_id, '_afectivalab_habilidad', $valores['habilidad'] );
 
+	$estado['id']      = (int) $curso_id;
+	$estado['mensaje'] = $mensaje;
+
 	$imagen = afectivalab_panel_imagen_destacada( $curso_id );
 
 	if ( is_wp_error( $imagen ) ) {
 		// El curso ya quedó guardado; solo falló la imagen, así que se avisa
 		// sin perder el resto del trabajo.
 		$estado['errors'][] = $imagen->get_error_message();
-		return $estado;
 	}
 
-	wp_safe_redirect( afectivalab_panel_url( array( 'seccion' => 'cursos', 'accion' => 'editar', 'id' => $curso_id, 'msg' => $mensaje ) ) );
-	exit;
+	return $estado;
 }
 
 /**
@@ -267,8 +324,133 @@ function afectivalab_panel_asignar_termino( $post_id, $slug, $taxonomia ) {
  *
  * @return array{errors: string[], valores: array}
  */
+/**
+ * Un paso vacío del caso interactivo — 4 huecos de opción sin llenar. Es la
+ * forma en que se abre el formulario cuando la clase todavía no tiene caso.
+ */
+function afectivalab_panel_caso_paso_vacio() {
+	$opciones = array();
+
+	for ( $i = 0; $i < 4; $i++ ) {
+		$opciones[] = array( 'texto' => '', 'feedback' => '', 'recomendada' => false );
+	}
+
+	return array( 'situacion' => '', 'opciones' => $opciones );
+}
+
+/**
+ * Lee el caso guardado de una clase, con los 4 huecos de opción siempre
+ * presentes (a diferencia de afectivalab_caso_opciones() en inc/casos.php,
+ * que descarta las vacías para el lado de la familia — aquí el formulario
+ * necesita ver también los huecos sin llenar).
+ *
+ * @param int    $clase_id
+ * @param string $paso 'paso1' o 'paso2'.
+ */
+function afectivalab_panel_caso_paso_desde_clase( $clase_id, $paso ) {
+	$opciones = array();
+
+	for ( $i = 1; $i <= 4; $i++ ) {
+		$opciones[] = array(
+			'texto'       => get_post_meta( $clase_id, "_afectivalab_caso_{$paso}_opcion_{$i}_texto", true ),
+			'feedback'    => get_post_meta( $clase_id, "_afectivalab_caso_{$paso}_opcion_{$i}_feedback", true ),
+			'recomendada' => (bool) get_post_meta( $clase_id, "_afectivalab_caso_{$paso}_opcion_{$i}_recomendada", true ),
+		);
+	}
+
+	return array(
+		'situacion' => get_post_meta( $clase_id, "_afectivalab_caso_{$paso}_situacion", true ),
+		'opciones'  => $opciones,
+	);
+}
+
+function afectivalab_panel_caso_valores_desde_clase( $clase_id ) {
+	return array(
+		'paso1' => afectivalab_panel_caso_paso_desde_clase( $clase_id, 'paso1' ),
+		'paso2' => afectivalab_panel_caso_paso_desde_clase( $clase_id, 'paso2' ),
+	);
+}
+
+/**
+ * Lee el caso que se acaba de enviar por POST, saneando cada campo.
+ */
+function afectivalab_panel_caso_paso_desde_post( $paso ) {
+	$opciones = array();
+
+	for ( $i = 1; $i <= 4; $i++ ) {
+		$opciones[] = array(
+			'texto'       => sanitize_text_field( wp_unslash( $_POST[ "caso_{$paso}_opcion_{$i}_texto" ] ?? '' ) ),
+			'feedback'    => sanitize_textarea_field( wp_unslash( $_POST[ "caso_{$paso}_opcion_{$i}_feedback" ] ?? '' ) ),
+			'recomendada' => ! empty( $_POST[ "caso_{$paso}_opcion_{$i}_recomendada" ] ),
+		);
+	}
+
+	return array(
+		'situacion' => sanitize_textarea_field( wp_unslash( $_POST[ "caso_{$paso}_situacion" ] ?? '' ) ),
+		'opciones'  => $opciones,
+	);
+}
+
+function afectivalab_panel_caso_valores_desde_post() {
+	return array(
+		'paso1' => afectivalab_panel_caso_paso_desde_post( 'paso1' ),
+		'paso2' => afectivalab_panel_caso_paso_desde_post( 'paso2' ),
+	);
+}
+
+/**
+ * Cuántas opciones de un paso tienen texto — es lo que decide si ese paso
+ * cuenta como un dilema real (hacen falta al menos 2 caminos entre los que
+ * elegir) o si está vacío.
+ */
+function afectivalab_panel_caso_opciones_llenas( $paso ) {
+	return count(
+		array_filter(
+			$paso['opciones'],
+			function ( $opcion ) {
+				return '' !== $opcion['texto'];
+			}
+		)
+	);
+}
+
+function afectivalab_panel_caso_guardar( $clase_id, $valores ) {
+	foreach ( array( 'paso1', 'paso2' ) as $paso ) {
+		update_post_meta( $clase_id, "_afectivalab_caso_{$paso}_situacion", $valores[ $paso ]['situacion'] );
+
+		foreach ( $valores[ $paso ]['opciones'] as $i => $opcion ) {
+			$n = $i + 1;
+			update_post_meta( $clase_id, "_afectivalab_caso_{$paso}_opcion_{$n}_texto", $opcion['texto'] );
+			update_post_meta( $clase_id, "_afectivalab_caso_{$paso}_opcion_{$n}_feedback", $opcion['feedback'] );
+			update_post_meta( $clase_id, "_afectivalab_caso_{$paso}_opcion_{$n}_recomendada", $opcion['recomendada'] ? 1 : '' );
+		}
+	}
+}
+
+/**
+ * Guardar microclase sin JavaScript: procesa y redirige a su edición. Con
+ * JavaScript responde inc/panel-ajax.php con el mismo procesamiento.
+ *
+ * @return array{errors: string[], valores: array}
+ */
 function afectivalab_panel_guardar_clase() {
-	$estado = array( 'errors' => array(), 'valores' => array() );
+	$estado = afectivalab_panel_procesar_clase();
+
+	if ( $estado['errors'] ) {
+		return $estado;
+	}
+
+	wp_safe_redirect( afectivalab_panel_url( array( 'seccion' => 'clases', 'accion' => 'editar', 'id' => $estado['id'], 'msg' => $estado['mensaje'] ) ) );
+	exit;
+}
+
+/**
+ * Alta y edición de una microclase: nonce, permiso, validación y guardado.
+ *
+ * @return array{errors: string[], valores: array, id: int, mensaje: string}
+ */
+function afectivalab_panel_procesar_clase() {
+	$estado = array( 'errors' => array(), 'valores' => array(), 'id' => 0, 'mensaje' => '' );
 
 	if ( ! isset( $_POST['afectivalab_panel_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['afectivalab_panel_nonce'] ) ), 'afectivalab_panel_clase' ) ) {
 		$estado['errors'][] = __( 'Tu sesión expiró, vuelve a intentarlo.', 'afectivalab' );
@@ -307,6 +489,7 @@ function afectivalab_panel_guardar_clase() {
 		'video_url'    => esc_url_raw( wp_unslash( $_POST['video_url'] ?? '' ) ),
 		'mision_tipo'  => $tipo_mision,
 		'mision_texto' => sanitize_textarea_field( wp_unslash( $_POST['mision_texto'] ?? '' ) ),
+		'caso'         => afectivalab_panel_caso_valores_desde_post(),
 		'contenido'    => wp_kses_post( wp_unslash( $_POST['contenido'] ?? '' ) ),
 		'estado'       => 'publish' === ( $_POST['estado'] ?? '' ) ? 'publish' : 'draft',
 	);
@@ -329,8 +512,29 @@ function afectivalab_panel_guardar_clase() {
 		$estado['errors'][] = __( 'Escribe qué debe hacer la familia en la misión, o elige "sin misión".', 'afectivalab' );
 	}
 
+	$afectivalab_caso_p1 = $valores['caso']['paso1'];
+	$afectivalab_caso_p2 = $valores['caso']['paso2'];
+
+	if ( '' !== $afectivalab_caso_p1['situacion'] && afectivalab_panel_caso_opciones_llenas( $afectivalab_caso_p1 ) < 2 ) {
+		$estado['errors'][] = __( 'El caso interactivo necesita al menos 2 opciones en la situación inicial.', 'afectivalab' );
+	}
+
+	if ( '' === $afectivalab_caso_p1['situacion'] && '' !== $afectivalab_caso_p2['situacion'] ) {
+		$estado['errors'][] = __( 'No puede haber una pregunta de seguimiento sin la situación inicial del caso.', 'afectivalab' );
+	}
+
+	if ( '' !== $afectivalab_caso_p2['situacion'] && afectivalab_panel_caso_opciones_llenas( $afectivalab_caso_p2 ) < 2 ) {
+		$estado['errors'][] = __( 'La pregunta de seguimiento del caso necesita al menos 2 opciones.', 'afectivalab' );
+	}
+
 	if ( 'publish' === $valores['estado'] && ! current_user_can( 'publish_afectivalab_clases' ) ) {
 		$valores['estado'] = 'draft';
+	}
+
+	// Una microclase nueva sin orden va al final de su curso (es lo que pasa
+	// al crearla rápido desde el modal, que no pregunta el orden).
+	if ( ! $clase && ! $valores['orden'] && $valores['curso'] ) {
+		$valores['orden'] = count( afectivalab_clases_del_curso( $valores['curso'], afectivalab_panel_estados_visibles() ) ) + 1;
 	}
 
 	if ( $estado['errors'] ) {
@@ -366,12 +570,17 @@ function afectivalab_panel_guardar_clase() {
 	update_post_meta( $clase_id, '_afectivalab_video_url', $valores['video_url'] );
 	update_post_meta( $clase_id, '_afectivalab_mision_tipo', $valores['mision_tipo'] );
 	update_post_meta( $clase_id, '_afectivalab_mision_texto', $valores['mision_texto'] );
+	afectivalab_panel_caso_guardar( $clase_id, $valores['caso'] );
 
+	$estado['id']      = (int) $clase_id;
+	$estado['mensaje'] = $mensaje;
+
+	// La clase ya quedó guardada: si falla un archivo se avisa, con el id,
+	// para que el siguiente envío la edite en vez de crear otra.
 	$imagen = afectivalab_panel_imagen_destacada( $clase_id );
 
 	if ( is_wp_error( $imagen ) ) {
 		$estado['errors'][] = $imagen->get_error_message();
-		$estado['valores']['clase_id'] = $clase_id;
 		return $estado;
 	}
 
@@ -379,12 +588,9 @@ function afectivalab_panel_guardar_clase() {
 
 	if ( is_wp_error( $subido ) ) {
 		$estado['errors'][] = $subido->get_error_message();
-		$estado['valores']['clase_id'] = $clase_id;
-		return $estado;
 	}
 
-	wp_safe_redirect( afectivalab_panel_url( array( 'seccion' => 'clases', 'accion' => 'editar', 'id' => $clase_id, 'msg' => $mensaje ) ) );
-	exit;
+	return $estado;
 }
 
 /**
@@ -480,28 +686,151 @@ function afectivalab_panel_subir_video( $clase_id ) {
  * @param string $mensaje
  */
 function afectivalab_panel_eliminar( $tipo, $seccion, $mensaje ) {
-	if ( ! isset( $_POST['afectivalab_panel_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['afectivalab_panel_nonce'] ) ), 'afectivalab_panel_eliminar' ) ) {
+	$res = afectivalab_panel_procesar_eliminar( $tipo );
+
+	if ( null === $res ) {
 		return;
+	}
+
+	if ( is_wp_error( $res ) ) {
+		wp_safe_redirect( afectivalab_panel_url( array( 'seccion' => $seccion, 'error' => 'sin-permiso' ) ) );
+		exit;
+	}
+
+	wp_safe_redirect( afectivalab_panel_url( array( 'seccion' => $seccion, 'msg' => $mensaje ) ) );
+	exit;
+}
+
+/**
+ * Manda a la papelera. Devuelve el post, un WP_Error si no hay permiso, o
+ * null si la petición ni siquiera es válida (nonce o post equivocado).
+ *
+ * @param string $tipo
+ * @return WP_Post|WP_Error|null
+ */
+function afectivalab_panel_procesar_eliminar( $tipo ) {
+	if ( ! isset( $_POST['afectivalab_panel_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['afectivalab_panel_nonce'] ) ), 'afectivalab_panel_eliminar' ) ) {
+		return null;
 	}
 
 	$id   = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
 	$post = get_post( $id );
 
 	if ( ! $post || $post->post_type !== $tipo ) {
-		return;
+		return null;
 	}
 
 	// delete_post, no edit_post: un instructor puede editar lo de un colega
 	// pero no borrárselo (ver inc/roles.php).
 	if ( ! current_user_can( 'delete_post', $post->ID ) ) {
-		wp_safe_redirect( afectivalab_panel_url( array( 'seccion' => $seccion, 'error' => 'sin-permiso' ) ) );
-		exit;
+		return new WP_Error( 'sin_permiso', __( 'No tienes permiso para eliminar esto. Pídeselo a quien lo creó o a un administrador.', 'afectivalab' ) );
 	}
 
 	wp_trash_post( $post->ID );
 
-	wp_safe_redirect( afectivalab_panel_url( array( 'seccion' => $seccion, 'msg' => $mensaje ) ) );
-	exit;
+	return $post;
+}
+
+/**
+ * Publica o pasa a borrador un curso o una microclase desde el listado.
+ *
+ * Publicar es una capacidad aparte de editar, y se exige también para
+ * despublicar: sacar un curso de las rutas de las familias pesa lo mismo
+ * que ponerlo.
+ *
+ * @return array{post: WP_Post, estado: string, seccion: string}|WP_Error
+ */
+function afectivalab_panel_procesar_estado() {
+	if ( ! isset( $_POST['afectivalab_panel_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['afectivalab_panel_nonce'] ) ), 'afectivalab_panel_estado' ) ) {
+		return new WP_Error( 'nonce', __( 'Tu sesión expiró, recarga la página e intenta de nuevo.', 'afectivalab' ) );
+	}
+
+	$post = get_post( isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0 );
+
+	if ( ! $post || ! in_array( $post->post_type, array( AFECTIVALAB_CPT_CURSO, AFECTIVALAB_CPT_CLASE ), true ) ) {
+		return new WP_Error( 'no_existe', __( 'No encontramos ese contenido.', 'afectivalab' ) );
+	}
+
+	$es_curso = AFECTIVALAB_CPT_CURSO === $post->post_type;
+
+	if ( ! current_user_can( 'edit_post', $post->ID ) || ! current_user_can( $es_curso ? 'publish_afectivalab_cursos' : 'publish_afectivalab_clases' ) ) {
+		return new WP_Error( 'sin_permiso', __( 'No tienes permiso para publicar o despublicar.', 'afectivalab' ) );
+	}
+
+	$estado = 'publish' === ( $_POST['estado'] ?? '' ) ? 'publish' : 'draft';
+
+	if ( 'publish' === $estado && '' === trim( $post->post_title ) ) {
+		return new WP_Error( 'sin_titulo', __( 'Ponle un título antes de publicarlo.', 'afectivalab' ) );
+	}
+
+	$ok = wp_update_post( array( 'ID' => $post->ID, 'post_status' => $estado ), true );
+
+	if ( is_wp_error( $ok ) ) {
+		return new WP_Error( 'fallo', __( 'No pudimos cambiar el estado, intenta de nuevo.', 'afectivalab' ) );
+	}
+
+	return array(
+		'post'    => $post,
+		'estado'  => $estado,
+		'seccion' => $es_curso ? 'cursos' : 'clases',
+	);
+}
+
+/**
+ * Sube o baja una microclase un lugar dentro de su curso.
+ *
+ * Al mover se renumera todo el curso 1, 2, 3… en vez de solo intercambiar
+ * dos números: así se arreglan de paso los órdenes repetidos o con huecos
+ * que dejan las altas a mano.
+ *
+ * @return array{curso: int, clase: int}|WP_Error
+ */
+function afectivalab_panel_procesar_mover() {
+	if ( ! isset( $_POST['afectivalab_panel_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['afectivalab_panel_nonce'] ) ), 'afectivalab_panel_orden' ) ) {
+		return new WP_Error( 'nonce', __( 'Tu sesión expiró, recarga la página e intenta de nuevo.', 'afectivalab' ) );
+	}
+
+	$clase = afectivalab_panel_post_editable( isset( $_POST['clase_id'] ) ? absint( $_POST['clase_id'] ) : 0, AFECTIVALAB_CPT_CLASE );
+
+	if ( ! $clase ) {
+		return new WP_Error( 'sin_permiso', __( 'No puedes mover esa microclase.', 'afectivalab' ) );
+	}
+
+	$curso_id = (int) get_post_meta( $clase->ID, '_afectivalab_curso', true );
+
+	if ( ! $curso_id ) {
+		return new WP_Error( 'sin_curso', __( 'Asígnale un curso antes de ordenarla.', 'afectivalab' ) );
+	}
+
+	$direccion = 'arriba' === ( $_POST['direccion'] ?? '' ) ? -1 : 1;
+	$clases    = array_values( afectivalab_clases_del_curso( $curso_id, afectivalab_panel_estados_visibles() ) );
+	$posicion  = null;
+
+	foreach ( $clases as $i => $una ) {
+		if ( (int) $una->ID === (int) $clase->ID ) {
+			$posicion = $i;
+			break;
+		}
+	}
+
+	$destino = null === $posicion ? null : $posicion + $direccion;
+
+	if ( null !== $destino && isset( $clases[ $destino ] ) ) {
+		$tmp                  = $clases[ $destino ];
+		$clases[ $destino ]   = $clases[ $posicion ];
+		$clases[ $posicion ]  = $tmp;
+	}
+
+	foreach ( $clases as $i => $una ) {
+		if ( (int) $una->menu_order !== $i + 1 && current_user_can( 'edit_post', $una->ID ) ) {
+			wp_update_post( array( 'ID' => $una->ID, 'menu_order' => $i + 1 ) );
+		}
+	}
+
+	return array(
+		'curso' => $curso_id,
+		'clase' => (int) $clase->ID,
+	);
 }
 
 /**
@@ -527,12 +856,35 @@ function afectivalab_panel_roles_asignables() {
  * - asignar un rol que no esté en la lista de arriba.
  */
 function afectivalab_panel_cambiar_rol() {
-	if ( ! isset( $_POST['afectivalab_panel_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['afectivalab_panel_nonce'] ) ), 'afectivalab_panel_usuario' ) ) {
+	$res = afectivalab_panel_procesar_rol();
+
+	if ( null === $res ) {
 		return;
 	}
 
+	if ( is_wp_error( $res ) ) {
+		wp_safe_redirect( afectivalab_panel_url( array( 'seccion' => 'usuarios', 'error' => 'rol-protegido' ) ) );
+		exit;
+	}
+
+	wp_safe_redirect( afectivalab_panel_url( array( 'seccion' => 'usuarios', 'msg' => 'rol-cambiado' ) ) );
+	exit;
+}
+
+/**
+ * El cambio de rol en sí. Devuelve el usuario, un WP_Error si es una cuenta
+ * protegida (la propia o un administrador), o null si la petición no es
+ * válida (nonce, permiso, usuario o rol equivocados).
+ *
+ * @return WP_User|WP_Error|null
+ */
+function afectivalab_panel_procesar_rol() {
+	if ( ! isset( $_POST['afectivalab_panel_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['afectivalab_panel_nonce'] ) ), 'afectivalab_panel_usuario' ) ) {
+		return null;
+	}
+
 	if ( ! current_user_can( 'promote_users' ) ) {
-		return;
+		return null;
 	}
 
 	$user_id = isset( $_POST['user_id'] ) ? absint( $_POST['user_id'] ) : 0;
@@ -540,18 +892,16 @@ function afectivalab_panel_cambiar_rol() {
 	$usuario = get_userdata( $user_id );
 
 	if ( ! $usuario || ! array_key_exists( $rol, afectivalab_panel_roles_asignables() ) ) {
-		return;
+		return null;
 	}
 
 	if ( $user_id === get_current_user_id() || user_can( $usuario, 'manage_options' ) ) {
-		wp_safe_redirect( afectivalab_panel_url( array( 'seccion' => 'usuarios', 'error' => 'rol-protegido' ) ) );
-		exit;
+		return new WP_Error( 'rol_protegido', afectivalab_panel_errores_url()['rol-protegido'] );
 	}
 
 	$usuario->set_role( $rol );
 
-	wp_safe_redirect( afectivalab_panel_url( array( 'seccion' => 'usuarios', 'msg' => 'rol-cambiado' ) ) );
-	exit;
+	return $usuario;
 }
 
 /**

@@ -15,15 +15,26 @@ require get_theme_file_path( 'inc/icons.php' );
 require get_theme_file_path( 'inc/nav.php' );
 require get_theme_file_path( 'inc/routes.php' );
 require get_theme_file_path( 'inc/auth.php' );
+require get_theme_file_path( 'inc/seguridad.php' );
 require get_theme_file_path( 'inc/account.php' );
 require get_theme_file_path( 'inc/content.php' );
 require get_theme_file_path( 'inc/roles.php' );
 require get_theme_file_path( 'inc/hijos.php' );
+require get_theme_file_path( 'inc/suscripciones.php' );
+require get_theme_file_path( 'inc/estrellas.php' );
+require get_theme_file_path( 'inc/notificaciones.php' );
 require get_theme_file_path( 'inc/progreso.php' );
 require get_theme_file_path( 'inc/misiones.php' );
+require get_theme_file_path( 'inc/casos.php' );
+require get_theme_file_path( 'inc/certificados.php' );
+require get_theme_file_path( 'inc/clase-ajax.php' );
 require get_theme_file_path( 'inc/ruta.php' );
+require get_theme_file_path( 'inc/mundos.php' );
+require get_theme_file_path( 'inc/home.php' );
+require get_theme_file_path( 'inc/contacto.php' );
 require get_theme_file_path( 'inc/equipo.php' );
 require get_theme_file_path( 'inc/panel-admin.php' );
+require get_theme_file_path( 'inc/panel-ajax.php' );
 require get_theme_file_path( 'inc/onboarding.php' );
 
 if ( is_admin() ) {

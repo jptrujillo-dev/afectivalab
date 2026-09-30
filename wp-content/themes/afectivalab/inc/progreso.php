@@ -44,11 +44,12 @@ function afectivalab_clase_completada( $hijo_id, $clase_id ) {
  * @param bool $completada
  */
 function afectivalab_marcar_clase( $hijo_id, $clase_id, $completada = true ) {
-	$clase_id = absint( $clase_id );
-	$ids      = afectivalab_clases_completadas( $hijo_id );
+	$clase_id  = absint( $clase_id );
+	$ids       = afectivalab_clases_completadas( $hijo_id );
+	$ya_estaba = in_array( $clase_id, $ids, true );
 
 	if ( $completada ) {
-		if ( ! in_array( $clase_id, $ids, true ) ) {
+		if ( ! $ya_estaba ) {
 			$ids[] = $clase_id;
 		}
 	} else {
@@ -56,6 +57,16 @@ function afectivalab_marcar_clase( $hijo_id, $clase_id, $completada = true ) {
 	}
 
 	update_post_meta( $hijo_id, '_afectivalab_clases_completadas', array_values( $ids ) );
+
+	// Una estrella por clase, la primera vez que se completa — con o sin
+	// misión. Acá y no en cada llamador, para que no haya forma de marcar
+	// una clase como vista sin que cuente para la colección del hijo. Mismo
+	// punto para dejar registrada la actividad que usa el recordatorio de
+	// curso pendiente (ver inc/notificaciones.php).
+	if ( $completada && ! $ya_estaba ) {
+		afectivalab_otorgar_estrella( $hijo_id );
+		afectivalab_hijo_marcar_actividad( $hijo_id );
+	}
 }
 
 /**

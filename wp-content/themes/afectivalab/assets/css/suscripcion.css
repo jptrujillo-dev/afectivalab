@@ -1,0 +1,567 @@
+/* ===== /suscribirse ===== */
+
+.suscripcion-page {
+	padding-block: var(--space-6) var(--space-8);
+	background: var(--color-bg-alt);
+	min-height: calc(100vh - 73px);
+}
+
+section#pmpro_order_single {
+	padding: 0;
+}
+
+.suscripcion-page__narrow {
+	max-width: 480px;
+}
+
+.suscripcion-hero {
+	margin-bottom: var(--space-5);
+	text-align: center;
+}
+
+.suscripcion-hero h1 {
+	font-size: 1.9rem;
+	margin-bottom: var(--space-2);
+}
+
+.suscripcion-hero p {
+	color: var(--color-text-muted);
+	margin: 0;
+}
+
+.suscripcion-card {
+	background: var(--color-white);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-card);
+	padding: var(--space-6) var(--space-5);
+	text-align: center;
+}
+
+.suscripcion-card__precio {
+	display: block;
+	font-family: var(--font-display);
+	font-size: 2.4rem;
+	font-weight: 700;
+	color: var(--color-purple-dark);
+	margin-bottom: var(--space-4);
+}
+
+.suscripcion-card__referencia {
+	margin: -2px 0 var(--space-4);
+	font-size: 0.82rem;
+	color: var(--color-text-muted);
+}
+
+.suscripcion-card__periodo {
+	display: block;
+	font-family: var(--font-body);
+	font-size: 1rem;
+	font-weight: 400;
+	color: var(--color-text-muted);
+}
+
+.suscripcion-card__incluye {
+	list-style: none;
+	margin: 0 0 var(--space-5);
+	padding: 0;
+	text-align: left;
+	display: grid;
+	gap: var(--space-2);
+}
+
+.suscripcion-card__incluye li {
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
+	color: var(--color-text);
+}
+
+.suscripcion-card__incluye svg {
+	flex: none;
+	width: 20px;
+	height: 20px;
+	color: var(--color-green);
+}
+
+.suscripcion-card .form-submit {
+	width: 100%;
+	justify-content: center;
+}
+
+.suscripcion-card__aviso {
+	background: var(--color-yellow-tint);
+	color: var(--color-yellow-dark);
+	border-radius: var(--radius-sm);
+	padding: var(--space-3);
+	font-size: 0.9rem;
+	margin-bottom: var(--space-3);
+}
+
+.suscripcion-card__nota {
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	gap: 6px;
+	text-align: left;
+	margin: var(--space-3) 0 0;
+	font-size: 0.8rem;
+	color: var(--color-text-muted);
+}
+
+.suscripcion-card__nota svg {
+	width: 14px;
+	height: 14px;
+	flex: none;
+	margin-top: 2px;
+}
+
+/* --- Páginas de Paid Memberships Pro (checkout, cuenta, etc.) ---
+   Son páginas de WordPress normales — ya heredan el header/footer del
+   theme solas. Estas clases (.pmpro, .pmpro_form_fieldset, .pmpro_card_title,
+   .pmpro_message) son las que el plugin realmente imprime — confirmadas
+   leyendo pages/checkout.php, no adivinadas — así que esto les da el mismo
+   aire (ancho, tarjetas blancas, tipografía) que el resto del sitio sin
+   tocar ni un archivo del plugin. El botón real de pago usa las clases
+   .btn/.btn-primary/.btn-lg de siempre, agregadas vía el filtro
+   pmpro_element_class en inc/suscripciones.php — no hace falta repetir su
+   estilo acá. */
+.pmpro {
+	max-width: 560px;
+	margin: 0 auto;
+	padding: var(--space-6) var(--space-4);
+}
+
+/* Bloque de bienvenida de la confirmación de pago: tarjeta propia con
+   ícono de éxito, en vez de heredar el texto suelto y sin fondo que
+   imprime PMPro por defecto. Marcado propio en
+   wp-content/themes/afectivalab/paid-memberships-pro/pages/confirmation.php
+   (override oficial de PMPro — ver el docblock de ese archivo), así que
+   estas clases no las toca el plugin en ningún otro lado. */
+.suscripcion-confirmacion {
+	max-width: 560px;
+	margin: 0 auto;
+	padding: var(--space-6) var(--space-4) 0;
+}
+
+.suscripcion-confirmacion__tarjeta {
+	background: var(--color-white);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-card);
+	padding: var(--space-6) var(--space-5);
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--space-3);
+}
+
+.suscripcion-confirmacion__icono {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 56px;
+	height: 56px;
+	flex: none;
+	border-radius: 50%;
+	background: var(--color-success-tint);
+	color: var(--color-green-dark);
+}
+
+.suscripcion-confirmacion__texto p {
+	margin: 0 0 var(--space-2);
+	color: var(--color-text-muted);
+}
+
+.suscripcion-confirmacion__texto p:last-child {
+	margin-bottom: 0;
+}
+
+.suscripcion-confirmacion__tarjeta .pmpro_message {
+	width: 100%;
+	text-align: left;
+}
+
+/* Modal del recibo: se abre desde el botón "Ver pedido" de la tarjeta de
+   bienvenida (assets/js/pmpro-confirmacion.js) en vez de mostrar el recibo
+   completo siempre debajo — la confirmación queda como un solo bloque
+   central, con el detalle del pedido como algo opcional a un clic. Mismo
+   lenguaje visual (blur + fade) que .suscripcion-overlay. */
+.suscripcion-recibo-modal {
+	position: fixed;
+	inset: 0;
+	z-index: 300;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--space-4);
+	background: rgba(30, 20, 50, 0.45);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+	animation: suscripcion-aparecer 0.2s ease;
+}
+
+.suscripcion-recibo-modal[hidden] {
+	display: none;
+}
+
+.suscripcion-recibo-modal__caja {
+	position: relative;
+	width: 100%;
+	max-width: 560px;
+	max-height: 85vh;
+	overflow-y: auto;
+	background: var(--color-bg-alt);
+	border-radius: var(--radius-lg);
+	padding: var(--space-4);
+	animation: suscripcion-recibo-entrar 0.25s ease;
+}
+
+/* El .pmpro que trae pages/invoice.php ya no necesita su propio ancho ni
+   padding acá adentro — la caja del modal cumple ese rol. */
+.suscripcion-recibo-modal__caja .pmpro {
+	max-width: none;
+	margin: 0;
+	padding: 0;
+}
+
+.suscripcion-recibo-modal__cuenta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-3);
+	margin-top: var(--space-4);
+}
+
+.suscripcion-recibo-modal__cuenta .btn {
+	flex: 1 1 160px;
+	justify-content: center;
+}
+
+.suscripcion-recibo-modal__cerrar {
+	position: absolute;
+	top: var(--space-3);
+	right: var(--space-3);
+	z-index: 1;
+	width: 32px;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	border-radius: 50%;
+	background: var(--color-white);
+	box-shadow: var(--shadow-soft);
+	color: var(--color-text-muted);
+	cursor: pointer;
+	transition: color 0.15s ease;
+}
+
+.suscripcion-recibo-modal__cerrar:hover {
+	color: var(--color-text);
+}
+
+@keyframes suscripcion-recibo-entrar {
+	from {
+		opacity: 0;
+		transform: translateY(12px) scale(0.98);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.suscripcion-recibo-modal,
+	.suscripcion-recibo-modal__caja {
+		animation: none;
+	}
+}
+
+/* El botón "Imprimir o guardar como PDF" del recibo (pmpro_btn-print, ver
+   pages/invoice.php) hace window.print() sobre toda la página tal cual
+   está en el DOM — sin esto, el PDF salía con el botón de cerrar y los
+   botones de "Ver todos mis pedidos"/"Ir a mi cuenta" encima, que no pintan
+   nada en un comprobante. */
+@media print {
+	.suscripcion-recibo-modal__cerrar,
+	.suscripcion-recibo-modal__cuenta {
+		display: none;
+	}
+}
+
+/* Solo espaciado entre bloques — sin fondo propio, porque confirmación y
+   recibo meten un .pmpro_card DENTRO de cada .pmpro_section (confirmado
+   leyendo pages/confirmation.php y pages/invoice.php); si .pmpro_section
+   también llevara tarjeta blanca, quedaría una tarjeta anidada dentro de
+   otra. */
+.pmpro_section {
+	margin-bottom: var(--space-4);
+}
+
+/* El texto de bienvenida de la confirmación ("Gracias por tu suscripción a
+   Afectivalab...") sale suelto, sin ningún .pmpro_card alrededor cuando el
+   nivel es pago — se le da el mismo tratamiento que el texto bajo el hero
+   de /suscribirse en vez de dejarlo "pelado". */
+.pmpro_section > p {
+	text-align: center;
+	color: var(--color-text-muted);
+	margin: 0 0 var(--space-3);
+}
+
+/* Las dos formas reales de "tarjeta" que usa PMPro: fieldsets en el
+   checkout, .pmpro_card en confirmación/recibo/cuenta — mismo look. */
+.pmpro_form_fieldset,
+.pmpro_card {
+	background: var(--color-white);
+	border: none;
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-card);
+	padding: var(--space-5);
+	margin: 0 0 var(--space-4);
+}
+
+.pmpro_card_title,
+.pmpro_section_title {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--space-2);
+	font-family: var(--font-display);
+	font-size: 1.1rem;
+	margin: 0 0 var(--space-3);
+}
+
+.pmpro_card_actions {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: var(--space-3);
+}
+
+.pmpro_btn-print {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: none;
+	border: none;
+	padding: 0;
+	color: var(--color-purple);
+	font-family: var(--font-body);
+	font-size: 0.85rem;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.pmpro_btn-print svg {
+	width: 16px;
+	height: 16px;
+}
+
+.pmpro_spacer {
+	height: var(--space-3);
+}
+
+/* Listas clave/valor (fecha del pedido, método de pago, nivel, etc.) */
+.pmpro_list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: var(--space-3);
+}
+
+.pmpro_list-with-labels.pmpro_cols-2 {
+	grid-template-columns: 1fr 1fr;
+}
+
+.pmpro_list-with-labels .pmpro_list_item {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	font-size: 0.9rem;
+}
+
+.pmpro_list_item_label {
+	font-size: 0.78rem;
+	color: var(--color-text-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.02em;
+}
+
+.pmpro_list_item_value {
+	color: var(--color-text);
+	font-weight: 600;
+}
+
+/* Etiquetas de estado (Pagado/Reembolsado/Pendiente) — misma paleta de 3
+   colores que .pmpro_message, en formato píldora. */
+.pmpro_tag {
+	display: inline-block;
+	border-radius: var(--radius-pill);
+	padding: 3px 12px;
+	font-size: 0.75rem;
+	font-weight: 700;
+	vertical-align: middle;
+}
+
+.pmpro_tag-success {
+	background: var(--color-success-tint);
+	color: var(--color-green-dark);
+}
+
+.pmpro_tag-error {
+	background: var(--color-error-tint);
+	color: var(--color-error);
+}
+
+.pmpro_tag-alert {
+	background: var(--color-yellow-tint);
+	color: var(--color-yellow-dark);
+}
+
+/* Tabla del detalle del recibo */
+.pmpro_table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.9rem;
+}
+
+.pmpro_table th,
+.pmpro_table td {
+	text-align: left;
+	padding: var(--space-2) 0;
+	border-bottom: 1px solid var(--color-border);
+}
+
+.pmpro_table tfoot th,
+.pmpro_table tfoot td {
+	border-bottom: none;
+	font-weight: 700;
+}
+
+.pmpro_message {
+	border-radius: var(--radius-sm);
+	padding: var(--space-3);
+	margin-bottom: var(--space-4);
+	font-size: 0.9rem;
+}
+
+.pmpro_message.pmpro_error {
+	background: var(--color-error-tint);
+	border: 1px solid var(--color-error);
+	color: var(--color-error);
+}
+
+.pmpro_message.pmpro_success {
+	background: var(--color-success-tint);
+	border-color: var(--color-success);
+	color: var(--color-green-dark);
+}
+
+/* "Estamos esperando que se confirme tu pago" — el tercer estado real que
+   usa PMPro en la confirmación cuando el webhook de PayPal todavía no
+   llegó (confirmado leyendo pages/confirmation.php: pmpro_message
+   pmpro_alert), distinto de error/success. */
+.pmpro_message.pmpro_alert {
+	background: var(--color-yellow-tint);
+	border: 1px solid var(--color-yellow-dark);
+	color: var(--color-yellow-dark);
+}
+
+.pmpro_form_submit {
+	text-align: center;
+}
+
+/* El filtro pmpro_element_class (inc/suscripciones.php) ya le agrega al
+   botón real las clases .btn/.btn-primary/.btn-lg, pero esas tienen la
+   misma especificidad (una sola clase) que las propias .pmpro_btn del
+   plugin — cuál gana dependería del orden en que WordPress imprima cada
+   hoja de estilo, algo que acá no conviene dejar librado al azar. Un
+   selector por id es inequívocamente más específico que cualquier
+   combinación de clases, así que se repiten acá los mismos valores que
+   .btn.btn-primary.btn-lg en base.css, apuntando directo al id real del
+   botón (confirmado leyendo pmpro-paypal/classes/class-pmprogateway-paypal.php). */
+#pmpro_btn-submit-paypal {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--space-2);
+	width: 100%;
+	font-family: var(--font-display);
+	font-weight: 600;
+	font-size: 1rem;
+	padding: 14px 28px;
+	border-radius: var(--radius-pill);
+	border: 2px solid transparent;
+	background: var(--color-green);
+	color: var(--color-white);
+	box-shadow: var(--shadow-soft);
+	cursor: pointer;
+	transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+#pmpro_btn-submit-paypal:hover {
+	background: var(--color-green-dark);
+	transform: translateY(-1px);
+}
+
+/* --- Overlay de carga a pantalla completa, reutilizado en los dos pasos
+   del flujo de pago: al tocar "Suscribirme" en /suscribirse (ver
+   assets/js/suscribirse.js) y al auto-enviar el checkout de PMPro (ver
+   assets/js/pmpro-checkout.js) — mismo look en los dos momentos, para que
+   se sienta como una sola experiencia y no como dos pantallas distintas. */
+.suscripcion-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 300;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(255, 255, 255, 0.6);
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	animation: suscripcion-aparecer 0.2s ease;
+}
+
+.suscripcion-overlay__caja {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--space-3);
+	background: var(--color-white);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-card);
+	padding: var(--space-6) var(--space-5);
+	text-align: center;
+	color: var(--color-text-muted);
+	font-weight: 600;
+}
+
+@keyframes suscripcion-aparecer {
+	from {
+		opacity: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.suscripcion-overlay {
+		animation: none;
+	}
+}
+
+.tarjeta-spinner {
+	display: inline-block;
+	width: 28px;
+	height: 28px;
+	border: 3px solid var(--color-border);
+	border-top-color: var(--color-purple);
+	border-radius: 50%;
+	animation: tarjeta-girar 0.7s linear infinite;
+}
+
+@keyframes tarjeta-girar {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.tarjeta-spinner {
+		animation: none;
+	}
+}

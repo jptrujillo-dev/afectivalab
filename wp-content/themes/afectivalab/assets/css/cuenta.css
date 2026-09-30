@@ -5,18 +5,235 @@
 	min-height: calc(100vh - 73px);
 }
 
+/* Feedback de "guardando" al enviar cualquiera de los formularios de esta
+   página (avatar, datos, suscripción, preferencias) — ver
+   iniciarLoaderFormularios() en assets/js/cuenta.js. Se agrega/quita solo
+   por JS: si el script no carga, los formularios se siguen enviando
+   normales, solo sin el spinner. border-color: currentColor hace que el
+   spinner tome el color de texto propio de cada botón (blanco en
+   .btn-primary, oscuro en .btn-secondary) sin necesitar dos variantes. */
+.btn:disabled {
+	opacity: 0.7;
+	cursor: default;
+}
+
+.btn__spinner {
+	display: inline-block;
+	width: 15px;
+	height: 15px;
+	border: 2px solid currentColor;
+	border-top-color: transparent;
+	border-radius: 50%;
+	opacity: 0.85;
+	animation: account-btn-girar 0.6s linear infinite;
+}
+
+@keyframes account-btn-girar {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.btn__spinner {
+		animation: none;
+	}
+}
+
+.account-hero {
+	max-width: 640px;
+	margin: 0 auto var(--space-6);
+	text-align: center;
+}
+
+.account-hero h1 {
+	font-size: 1.9rem;
+	margin-bottom: var(--space-2);
+}
+
+/* Sombra "táctil" (referencia Stitch, ver docs/rediseno-stitch.md y los
+   tokens --shadow-tactile-* en tokens.css) en los botones rellenos de esta
+   página — da la sensación de tarjeta que se hunde al presionar. Solo en
+   .btn-primary (fondo verde sólido, coincide con --shadow-tactile-green);
+   .btn-secondary es outline, una sombra de color sólido ahí no combina. */
+.account-page .btn-primary {
+	box-shadow: var(--shadow-tactile-green);
+}
+
+.account-page .btn-primary:active {
+	transform: translateY(2px);
+	box-shadow: none;
+}
+
+.account-hero p {
+	color: var(--color-text-muted);
+	margin: 0;
+}
+
+/* Dos columnas desde tablet en adelante — la principal (perfil, suscripción,
+   pedidos) y la secundaria (impacto real en familia, insignias,
+   preferencias). En mobile caen una debajo de la otra en el mismo orden. */
+.account-layout {
+	display: grid;
+	gap: var(--space-4);
+	margin: 0 auto;
+	align-items: start;
+}
+
+@media (min-width: 860px) {
+	.account-layout {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+.account-layout__principal,
+.account-layout__secundaria {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-4);
+}
+
+/* Reborde inferior sólido y sutil + la sombra difusa de siempre — mismo
+   lenguaje de "tarjeta con relieve" que trae la referencia de Stitch (ver
+   docs/rediseno-stitch.md), sin inventar un token nuevo global: queda
+   acotado a esta pantalla hasta que se decida adoptarlo en todo el sitio. */
 .account-card {
-	max-width: 480px;
-	margin-inline: auto;
 	background: var(--color-white);
+	border: 2px solid var(--color-border);
 	border-radius: var(--radius-lg);
-	box-shadow: var(--shadow-card);
+	box-shadow: 0 6px 0 var(--color-purple-tint), var(--shadow-soft);
 	padding: var(--space-6) var(--space-5);
 }
 
 .account-card h1 {
 	font-size: 1.6rem;
 	margin-bottom: var(--space-1);
+}
+
+.account-card h2 {
+	font-size: 1.2rem;
+	margin-bottom: var(--space-3);
+}
+
+.account-card__vacio {
+	color: var(--color-text-muted);
+	font-size: 0.9rem;
+	margin: 0;
+}
+
+.account-card__vacio a {
+	color: var(--color-purple);
+	font-weight: 600;
+}
+
+/* --- Tarjeta "Tu suscripción" --- */
+.account-suscripcion__titulo {
+	display: flex;
+	align-items: center;
+	gap: var(--space-3);
+	margin-bottom: var(--space-3);
+}
+
+.account-suscripcion__titulo h2 {
+	margin-bottom: 4px;
+}
+
+.account-suscripcion__icono {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: none;
+	width: 44px;
+	height: 44px;
+	border-radius: var(--radius-md);
+	background: var(--color-green-tint);
+	color: var(--color-green-dark);
+}
+
+.account-suscripcion__icono svg {
+	width: 22px;
+	height: 22px;
+}
+
+.account-suscripcion__estado {
+	display: inline-block;
+	background: var(--color-border);
+	color: var(--color-text);
+	border-radius: var(--radius-pill);
+	padding: 4px 12px;
+	font-family: var(--font-display);
+	font-weight: 600;
+	font-size: 0.82rem;
+}
+
+.account-suscripcion__estado.is-activa {
+	background: var(--color-green-tint);
+	color: var(--color-green-dark);
+}
+
+.account-suscripcion__estado.is-cancelada,
+.account-suscripcion__estado.is-ninguna {
+	background: var(--color-yellow-tint);
+	color: var(--color-yellow-dark);
+}
+
+/* Nombre real del nivel (PMPro) + precio real (pmpro_getLevel() +
+   pmpro_formatPrice() en afectivalab_suscripcion_resumen()) — antes la
+   tarjeta no decía qué plan tenía ni cuánto pagaba. */
+.account-suscripcion__plan {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: var(--space-3);
+	background: var(--color-bg-alt);
+	border-radius: var(--radius-md);
+	padding: var(--space-3) var(--space-4);
+	margin: 0 0 var(--space-3);
+}
+
+.account-suscripcion__plan-nombre {
+	font-family: var(--font-display);
+	font-weight: 600;
+	color: var(--color-text);
+}
+
+.account-suscripcion__plan-precio {
+	font-family: var(--font-display);
+	font-weight: 700;
+	color: var(--color-green-dark);
+	white-space: nowrap;
+}
+
+.account-suscripcion__tarjeta {
+	color: var(--color-text-muted);
+	font-size: 0.9rem;
+	margin: 0 0 var(--space-4);
+}
+
+/* Mismo look que .suscripcion-card__incluye en suscripcion.css (la lista
+   de beneficios real de /suscribirse) — se repite el mismo texto y estilo
+   acá, no se inventa contenido nuevo para esta tarjeta. */
+.account-suscripcion__incluye {
+	list-style: none;
+	margin: 0 0 var(--space-4);
+	padding: 0;
+	display: grid;
+	gap: var(--space-2);
+}
+
+.account-suscripcion__incluye li {
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
+	color: var(--color-text);
+	font-size: 0.9rem;
+}
+
+.account-suscripcion__incluye svg {
+	flex: none;
+	width: 18px;
+	height: 18px;
+	color: var(--color-green);
 }
 
 .account-card__lead {
@@ -33,9 +250,37 @@
 	text-align: center;
 }
 
+/* Aro con gradiente + sombra inferior sólida alrededor del avatar —
+   referencia Stitch (docs/rediseno-stitch.md), puramente decorativo: el
+   avatar real (foto o inicial) sigue siendo el mismo de siempre adentro. */
+/* Borde delgado y simple — un aro más grueso (gradiente + padding +
+   sombra sólida) se veía bien con solo la inicial de placeholder, pero con
+   una foto real quedaba pesado y competía visualmente con la imagen. */
+.avatar-picker__aro {
+	display: inline-flex;
+	padding: 3px;
+	border-radius: 50%;
+	background: var(--color-purple);
+}
+
+/* display:flex acá (no solo en .user-avatar, que ya es inline-flex en
+   base.css) es lo que de verdad corrige el hueco: sin esto, el div
+   normal alrededor trata a su hijo inline-flex como texto en línea y le
+   reserva el espacio extra de un descendente (la "g"/"y" de una fuente),
+   dejando el aro de abajo más alto que ancho — un óvalo, no un círculo. */
+.avatar-picker__preview {
+	display: flex;
+}
+
 .avatar-picker__preview .user-avatar {
 	font-size: 2.2rem;
-	box-shadow: var(--shadow-soft);
+	border: 3px solid var(--color-white);
+}
+
+.avatar-picker__acciones {
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
 }
 
 .avatar-picker__button {
@@ -44,11 +289,11 @@
 	gap: var(--space-2);
 	font-family: var(--font-display);
 	font-weight: 600;
-	font-size: 0.92rem;
+	font-size: 0.88rem;
 	color: var(--color-purple);
 	border: 1.5px solid var(--color-purple);
 	border-radius: var(--radius-pill);
-	padding: 10px 20px;
+	padding: 9px 18px;
 	cursor: pointer;
 	transition: background 0.15s ease;
 }
@@ -62,10 +307,56 @@
 	height: 18px;
 }
 
+.avatar-picker__guardar {
+	font-size: 0.88rem;
+	padding: 10px 18px;
+}
+
+.avatar-picker__guardar svg {
+	width: 16px;
+	height: 16px;
+}
+
 .avatar-picker__hint {
 	font-size: 0.8rem;
 	color: var(--color-text-muted);
 	margin: 0;
+}
+
+/* Formulario editable de nombre/correo (afectivalab_handle_perfil_form()
+   en inc/account.php) — antes estos dos campos eran de solo lectura. Se
+   separa con una línea del bloque de avatar de arriba, para que no se
+   sienta todo apretado en una sola columna sin jerarquía. */
+.account-form-perfil {
+	margin-top: var(--space-5);
+	padding-top: var(--space-5);
+	border-top: 1px solid var(--color-border);
+}
+
+.account-form-perfil .form-submit {
+	width: 100%;
+	justify-content: center;
+}
+
+/* Es un <button>, no un <a> (ver el porqué en mi-cuenta.php: abre el modal
+   de cambio de contraseña) — sin este reseteo se ve con el borde/fondo
+   nativo del navegador en vez de leerse como el link que parece ser. */
+.account-cambiar-contrasena {
+	display: inline;
+	border: none;
+	background: none;
+	padding: 0;
+	margin: 0;
+	font-family: inherit;
+	font-size: 0.85rem;
+	font-weight: 600;
+	line-height: inherit;
+	color: var(--color-purple);
+	cursor: pointer;
+}
+
+.account-cambiar-contrasena:hover {
+	text-decoration: underline;
 }
 
 .account-card__info {
@@ -88,4 +379,580 @@
 .account-card__label {
 	color: var(--color-text-muted);
 	font-size: 0.88rem;
+}
+
+/* --- Tarjeta "Tus pedidos" (assets datos vía
+   afectivalab_suscripcion_pedidos() en inc/suscripciones.php, misma fuente
+   que usa PMPro internamente vía MemberOrder::get_orders()) --- */
+.account-pedidos {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: var(--space-3);
+}
+
+/* Con más de 5 pedidos (afectivalab_suscripcion_pedidos() en
+   inc/suscripciones.php no limita la cantidad — es el historial real
+   completo) la tarjeta scrollea en vez de crecer sin límite. */
+.account-pedidos--scroll {
+	max-height: 300px;
+	overflow-y: auto;
+	padding-right: var(--space-2);
+}
+
+.account-pedidos__item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--space-3);
+	padding-bottom: var(--space-3);
+	border-bottom: 1px solid var(--color-border);
+}
+
+.account-pedidos__item:last-child {
+	padding-bottom: 0;
+	border-bottom: none;
+}
+
+.account-pedidos__info {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+
+.account-pedidos__nivel {
+	font-weight: 600;
+	color: var(--color-text);
+}
+
+.account-pedidos__fecha {
+	font-size: 0.82rem;
+	color: var(--color-text-muted);
+}
+
+.account-pedidos__total {
+	font-family: var(--font-display);
+	font-weight: 600;
+	color: var(--color-text);
+	flex: none;
+}
+
+.account-pedidos__estado {
+	flex: none;
+	display: inline-block;
+	border-radius: var(--radius-pill);
+	padding: 3px 12px;
+	font-size: 0.75rem;
+	font-weight: 700;
+}
+
+.account-pedidos__estado.is-pagado {
+	background: var(--color-success-tint);
+	color: var(--color-green-dark);
+}
+
+.account-pedidos__estado.is-pendiente {
+	background: var(--color-yellow-tint);
+	color: var(--color-yellow-dark);
+}
+
+.account-pedidos__estado.is-reembolsado {
+	background: var(--color-error-tint);
+	color: var(--color-error);
+}
+
+/* --- Tarjeta "Impacto en familia" (datos reales vía
+   afectivalab_padre_resumen_impacto() en inc/misiones.php: monedas y xp
+   del padre, microclases/hijos agregados de inc/hijos.php y
+   inc/progreso.php — nada de racha de días ni "nivel", esos no existen
+   todavía en el sitio). --- */
+/* Fila deslizable en vez de grid: en pantallas anchas los 4 llenan el
+   ancho disponible (flex-grow en .account-stats__item), y si no entran
+   (mobile angosto) aparece scroll horizontal con scroll-snap en vez de
+   apilarse en 2x2 — mismo tratamiento que .account-insignias más abajo,
+   pedido explícitamente para que ambas secciones se comporten igual. */
+.account-stats {
+	display: flex;
+	gap: var(--space-3);
+	margin-bottom: var(--space-4);
+	padding-bottom: 6px;
+	overflow-x: auto;
+	scroll-snap-type: x proximity;
+}
+
+.account-stats__item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 6px;
+	text-align: center;
+	flex: 1 0 120px;
+	scroll-snap-align: start;
+	background: var(--color-white);
+	border: 2px solid var(--color-border);
+	border-radius: var(--radius-lg);
+	padding: var(--space-4) var(--space-2);
+	box-shadow: 0 4px 0 var(--color-border);
+	transition: transform 0.15s ease;
+}
+
+.account-stats__item:hover {
+	transform: translateY(-2px);
+}
+
+/* Ícono en círculo de color, alternando entre los 3 acentos de marca
+   (docs/rediseno-stitch.md: paleta = morado/verde/amarillo, sin azul —
+   Stitch usa un cuarto color que no existe en docs/brand.md, así que acá
+   se rota entre los 3 tonos reales en vez de inventar uno nuevo). Siempre
+   son las mismas 4 stats en el mismo orden (monedas, xp, microclases,
+   hijos), así que alcanza con nth-child en vez de una clase por ítem. */
+.account-stats__icono {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+}
+
+.account-stats__icono svg {
+	width: 24px;
+	height: 24px;
+}
+
+.account-stats__item:nth-child(4n+1) .account-stats__icono {
+	background: var(--color-yellow-tint);
+	color: var(--color-yellow-dark);
+}
+
+.account-stats__item:nth-child(4n+2) .account-stats__icono {
+	background: var(--color-purple-tint);
+	color: var(--color-purple-dark);
+}
+
+.account-stats__item:nth-child(4n+3) .account-stats__icono {
+	background: var(--color-green-tint);
+	color: var(--color-green-dark);
+}
+
+.account-stats__item:nth-child(4n+4) .account-stats__icono {
+	background: var(--color-purple-tint);
+	color: var(--color-purple-dark);
+}
+
+.account-stats__valor {
+	font-family: var(--font-display);
+	font-size: 1.5rem;
+	font-weight: 700;
+	color: var(--color-text);
+}
+
+.account-stats__label {
+	font-size: 0.76rem;
+	color: var(--color-text-muted);
+}
+
+.account-hijos-vinculados {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--space-2);
+}
+
+.account-hijos-vinculados__label {
+	font-size: 0.85rem;
+	color: var(--color-text-muted);
+	font-weight: 600;
+}
+
+.account-hijos-vinculados__chip {
+	display: inline-block;
+	background: var(--color-purple-tint);
+	color: var(--color-purple-dark);
+	border-radius: var(--radius-pill);
+	padding: 4px 12px;
+	font-size: 0.85rem;
+	font-weight: 600;
+}
+
+/* --- Tarjeta "Insignias desbloqueadas" (afectivalab_habilidades_del_hijo()
+   en inc/progreso.php — el nombre real del curso que cada hijo completó,
+   agregado de todos los hijos del padre). --- */
+/* Carrusel horizontal en vez de grid: no hay un tope de cuántas insignias
+   puede tener un padre (depende de cuántos cursos con habilidad
+   completaron sus hijos), así que en vez de crecer sin límite hacia abajo
+   se ve de a 3 con flechas para avanzar de una en una
+   (assets/js/cuenta.js) — el scroll nativo (swipe/rueda) sigue
+   funcionando igual si JS no llega a cargar, las flechas solo son un
+   atajo sobre el mismo scroll. */
+.account-insignias__titulo {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: var(--space-3);
+}
+
+.account-insignias__flechas {
+	display: flex;
+	gap: var(--space-2);
+	flex: none;
+}
+
+.account-insignias__flecha {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	border: 1.5px solid var(--color-border);
+	background: var(--color-white);
+	color: var(--color-text);
+	cursor: pointer;
+	transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.account-insignias__flecha:hover {
+	border-color: var(--color-purple);
+	background: var(--color-purple-tint);
+}
+
+.account-insignias__flecha:disabled {
+	opacity: 0.35;
+	cursor: default;
+	border-color: var(--color-border);
+	background: var(--color-white);
+}
+
+.account-insignias__flecha svg {
+	width: 16px;
+	height: 16px;
+}
+
+.account-insignias__flecha--prev svg {
+	transform: rotate(90deg);
+}
+
+.account-insignias__flecha--next svg {
+	transform: rotate(-90deg);
+}
+
+.account-insignias {
+	list-style: none;
+	margin: 0;
+	padding: 0 0 6px;
+	display: flex;
+	gap: var(--space-3);
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	scroll-behavior: smooth;
+	scrollbar-width: none;
+}
+
+.account-insignias::-webkit-scrollbar {
+	display: none;
+}
+
+/* Ancho para que se vean exactamente 3 tarjetas completas a la vez — el
+   cálculo resta los 2 gaps entre las 3 tarjetas visibles. */
+.account-insignias__item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	gap: 6px;
+	flex: 0 0 calc((100% - 2 * var(--space-3)) / 3);
+	scroll-snap-align: start;
+	border: 2px solid var(--color-border);
+	border-radius: var(--radius-lg);
+	padding: var(--space-3);
+}
+
+.account-insignias__icono {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 56px;
+	height: 56px;
+	border-radius: 50%;
+	color: var(--color-white);
+}
+
+.account-insignias__icono svg {
+	width: 26px;
+	height: 26px;
+}
+
+/* Tarjeta con gradiente sutil + borde + sombra de "reborde inferior
+   sólido" del mismo acento (referencia Stitch), y el ícono en un círculo
+   SÓLIDO del mismo color con el trazo en blanco — rota entre los 3
+   acentos de marca. No hay una cantidad fija de insignias (depende de
+   cuántos cursos completaron los hijos), así que se colorea por posición
+   en vez de por índice fijo como en .account-stats. */
+.account-insignias__item:nth-child(3n+1) {
+	background: linear-gradient(180deg, var(--color-white), var(--color-yellow-tint));
+	border-color: var(--color-yellow);
+	box-shadow: 0 4px 0 var(--color-yellow);
+}
+
+.account-insignias__item:nth-child(3n+1) .account-insignias__icono {
+	background: var(--color-yellow);
+}
+
+.account-insignias__item:nth-child(3n+2) {
+	background: linear-gradient(180deg, var(--color-white), var(--color-purple-tint));
+	border-color: var(--color-purple);
+	box-shadow: 0 4px 0 var(--color-purple);
+}
+
+.account-insignias__item:nth-child(3n+2) .account-insignias__icono {
+	background: var(--color-purple);
+}
+
+.account-insignias__item:nth-child(3n+3) {
+	background: linear-gradient(180deg, var(--color-white), var(--color-green-tint));
+	border-color: var(--color-green);
+	box-shadow: 0 4px 0 var(--color-green);
+}
+
+.account-insignias__item:nth-child(3n+3) .account-insignias__icono {
+	background: var(--color-green);
+}
+
+.account-insignias__nombre {
+	font-weight: 600;
+	font-size: 0.85rem;
+	color: var(--color-text);
+}
+
+.account-insignias__hijo {
+	font-size: 0.75rem;
+	color: var(--color-text-muted);
+}
+
+/* --- Tarjeta "Preferencias de notificación" (afectivalab_preferencias_notificacion()
+   y afectivalab_handle_preferencias_form() en inc/account.php — hoy solo
+   guardan la elección, no disparan ningún envío real todavía). Cada
+   preferencia es su propia fila con fondo, no solo un divisor — mismo
+   lenguaje de "tarjeta chica" que el resto de la página. El checkbox usa
+   accent-color nativo en vez de reconstruirlo con appearance:none — sigue
+   siendo un checkbox de verdad (mismo focus/teclado/lectores de pantalla
+   que el navegador ya resuelve solo), simplemente coloreado. */
+.account-preferencia {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--space-3);
+	padding: var(--space-3);
+	margin-bottom: var(--space-3);
+	background: var(--color-bg-alt);
+	border-radius: var(--radius-md);
+	cursor: pointer;
+}
+
+.account-preferencia:last-of-type {
+	margin-bottom: var(--space-4);
+}
+
+.account-preferencia strong {
+	display: block;
+	color: var(--color-text);
+	font-size: 0.92rem;
+}
+
+.account-preferencia small {
+	display: block;
+	color: var(--color-text-muted);
+	font-size: 0.8rem;
+	margin-top: 2px;
+}
+
+.account-preferencia input[type="checkbox"] {
+	flex: none;
+	width: 24px;
+	height: 24px;
+	accent-color: var(--color-green);
+	cursor: pointer;
+}
+
+.account-preferencia + .btn {
+	margin-top: var(--space-2);
+}
+
+/* --- Modal "Cambiar contraseña" (afectivalab_ajax_cambiar_password() en
+   inc/account.php, iniciarModalPassword() en cuenta.js) — mismo lenguaje
+   visual (blur + fade + reborde inferior) que el resto de la página y que
+   .suscripcion-recibo-modal en suscripcion.css. --- */
+.account-password-modal {
+	position: fixed;
+	inset: 0;
+	z-index: 300;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--space-4);
+	background: rgba(30, 20, 50, 0.45);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+	animation: suscripcion-aparecer 0.2s ease;
+}
+
+.account-password-modal[hidden] {
+	display: none;
+}
+
+.account-password-modal__caja {
+	position: relative;
+	width: 100%;
+	max-width: 400px;
+	background: var(--color-white);
+	border: 2px solid var(--color-border);
+	border-radius: var(--radius-lg);
+	box-shadow: 0 6px 0 var(--color-purple-tint), var(--shadow-soft);
+	padding: var(--space-5);
+	animation: suscripcion-recibo-entrar 0.25s ease;
+}
+
+.account-password-modal__caja h2 {
+	margin: 0 0 var(--space-4);
+	padding-right: var(--space-5);
+}
+
+.account-password-modal__cerrar {
+	position: absolute;
+	top: var(--space-3);
+	right: var(--space-3);
+	z-index: 1;
+	width: 32px;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	border-radius: 50%;
+	background: var(--color-bg-alt);
+	color: var(--color-text-muted);
+	cursor: pointer;
+	transition: color 0.15s ease;
+}
+
+.account-password-modal__cerrar:hover {
+	color: var(--color-text);
+}
+
+.account-password-modal .form-field__hint.is-error {
+	color: var(--color-error);
+}
+
+.account-password-modal .form-field__hint.is-ok {
+	color: var(--color-green-dark);
+}
+
+@keyframes suscripcion-aparecer {
+	from {
+		opacity: 0;
+	}
+}
+
+@keyframes suscripcion-recibo-entrar {
+	from {
+		opacity: 0;
+		transform: translateY(12px) scale(0.98);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.account-password-modal,
+	.account-password-modal__caja {
+		animation: none;
+	}
+}
+
+/* Toggle de mostrar/ocultar contraseña y medidor de fortaleza — mismo
+   marcado y JS (afectivalab_password_toggle()/afectivalab_password_strength_meter()
+   en inc/icons.php, iniciarPasswordExtras() en cuenta.js) que ya usa
+   /registro, pero ese estilo vive en auth.css, que esta página no carga
+   (auth.css: "también las usan /mi-cuenta y /mis-hijos" — el comentario
+   ya lo anticipaba, pero recién ahora hacía falta). Se duplica acá en vez
+   de cargar auth.css entero solo por estas dos clases. */
+.form-input__toggle {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	background: transparent;
+	border: none;
+	color: var(--color-text-muted);
+	cursor: pointer;
+}
+
+.form-input__toggle svg {
+	width: 20px;
+	height: 20px;
+}
+
+.form-input__toggle .icon-hide {
+	display: none;
+}
+
+.form-input__toggle.is-visible .icon-show {
+	display: none;
+}
+
+.form-input__toggle.is-visible .icon-hide {
+	display: inline-flex;
+}
+
+.password-strength {
+	display: none;
+	align-items: center;
+	gap: var(--space-2);
+	margin-top: var(--space-2);
+}
+
+.password-strength.is-visible {
+	display: flex;
+}
+
+.password-strength__track {
+	flex: 1;
+	height: 5px;
+	border-radius: var(--radius-pill);
+	background: var(--color-border);
+	overflow: hidden;
+}
+
+.password-strength__fill {
+	display: block;
+	height: 100%;
+	width: 0;
+	border-radius: var(--radius-pill);
+	transition: width 0.2s ease, background 0.2s ease;
+}
+
+.password-strength__fill.is-weak {
+	width: 33%;
+	background: var(--color-strength-weak);
+}
+
+.password-strength__fill.is-medium {
+	width: 66%;
+	background: var(--color-strength-medium);
+}
+
+.password-strength__fill.is-strong {
+	width: 100%;
+	background: var(--color-strength-strong);
+}
+
+.password-strength__label {
+	flex: none;
+	font-size: 0.78rem;
+	font-weight: 600;
+	color: var(--color-text-muted);
+	min-width: 3.2em;
 }
